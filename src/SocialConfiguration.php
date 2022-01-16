@@ -6,6 +6,11 @@ namespace Celebron\social;
 use Celebron\social\socials\Yandex;
 use yii\base\Component;
 
+/**
+ *
+ * @property-read array $links
+ * @property array $socials
+ */
 class SocialConfiguration extends Component
 {
     public string $route = "site/social";
@@ -14,7 +19,15 @@ class SocialConfiguration extends Component
     private array $_links = [];
     public function getSocials(): array
     {
-        return $this->_socials;
+        $result = [];
+        foreach ($this->_socials as $key=>$di) {
+            if(is_numeric($key)) {
+                $reflection = new \ReflectionClass($di['class']);
+                $key = strtolower($reflection->getShortName());
+            }
+            $result[$key] = $di;
+        }
+        return $result;
     }
     public function getLinks(): array
     {
@@ -23,15 +36,7 @@ class SocialConfiguration extends Component
 
     public function setSocials(array $value): void
     {
-        foreach ($value as $key=>$di) {
-            if(is_numeric($key)) {
-                $reflection = new \ReflectionClass($di['class']);
-                $key = strtolower($reflection->getShortName());
-            }
-            $this->_socials[$key] = $di;
-            $classname = $di['class'];
-            $this->_links[$key] = $classname::Url();
-        }
+        $this->_socials = $value;
     }
 
     public function init ()
