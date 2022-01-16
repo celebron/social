@@ -39,7 +39,7 @@ abstract class SocialBase extends Model
 
     public string $clientUrl;
 
-    private ?Client $_client;
+    private ?Client $_client = null;
 
     /**
      * @throws BadRequestHttpException
