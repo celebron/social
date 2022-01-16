@@ -37,22 +37,14 @@ abstract class SocialBase extends Model
 
     public string $redirectUrl;
 
+    public string $clientUrl;
+
     private ?Client $_client;
 
     /**
      * @throws BadRequestHttpException
      */
-    public function __construct (?string $code, string $state, $config = [])
-    {
-        $this->state = $state;
-        $this->validateCode($code);
-        parent::__construct($config);
-    }
-
-    /**
-     * @throws BadRequestHttpException
-     */
-    private function validateCode (?string $code): void
+    public function validateCode (?string $code): void
     {
         if ($code === null) {
             $this->requestCode();
@@ -66,20 +58,7 @@ abstract class SocialBase extends Model
         }
         \Yii::debug("Client id = {$this->id}", static::class);
     }
-    /**
-     * Установка базового url
-     * @param string $url
-     * @return void
-     */
-    public function setClientUrl (string $url): void
-    {
-        $this->getClient()->baseUrl = $url;
-    }
 
-    public function getClientUrl (): string
-    {
-        return $this->getClient()->baseUrl;
-    }
 
     public function getClient (): Client
     {
@@ -87,6 +66,7 @@ abstract class SocialBase extends Model
             $this->_client = new Client();
             $this->_client->transport = CurlTransport::class;
         }
+        $this->_client->baseUrl = $this->clientUrl;
         return $this->_client;
     }
 

@@ -64,5 +64,4 @@ class Yandex extends SocialOAuth
         \Yii::$app->session->setFlash('success',\Yii::t('app','Association with yandex - Done'));
         return $controller->goBack();
     }
-
 }

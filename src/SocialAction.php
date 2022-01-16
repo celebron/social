@@ -4,6 +4,7 @@ namespace Celebron\social;
 
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -31,9 +32,13 @@ class SocialAction extends \yii\base\Action
             throw new BadRequestHttpException();
         }
 
-        /** @var SocialBase $class */
-        $class = \Yii::createObject($config->socials[$classname],[ $code, $state ]);
 
+        /** @var SocialBase $class */
+        $class = Instance::ensure($config->socials[$classname], SocialBase::class);
+        $class->redirectUrl =  Url::to([$this->controller->getRoute()],true);
+        $class->state = $state;
+        
+        $class->validateCode($code);
         $result = $this->tagAction($class, $tag);
         if($result === null) {
             $result = $class->error($this->controller);
