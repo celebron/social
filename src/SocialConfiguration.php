@@ -2,8 +2,6 @@
 
 namespace Celebron\social;
 
-
-use Celebron\social\socials\Yandex;
 use yii\base\Component;
 
 /**
@@ -16,7 +14,7 @@ class SocialConfiguration extends Component
     public string $route = "site/social";
 
     private array $_socials = [];
-    private array $_links = [];
+
     public function getSocials(): array
     {
         $result = [];
@@ -29,9 +27,20 @@ class SocialConfiguration extends Component
         }
         return $result;
     }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getLinks(): array
     {
-        return $this->_links;
+        $result = [];
+        foreach ($this->getSocials() as $key=>$social) {
+            $classname = $social['class'];
+            /** @var SocialBase $classname  */
+            $result[$key] = $classname::url();
+        }
+        return $result;
     }
 
     public function setSocials(array $value): void
