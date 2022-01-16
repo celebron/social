@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\di\Instance;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
@@ -206,7 +207,7 @@ abstract class SocialBase extends Model
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function UrlState($state): string
+    public static function urlState($state): string
     {
         return Url::to([self::config()->route,'state'=>$state]);
     }
@@ -217,14 +218,25 @@ abstract class SocialBase extends Model
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function Url(bool $register = false) : string
+    public static function url(bool $register = false) : string
     {
         $reflection = new \ReflectionClass(static::class);
         $name = $reflection->getShortName();
         if($register) {
             $name .= "_" . SocialAction::ACTION_REGISTER;
         }
-        return static::UrlState(strtolower($name));
+        return static::urlState(strtolower($name));
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function a(string $text, $register=false): void
+    {
+        $reflection = new \ReflectionClass(static::class);
+        Html::a($text, static::url($register), [
+            'class'=> 'social-' .strtolower($reflection->getShortName())
+        ]);
     }
 
     /**
