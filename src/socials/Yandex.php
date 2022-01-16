@@ -18,6 +18,7 @@ use Yiisoft\Http\Header;
  */
 class Yandex extends SocialOAuth
 {
+    public $clientUrl = "https://oauth.yandex.ru";
     /**
      * @return mixed
      * @throws BadRequestHttpException
