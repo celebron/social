@@ -231,10 +231,10 @@ abstract class SocialBase extends Model
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public static function a(string $text, $register=false): void
+    public static function a(string $text, $register=false): string
     {
         $reflection = new \ReflectionClass(static::class);
-        Html::a($text, static::url($register), [
+        return Html::a($text, static::url($register), [
             'class'=> 'social-' .strtolower($reflection->getShortName())
         ]);
     }
