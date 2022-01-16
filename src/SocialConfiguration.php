@@ -2,7 +2,9 @@
 
 namespace Celebron\social;
 
+use Celebron\social\socials\Yandex;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 
 /**
  *
@@ -13,7 +15,9 @@ class SocialConfiguration extends Component
 {
     public string $route = "site/social";
 
-    private array $_socials = [];
+    private array $_socials = [
+        [ 'class' => Yandex::class ]
+    ];
 
     public function getSocials(): array
     {
@@ -45,7 +49,7 @@ class SocialConfiguration extends Component
 
     public function setSocials(array $value): void
     {
-        $this->_socials = $value;
+        $this->_socials = ArrayHelper::merge($this->_socials, $value);
     }
 
     public function init ()
