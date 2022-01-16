@@ -101,7 +101,7 @@ abstract class SocialBase extends Model
      * @return ActiveRecord|null
      * @throws \yii\base\InvalidConfigException
      */
-    protected function fieldSearch(): FieldSearchInterface
+    protected function fieldSearch(): ?ActiveRecord
     {
         $class = Instance::ensure(\Yii::$app->user->identityClass,FieldSearchInterface::class);
         /** @var FieldSearchInterface $class */
