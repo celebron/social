@@ -10,10 +10,6 @@ class SocialConfiguration extends Component
 {
     public string $route = "site/social";
 
-    public array $socials = [
-        'yandex' => [
-            'class' => Yandex::class,
-            'clientUrl' => "https://oauth.yandex.ru",
-        ],
-    ];
+    public array $socials = [];
+
 }
