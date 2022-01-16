@@ -174,7 +174,7 @@ abstract class SocialBase extends Model
             return $login;
         }
 
-        \Yii::debug(\Yii::t('social','Authorization failed'), static::class);
+        \Yii::debug(\Yii::t('app','Authorization failed'), static::class);
         return false;
     }
 
