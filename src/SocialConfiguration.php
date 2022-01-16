@@ -16,7 +16,7 @@ class SocialConfiguration extends Component
     public string $route = "site/social";
 
     private array $_socials = [
-        [ 'class' => Yandex::class ]
+        'yandex' => [ 'class' => Yandex::class ]
     ];
 
     public function getSocials(): array
