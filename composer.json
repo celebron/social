@@ -1,0 +1,38 @@
+{
+    "name": "celebron/yii2-social-auth",
+    "type": "yii2-extension",
+    "autoload": {
+        "psr-4": {
+            "Celebron\\social\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Celebron\\social\\test\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "celebron",
+            "email": "celebron.ru@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "10.0.*"
+    },
+    "require": {
+        "yiisoft/yii2-httpclient": "^2.0",
+        "google/apiclient": "^2.7",
+        "yiisoft/yii2": "^2.0",
+        "yiisoft/http": "^1.2",
+        "php": "^8.0"
+    }
+}
