@@ -58,9 +58,22 @@ class Google extends SocialBase
         exit;
     }
 
-    public function registerSuccess (Controller $controller): Response
+    /**
+     * @param Controller $controller
+     * @return \yii\web\Response
+     */
+    function error (Controller $controller): \yii\web\Response
     {
-        \Yii::$app->session->setFlash('success',\Yii::t('app','Association with Google - Done'));
+        \Yii::$app->session->setFlash('warning',\Yii::t('app','[{state}] User {user} not registred!',[
+            'state' => $this->state,
+            'user'=> $this->id,
+        ]));
+        return $controller->goBack();
+    }
+
+    public function registerSuccess (Controller $controller): \yii\web\Response
+    {
+        \Yii::$app->session->setFlash('success',\Yii::t('app','Association with Vkontakte - Done'));
         return $controller->goBack();
     }
 

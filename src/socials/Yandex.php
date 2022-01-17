@@ -65,4 +65,17 @@ class Yandex extends SocialOAuth
         \Yii::$app->session->setFlash('success',\Yii::t('app','Association with yandex - Done'));
         return $controller->goBack();
     }
+
+    /**
+     * @param Controller $controller
+     * @return \yii\web\Response
+     */
+    function error (Controller $controller): \yii\web\Response
+    {
+        \Yii::$app->session->setFlash('warning',\Yii::t('app','[{state}] User {user} not registred!',[
+            'state' => $this->state,
+            'user'=> $this->id,
+        ]));
+        return $controller->goBack();
+    }
 }

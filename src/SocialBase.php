@@ -38,7 +38,7 @@ abstract class SocialBase extends Model
 
     public string $redirectUrl;
 
-    public string $clientUrl;
+    public string $clientUrl = "";
 
     private ?Client $_client = null;
 
