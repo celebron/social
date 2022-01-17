@@ -13,9 +13,9 @@ use yii\web\BadRequestHttpException;
 abstract class SocialOAuth extends SocialBase
 {
 
-    public string $clientId;
+    public string $clientId = '';
 
-    public string $clientSecret;
+    public string $clientSecret = '';
 
     /**
      * @param string $url
