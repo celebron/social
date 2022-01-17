@@ -64,8 +64,4 @@ class Google extends SocialBase
         return $controller->goBack();
     }
 
-    public function error (Controller $controller) : string
-    {
-        return $controller->render('google_error',['data'=>$this->data]);
-    }
 }
