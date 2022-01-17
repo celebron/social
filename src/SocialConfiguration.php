@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\socials\Google;
 use Celebron\social\socials\Yandex;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
@@ -73,7 +74,7 @@ class SocialConfiguration extends Component
 
     public function init ()
     {
-        $this->SocialAdd2(Yandex::class);
+        $this->SocialAdd2(Yandex::class, Google::class);
     }
 
 }

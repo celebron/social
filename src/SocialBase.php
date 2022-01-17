@@ -150,9 +150,9 @@ abstract class SocialBase extends Model
     /**
      * Событие положительной регистрации
      * @param Controller $controller
-     * @return Response
+     * @return mixed
      */
-    public function registerSuccess(Controller $controller): Response
+    public function registerSuccess(Controller $controller): mixed
     {
         return $controller->goHome();
     }
@@ -184,7 +184,7 @@ abstract class SocialBase extends Model
      * @param Controller $controller
      * @return Response
      */
-    public function loginSuccess(Controller $controller): Response
+    public function loginSuccess(Controller $controller): mixed
     {
         return $controller->goBack();
     }
@@ -194,7 +194,7 @@ abstract class SocialBase extends Model
      * @param Controller $controller
      * @throws HttpException
      */
-    public function error(Controller $controller)
+    public function error(Controller $controller): mixed
     {
         return throw new UnauthorizedHttpException("User {$this->id} not found.");
     }
