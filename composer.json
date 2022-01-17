@@ -6,11 +6,6 @@
             "Celebron\\social\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Celebron\\social\\test\\": "tests/"
-        }
-    },
     "authors": [
         {
             "name": "celebron",
@@ -25,8 +20,7 @@
         }
     ],
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "phpunit/phpunit": "10.0.*"
+        "roave/security-advisories": "dev-latest"
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
