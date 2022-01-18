@@ -131,7 +131,6 @@ abstract class SocialBase extends Model
      */
     abstract public function requestCode (string $state): void;
 
-
     /**
      * Регистрация пользователя из социальной сети
      * @return bool
