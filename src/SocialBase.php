@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use yii\base\DynamicModel;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
@@ -26,29 +27,36 @@ use yii\web\UnauthorizedHttpException;
  */
 abstract class SocialBase extends Model
 {
+    public const MODE_REGISTER = "register";
+    public const MODE_LOGIN = "login";
 
     /** @var string - поле в базе данных для сравнения */
     public string $field;
-
-    public string $state;
-
-    protected mixed $data;
+    public string $clientUrl = '';
 
     public mixed $id;
-
     public string $redirectUrl;
 
-    public string $clientUrl = "";
-
+    protected mixed $data;
     private ?Client $_client = null;
+
+
+    /**
+     * @return string
+     */
+    public static function getSocialName(): string
+    {
+        $r = new \ReflectionClass(static::class);
+        return strtolower($r->getShortName());
+    }
 
     /**
      * @throws BadRequestHttpException
      */
-    public function validateCode (?string $code): void
+    public function validateCode (?string $code, string $state): void
     {
         if ($code === null) {
-            $this->requestCode();
+            $this->requestCode($state);
             exit;
         }
 
@@ -61,6 +69,10 @@ abstract class SocialBase extends Model
     }
 
 
+    /**
+     * СurlClient
+     * @return Client
+     */
     public function getClient (): Client
     {
         if ($this->_client === null) {
@@ -83,18 +95,15 @@ abstract class SocialBase extends Model
         \Yii::$app->response->redirect($value)->send();
     }
 
+    /**
+     * Правила валидации
+     * @return array[]
+     */
     public function rules (): array
     {
         return [
             [['redirectUrl', 'id'], 'required'],
         ];
-    }
-
-    public function init ()
-    {
-        if($this->field === null) {
-            throw new InvalidArgumentException("Property Field not set",1);
-        }
     }
 
     /**
@@ -120,7 +129,7 @@ abstract class SocialBase extends Model
      * метод запроса кода
      * @return mixed
      */
-    abstract public function requestCode (): void;
+    abstract public function requestCode (string $state): void;
 
 
     /**
@@ -199,7 +208,6 @@ abstract class SocialBase extends Model
         return throw new UnauthorizedHttpException("User {$this->id} not found.");
     }
 
-
     /**
      * Ссылка на стараницу авторизации
      * @param $state
@@ -209,7 +217,7 @@ abstract class SocialBase extends Model
      */
     public static function urlState($state): string
     {
-        return Url::to([self::config()->route,'state'=>$state]);
+        return Url::to([SocialConfiguration::config()->route,'state'=>$state]);
     }
 
     /**
@@ -220,10 +228,9 @@ abstract class SocialBase extends Model
      */
     public static function url(bool $register = false) : string
     {
-        $reflection = new \ReflectionClass(static::class);
-        $name = $reflection->getShortName();
+        $name = static::getSocialName();
         if($register) {
-            $name .= "_" . SocialAction::ACTION_REGISTER;
+            $name .= "_" . self::MODE_REGISTER;
         }
         return static::urlState(strtolower($name));
     }
@@ -239,12 +246,5 @@ abstract class SocialBase extends Model
         ]);
     }
 
-    /**
-     * @return SocialConfiguration
-     * @throws \yii\base\InvalidConfigException
-     */
-    public static function config() : SocialConfiguration
-    {
-        return \Yii::$app->get(SocialConfiguration::class);
-    }
+
 }
