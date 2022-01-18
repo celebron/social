@@ -78,4 +78,13 @@ class SocialConfiguration extends Component
         $this->SocialAdd2(Yandex::class, Google::class, Vk::class);
     }
 
+    /**
+     * @return SocialConfiguration
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function config() : static
+    {
+        return \Yii::$app->get(static::class);
+    }
+
 }

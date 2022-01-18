@@ -51,9 +51,9 @@ class Google extends SocialBase
     /**
      * @inheritDoc
      */
-    public function requestCode () : void
+    public function requestCode (string $state) : void
     {
-        $this->getGoogleClient()->setState($this->state);
+        $this->getGoogleClient()->setState($state);
         $this->redirect($this->getGoogleClient()->createAuthUrl());
         exit;
     }

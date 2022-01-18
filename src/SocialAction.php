@@ -26,7 +26,7 @@ class SocialAction extends \yii\base\Action
         $classname = $explode[0];
         $tag = $explode[1] ?? self::ACTION_LOGIN;
 
-        $config = SocialBase::config();
+        $config = SocialConfiguration::config();
         if(!ArrayHelper::keyExists($classname, $config->socials))
         {
             throw new BadRequestHttpException();
@@ -35,20 +35,10 @@ class SocialAction extends \yii\base\Action
 
         /** @var SocialBase $class */
         $class = Instance::ensure($config->socials[$classname], SocialBase::class);
-        $class->redirectUrl =  Url::to([$this->controller->getRoute()],true);
-        $class->state = $state;
-        
-        $class->validateCode($code);
-        $result = $this->tagAction($class, $tag);
-        if($result === null) {
-            $result = $class->error($this->controller);
-        }
-        return $result;
-    }
+        $class->redirectUrl = Url::to([$this->controller->getRoute()],true);
 
-    protected function tagAction(SocialBase $class, string $tag): ?Response
-    {
-        //Режим авторизации
+        $class->validateCode($code, $state);
+
         if (($tag === self::ACTION_LOGIN) && $class->login()) {
             return $class->loginSuccess($this->controller);
         }
@@ -58,6 +48,7 @@ class SocialAction extends \yii\base\Action
             return $class->registerSuccess($this->controller);
         }
 
-        return null;
+        return $class->error($this->controller);
     }
+
 }

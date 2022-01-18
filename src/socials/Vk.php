@@ -52,7 +52,7 @@ class Vk extends SocialOAuth  //implements iSocialError
     /**
      * @return mixed
      */
-    public function requestCode () : void
+    public function requestCode (string $state) : void
     {
         $link = $this->getLink();
         $data = $this->getClient()->send($link);

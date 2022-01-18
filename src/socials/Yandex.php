@@ -49,14 +49,14 @@ class Yandex extends SocialOAuth
      * @return mixed
      * @throws BadRequestHttpException
      */
-    public function requestCode () : void
+    public function requestCode (string $state) : void
     {
         $get = \Yii::$app->request->get();
         if (isset($get['error'])) {
             throw new BadRequestHttpException("[Yandex]Error: {$get['error']}. {$get['error_description']}");
         }
 
-        $url = $this->getCodeUrl('authorize');
+        $url = $this->getCodeUrl('authorize', $state);
         $this->redirect($url);
     }
 
