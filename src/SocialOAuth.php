@@ -99,5 +99,19 @@ abstract class SocialOAuth extends SocialBase
         }
         return $response;
     }
+    
+    protected function sendRedirect(Request $sender)
+    {
+        $response = $this->getClient()->send($sender);
+         if ($response->isOk) {
+            return $this->redirect($sender);
+         } else {
+            $data = $response->getData();
+            if(isset($data['error'], $data['error_description'])) {
+                throw new BadRequestHttpException('['. static::getSocialName() ."]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
+            }
+            throw new BadRequestHttpException('[' . static::getSocialName() . "]Response not correct. Code E{$response->getStatusCode()}");
+         }
+    }
 
 }
