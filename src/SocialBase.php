@@ -2,6 +2,8 @@
 
 namespace Celebron\social;
 
+use Celebron\social\eventArgs\ErrorEventArgs;
+use Celebron\social\eventArgs\SuccessEventArgs;
 use yii\base\DynamicModel;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
@@ -27,6 +29,10 @@ use yii\web\UnauthorizedHttpException;
  */
 abstract class SocialBase extends Model
 {
+    public const EVENT_REGISTER_SUCCESS = "registerSuccess";
+    public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
+    public const EVENT_ERROR = "error";
+
     public const MODE_REGISTER = "register";
     public const MODE_LOGIN = "login";
 
@@ -59,12 +65,7 @@ abstract class SocialBase extends Model
             $this->requestCode($state);
             exit;
         }
-
         $this->id = $this->requestId($code);
-
-        if($this->id === null) {
-            throw new BadRequestHttpException("The request did not return a result.");
-        }
         \Yii::debug("Client id = {$this->id}", static::class);
     }
 
@@ -103,6 +104,7 @@ abstract class SocialBase extends Model
     {
         return [
             [['redirectUrl', 'id'], 'required'],
+            ['redirectUrl','url']
         ];
     }
 
@@ -155,15 +157,7 @@ abstract class SocialBase extends Model
         return false;
     }
 
-    /**
-     * Событие положительной регистрации
-     * @param Controller $controller
-     * @return mixed
-     */
-    public function registerSuccess(Controller $controller): mixed
-    {
-        return $controller->goHome();
-    }
+
 
     /**
      * Авторизация в системе
@@ -194,17 +188,38 @@ abstract class SocialBase extends Model
      */
     public function loginSuccess(Controller $controller): mixed
     {
-        return $controller->goBack();
+        $eventArgs = new SuccessEventArgs($controller);
+        $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
+        return $eventArgs->result;
+    }
+
+    /**
+     * Событие положительной регистрации
+     * @param Controller $controller
+     * @return mixed
+     */
+    public function registerSuccess(Controller $controller): mixed
+    {
+        $eventArgs = new SuccessEventArgs($controller);
+        $this->trigger(self::EVENT_REGISTER_SUCCESS, $eventArgs);
+        return $eventArgs->result;
     }
 
     /**
      * Событие на ошибку
      * @param Controller $controller
-     * @throws HttpException
+     * @return mixed
+     * @throws UnauthorizedHttpException
      */
     public function error(Controller $controller): mixed
     {
-        return throw new UnauthorizedHttpException("User {$this->id} not found.");
+        $eventArgs = new ErrorEventArgs($controller);
+        $eventArgs->result = new UnauthorizedHttpException("User {$this->id} not found.");
+        $this->trigger(self::EVENT_ERROR, $eventArgs);
+        if($eventArgs->result instanceof \Exception) {
+            throw $eventArgs->result;
+        }
+        return $eventArgs->result;
     }
 
     /**
