@@ -19,6 +19,7 @@ class SocialAction extends \yii\base\Action
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\web\HttpException
      * @throws BadRequestHttpException
+     * @throws \yii\base\NotSupportedException
      */
     final public function run(string $state, ?string $code=null)
     {
