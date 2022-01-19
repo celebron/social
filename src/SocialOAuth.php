@@ -88,10 +88,10 @@ abstract class SocialOAuth extends SocialBase
     protected function send(Request $sender, string $theme, bool $throw = false) : Response
     {
         $response = $this->getClient()->send($sender);
-        $data = $response->getData();
         if ($response->isOk) {
-            $this->data[$theme] = $data;
+            $this->data[$theme] = $response->getData();
         } elseif($throw) {
+            $data = $response->getData();
             if(isset($data['error'], $data['error_description'])) {
                 throw new BadRequestHttpException('['. static::getSocialName() ."]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
             }
