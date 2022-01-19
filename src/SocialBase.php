@@ -49,7 +49,7 @@ abstract class SocialBase extends Model
     /**
      * @return string
      */
-    public static function getSocialName(): string
+    final public static function getSocialName(): string
     {
         $r = new \ReflectionClass(static::class);
         return strtolower($r->getShortName());
@@ -73,7 +73,7 @@ abstract class SocialBase extends Model
      * СurlClient
      * @return Client
      */
-    public function getClient (): Client
+    final public function getClient (): Client
     {
         if ($this->_client === null) {
             $this->_client = new Client();
@@ -87,7 +87,7 @@ abstract class SocialBase extends Model
      * Выполниет редирет
      * @param $value
      */
-    public function redirect($value) : void
+    final public function redirect($value) : void
     {
         if($value instanceof Request) {
             $value = $value->fullUrl;
@@ -116,7 +116,7 @@ abstract class SocialBase extends Model
     {
         $class = Instance::ensure(\Yii::$app->user->identityClass,FieldSearchInterface::class);
         /** @var FieldSearchInterface $class */
-        return $class::fieldSearch($this->field,$this->id);
+        return $class::fieldSearch($this->field, $this->id);
     }
 
 
@@ -229,7 +229,7 @@ abstract class SocialBase extends Model
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function urlState($state): string
+    final public static function urlState($state): string
     {
         return Url::to([SocialConfiguration::config()->route,'state'=>$state]);
     }
@@ -240,7 +240,7 @@ abstract class SocialBase extends Model
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function url(bool $register = false) : string
+    final public static function url(bool $register = false) : string
     {
         $name = static::getSocialName();
         if($register) {
@@ -252,7 +252,7 @@ abstract class SocialBase extends Model
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public static function a(string $text, $register=false): string
+    final public static function a(string $text, $register=false): string
     {
         $reflection = new \ReflectionClass(static::class);
         return Html::a($text, static::url($register), [

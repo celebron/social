@@ -75,6 +75,10 @@ abstract class SocialOAuth extends SocialBase
         return $this->send($sendUrl,'token');
     }
 
+    public function responseCode($url, $state, $data=[]): void
+    {
+        $this->redirect($this->getCodeUrl($url, $state,$data));
+    }
 
     /**
      * @param Request $sender
@@ -91,27 +95,40 @@ abstract class SocialOAuth extends SocialBase
         if ($response->isOk) {
             $this->data[$theme] = $response->getData();
         } elseif($throw) {
-            $data = $response->getData();
-            if(isset($data['error'], $data['error_description'])) {
-                throw new BadRequestHttpException('['. static::getSocialName() ."]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
-            }
-            throw new BadRequestHttpException('[' . static::getSocialName() . "]Response not correct. Code E{$response->getStatusCode()}");
+            $this->extracted($response);
         }
         return $response;
     }
-    
+
+    /**
+     * @throws \yii\httpclient\Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     */
     protected function sendRedirect(Request $sender)
     {
         $response = $this->getClient()->send($sender);
          if ($response->isOk) {
-            return $this->redirect($sender);
-         } else {
-            $data = $response->getData();
-            if(isset($data['error'], $data['error_description'])) {
-                throw new BadRequestHttpException('['. static::getSocialName() ."]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
-            }
-            throw new BadRequestHttpException('[' . static::getSocialName() . "]Response not correct. Code E{$response->getStatusCode()}");
+             $this->redirect($sender);
+             return;
          }
+
+        $this->extracted($response);
+    }
+
+    /**
+     * @param Response $response
+     * @return mixed
+     * @throws BadRequestHttpException
+     * @throws \yii\httpclient\Exception
+     */
+    protected function extracted (Response $response)
+    {
+        $data = $response->getData();
+        if (isset($data['error'], $data['error_description'])) {
+            throw new BadRequestHttpException('[' . static::getSocialName() . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
+        }
+        throw new BadRequestHttpException('[' . static::getSocialName() . "]Response not correct. Code E{$response->getStatusCode()}");
     }
 
 }
