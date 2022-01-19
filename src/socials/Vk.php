@@ -37,7 +37,7 @@ class Vk extends SocialOAuth  //implements iSocialError
      * @param bool $err
      * @return Response
      */
-    public function getLink():Request
+    public function getLink(string $state):Request
     {
         $oauth = new VKOAuth();
         $link = $oauth->getAuthorizeUrl(VKOAuthResponseType::CODE,
@@ -45,7 +45,7 @@ class Vk extends SocialOAuth  //implements iSocialError
             $this->redirectUrl,
             VKOAuthDisplay::PAGE,
             $this->scope,
-            $this->state);
+            $state);
         return $this->getClient()->get($link);
     }
 
@@ -54,8 +54,8 @@ class Vk extends SocialOAuth  //implements iSocialError
      */
     public function requestCode (string $state) : void
     {
-        $link = $this->getLink();
-        $data = $this->getClient()->send($link);
+        $link = $this->getLink($state);
+        $data = $this->send($link);
 
         if($data->isOk) {
            $this->redirect($link);
