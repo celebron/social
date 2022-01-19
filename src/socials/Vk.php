@@ -5,8 +5,6 @@ use Celebron\social\SocialOAuth;
 use VK\Exceptions\VKClientException;
 use VK\Exceptions\VKOAuthException;
 use yii\httpclient\{ Request, Response };
-use yii\web\BadRequestHttpException;
-use yii\web\Controller;
 use VK\OAuth\{VKOAuth, VKOAuthDisplay, VKOAuthResponseType};
 
 
@@ -14,7 +12,7 @@ use VK\OAuth\{VKOAuth, VKOAuthDisplay, VKOAuthResponseType};
  *
  * @property-read Request|Response $link
  */
-class Vk extends SocialOAuth  //implements iSocialError
+class Vk extends SocialOAuth
 {
     public array $scope;
 
