@@ -6,6 +6,7 @@ namespace Celebron\social\socials;
 use Celebron\social\SocialBase;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\BadRequestHttpException;
 
 /**
  *
@@ -42,6 +43,10 @@ class Google extends SocialBase
     public function requestId (string $code) : mixed
     {
         $token = $this->getGoogleClient()->fetchAccessTokenWithAuthCode($code);
+        //Если нету токина, то вернуть назад
+        if(empty $token['access_token'])  {
+            throw new BadRequestHttpException('[' . static::getSocialName() . "]Access token not received");
+        }
         $this->getGoogleClient()->setAccessToken($token['access_token']);
         $google_oauth = new \Google_Service_Oauth2($this->getGoogleClient());
         $this->data = $google_oauth->userinfo->get();
