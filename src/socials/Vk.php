@@ -55,14 +55,8 @@ class Vk extends SocialOAuth  //implements iSocialError
     public function requestCode (string $state) : void
     {
         $link = $this->getLink($state);
-        $data = $this->send($link, 'code', true);
-
-        if($data->isOk) {
-           $this->redirect($link);
-            exit;
-        }
-
-        throw new BadRequestHttpException("[VK] Ошибка отправки кода");
+        $this->sendRedirect($link);
+        exit();
     }
 
     /**
