@@ -38,6 +38,7 @@ class Google extends SocialBase
         $this->getGoogleClient()->setAuthConfig(\Yii::getAlias($path));
     }
 
+
     /**
      * @inheritDoc
      */
@@ -54,12 +55,6 @@ class Google extends SocialBase
         return $this->data->id;
     }
 
-    public function rules (): array
-    {
-        return ArrayHelper::merge(parent::rules(),[
-           ['configFile', 'required'],
-        ]);
-    }
 
     /**
      * @inheritDoc
