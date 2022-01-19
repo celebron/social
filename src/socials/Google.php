@@ -44,7 +44,7 @@ class Google extends SocialBase
     {
         $token = $this->getGoogleClient()->fetchAccessTokenWithAuthCode($code);
         //Если нету токина, то вернуть назад
-        if(empty $token['access_token'])  {
+        if(empty($token['access_token']))  {
             throw new BadRequestHttpException('[' . static::getSocialName() . "]Access token not received");
         }
         $this->getGoogleClient()->setAccessToken($token['access_token']);
