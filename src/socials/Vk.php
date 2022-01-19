@@ -72,7 +72,7 @@ class Vk extends SocialOAuth  //implements iSocialError
     function error (Controller $controller): \yii\web\Response
     {
         \Yii::$app->session->setFlash('warning',\Yii::t('app','[{state}] User {user} not registred!',[
-            'state' => $this->state,
+            'state' => static::getSocialName(),
             'user'=> $this->id,
         ]));
         return $controller->goBack();
