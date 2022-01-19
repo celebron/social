@@ -46,7 +46,6 @@ abstract class SocialBase extends Model
     protected mixed $data;
     private ?Client $_client = null;
 
-
     /**
      * @return string
      */
@@ -141,7 +140,6 @@ abstract class SocialBase extends Model
     {
         /** @var ActiveRecord $user */
         $user = \Yii::$app->user->identity;
-
         if($this->validate()) {
             $field = $this->field;
             $user->$field = $this->id;
@@ -170,7 +168,8 @@ abstract class SocialBase extends Model
     {
         /** @var IdentityInterface $user */
         if($this->validate() && ( ($user = $this->FieldSearch()) !== null )) {
-            $login = \Yii::$app->user->login($user,$duration);
+            $login = \Yii::$app->user->login($user, $duration);
+
             \Yii::debug(\Yii::t('app','Authorization {status}',[
                 'status' => $login?"successful":"failed",
             ]), static::class);
@@ -214,6 +213,7 @@ abstract class SocialBase extends Model
     public function error(Controller $controller): mixed
     {
         $eventArgs = new ErrorEventArgs($controller);
+        $eventArgs->errors = $this->errors;
         $eventArgs->result = new UnauthorizedHttpException("User {$this->id} not found.");
         $this->trigger(self::EVENT_ERROR, $eventArgs);
         if($eventArgs->result instanceof \Exception) {

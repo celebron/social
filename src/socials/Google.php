@@ -4,6 +4,7 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\SocialBase;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
@@ -53,6 +54,13 @@ class Google extends SocialBase
         return $this->data->id;
     }
 
+    public function rules (): array
+    {
+        return ArrayHelper::merge(parent::rules(),[
+           ['configFile', 'required'],
+        ]);
+    }
+
     /**
      * @inheritDoc
      */
@@ -62,24 +70,4 @@ class Google extends SocialBase
         $this->redirect($this->getGoogleClient()->createAuthUrl());
         exit;
     }
-
-    /**
-     * @param Controller $controller
-     * @return \yii\web\Response
-     */
-    function error (Controller $controller): \yii\web\Response
-    {
-        \Yii::$app->session->setFlash('warning',\Yii::t('app','[{state}] User {user} not registred!',[
-            'state' => static::getSocialName(),
-            'user'=> $this->id,
-        ]));
-        return $controller->goBack();
-    }
-
-    public function registerSuccess (Controller $controller): \yii\web\Response
-    {
-        \Yii::$app->session->setFlash('success',\Yii::t('app','Association with Vkontakte - Done'));
-        return $controller->goBack();
-    }
-
 }
