@@ -5,7 +5,10 @@ namespace Celebron\social;
 use Celebron\social\socials\Google;
 use Celebron\social\socials\Vk;
 use Celebron\social\socials\Yandex;
+use ReflectionClass;
+use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -31,7 +34,7 @@ class SocialConfiguration extends Component
     /**
      * Получение списка ссылок на автризацию
      * @return array
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function getLinks($register = false): array
     {
@@ -50,7 +53,7 @@ class SocialConfiguration extends Component
         foreach ($value as $key=>$di)
         {
             if(is_numeric($key)) {
-                $reflection = new \ReflectionClass($di['class']);
+                $reflection = new ReflectionClass($di['class']);
                 $key = strtolower($reflection->getShortName());
             }
             $result[$key] = $di;
@@ -60,7 +63,7 @@ class SocialConfiguration extends Component
 
     public function SocialAdd($class, $name=null)
     {
-        $r = new \ReflectionClass($class);
+        $r = new ReflectionClass($class);
         $name = $name ?? strtolower($r->getShortName());
         $this->setSocials([ $name => [ 'class'=> $class ] ]);
     }
@@ -80,11 +83,11 @@ class SocialConfiguration extends Component
 
     /**
      * @return SocialConfiguration
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public static function config() : static
     {
-        return \Yii::$app->get(static::class);
+        return Yii::$app->get(static::class);
     }
 
 }

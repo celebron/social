@@ -5,9 +5,10 @@ namespace Celebron\social\socials;
 
 
 use Celebron\social\SocialOAuth;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
-use yii\web\Response;
 use Yiisoft\Http\Header;
 
 /**
@@ -22,8 +23,8 @@ class Yandex extends SocialOAuth
     /**
      * @return mixed
      * @throws BadRequestHttpException
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\httpclient\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function requestId (string $code) : mixed
     {
@@ -51,13 +52,11 @@ class Yandex extends SocialOAuth
      */
     public function requestCode (string $state) : void
     {
-        $get = \Yii::$app->request->get();
+        $get = Yii::$app->request->get();
         if (isset($get['error'])) {
             throw new BadRequestHttpException("[Yandex]Error: {$get['error']}. {$get['error_description']}");
         }
 
-//        $url = $this->getCodeUrl('authorize', $state);
-//        $this->redirect($url);
         $this->responseCode('authorize', $state);
     }
 

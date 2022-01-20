@@ -2,12 +2,9 @@
 
 namespace Celebron\social;
 
-use GuzzleHttp\Exception\BadResponseException;
 use yii\base\InvalidConfigException;
-use yii\base\NotSupportedException;
 use yii\helpers\ArrayHelper;
-use yii\httpclient\Request;
-use yii\httpclient\Response;
+use yii\httpclient\{Exception, Request, Response};
 use yii\web\BadRequestHttpException;
 
 abstract class SocialOAuth extends SocialBase
@@ -16,6 +13,9 @@ abstract class SocialOAuth extends SocialBase
     public ?string $clientId = null;
     public ?string $clientSecret = null;
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function init ()
     {
        if(($this->clientId === null) || $this->clientSecret === null) {
@@ -61,13 +61,15 @@ abstract class SocialOAuth extends SocialBase
     }
 
     /**
-     * @param $url
+     * @param string $url
      * @param string $code
      * @param array $data
      * @param array $headers
      * @param array $params
      * @return mixed
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws InvalidConfigException
      */
     public function getToken(string $url, string $code, array $data=[], array $headers=[], array $params=[]): Response
     {
@@ -75,7 +77,7 @@ abstract class SocialOAuth extends SocialBase
         return $this->send($sendUrl,'token');
     }
 
-    public function responseCode($url, $state, $data=[]): void
+    public function getCode($url, $state, $data=[]): void
     {
         $this->redirect($this->getCodeUrl($url, $state,$data));
     }
@@ -87,7 +89,7 @@ abstract class SocialOAuth extends SocialBase
      * @return Response
      * @throws BadRequestHttpException
      * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      */
     protected function send(Request $sender, string $theme, bool $throw = false) : Response
     {
@@ -95,17 +97,17 @@ abstract class SocialOAuth extends SocialBase
         if ($response->isOk) {
             $this->data[$theme] = $response->getData();
         } elseif($throw) {
-            $this->extracted($response);
+            $this->getException($response);
         }
         return $response;
     }
 
     /**
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    protected function sendRedirect(Request $sender)
+    protected function sendRedirect(Request $sender): void
     {
         $response = $this->getClient()->send($sender);
          if ($response->isOk) {
@@ -113,16 +115,15 @@ abstract class SocialOAuth extends SocialBase
              return;
          }
 
-        $this->extracted($response);
+        $this->getException($response);
     }
 
     /**
      * @param Response $response
-     * @return mixed
      * @throws BadRequestHttpException
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      */
-    protected function extracted (Response $response)
+    protected function getException (Response $response): void
     {
         $data = $response->getData();
         if (isset($data['error'], $data['error_description'])) {

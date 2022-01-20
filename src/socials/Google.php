@@ -4,27 +4,27 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\SocialBase;
-use yii\helpers\ArrayHelper;
-use yii\web\Controller;
-use yii\web\Response;
+use Google_Client;
+use Google_Service_Oauth2;
+use Yii;
 use yii\web\BadRequestHttpException;
 
 /**
  *
  * @property-write string $configFile
- * @property-read \Google_Client $googleClient
+ * @property-read Google_Client $googleClient
  */
 class Google extends SocialBase
 {
-    private ?\Google_Client $_googleClient = null;
+    private ?Google_Client $_googleClient = null;
 
     /**
-     * @return \Google_Client
+     * @return Google_Client
      */
-    public function getGoogleClient(): \Google_Client
+    public function getGoogleClient(): Google_Client
     {
         if($this->_googleClient === null) {
-            $this->_googleClient = new \Google_Client();
+            $this->_googleClient = new Google_Client();
             $this->_googleClient->setApplicationName("Celebron APP | Auth service");
             $this->_googleClient->addScope("email");
             $this->_googleClient->addScope("profile");
@@ -35,7 +35,7 @@ class Google extends SocialBase
 
     public function setConfigFile(string $path)
     {
-        $this->getGoogleClient()->setAuthConfig(\Yii::getAlias($path));
+        $this->getGoogleClient()->setAuthConfig(Yii::getAlias($path));
     }
 
 
@@ -50,7 +50,7 @@ class Google extends SocialBase
             throw new BadRequestHttpException('[' . static::getSocialName() . "]Access token not received");
         }
         $this->getGoogleClient()->setAccessToken($token['access_token']);
-        $google_oauth = new \Google_Service_Oauth2($this->getGoogleClient());
+        $google_oauth = new Google_Service_Oauth2($this->getGoogleClient());
         $this->data = $google_oauth->userinfo->get();
         return $this->data->id;
     }

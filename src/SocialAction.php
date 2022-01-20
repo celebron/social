@@ -2,13 +2,16 @@
 
 namespace Celebron\social;
 
+use yii\base\Action;
+use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
-use yii\web\Response;
+use yii\web\HttpException;
 
-class SocialAction extends \yii\base\Action
+class SocialAction extends Action
 {
     public const ACTION_LOGIN = 'login';
     public const ACTION_REGISTER = 'register';
@@ -16,10 +19,10 @@ class SocialAction extends \yii\base\Action
     public int $duration = 0;
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\HttpException
+     * @throws InvalidConfigException
+     * @throws HttpException
      * @throws BadRequestHttpException
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     final public function run(string $state, ?string $code=null)
     {

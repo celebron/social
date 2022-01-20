@@ -2,9 +2,10 @@
 
 namespace Celebron\social\eventArgs;
 
+use yii\base\Event;
 use yii\web\Controller;
 
-class SuccessEventArgs extends \yii\base\Event
+class SuccessEventArgs extends Event
 {
     public mixed $result;
 

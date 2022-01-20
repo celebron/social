@@ -4,8 +4,10 @@ namespace Celebron\social;
 
 use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
-use yii\base\DynamicModel;
-use yii\base\InvalidArgumentException;
+use Exception;
+use ReflectionClass;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
@@ -17,7 +19,6 @@ use yii\httpclient\CurlTransport;
 use yii\httpclient\Request;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\web\HttpException;
 use yii\web\IdentityInterface;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -51,7 +52,7 @@ abstract class SocialBase extends Model
      */
     final public static function getSocialName(): string
     {
-        $r = new \ReflectionClass(static::class);
+        $r = new ReflectionClass(static::class);
         return strtolower($r->getShortName());
     }
 
@@ -65,7 +66,7 @@ abstract class SocialBase extends Model
             exit;
         }
         $this->id = $this->requestId($code);
-        \Yii::debug("Client id = {$this->id}", static::class);
+        Yii::debug("Client id = {$this->id}", static::class);
     }
 
 
@@ -92,7 +93,7 @@ abstract class SocialBase extends Model
         if($value instanceof Request) {
             $value = $value->fullUrl;
         }
-        \Yii::$app->response->redirect($value)->send();
+        Yii::$app->response->redirect($value)->send();
     }
 
     /**
@@ -110,11 +111,11 @@ abstract class SocialBase extends Model
     /**
      * Поиск по полю в бд
      * @return ActiveRecord|null
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function fieldSearch(): ?ActiveRecord
     {
-        $class = Instance::ensure(\Yii::$app->user->identityClass,FieldSearchInterface::class);
+        $class = Instance::ensure(Yii::$app->user->identityClass,FieldSearchInterface::class);
         /** @var FieldSearchInterface $class */
         return $class::fieldSearch($this->field, $this->id);
     }
@@ -139,7 +140,7 @@ abstract class SocialBase extends Model
     final public function register() : bool
     {
         /** @var ActiveRecord $user */
-        $user = \Yii::$app->user->identity;
+        $user = Yii::$app->user->identity;
         if($this->validate()) {
             $field = $this->field;
             $user->$field = $this->id;
@@ -147,7 +148,7 @@ abstract class SocialBase extends Model
                 $this->addError($field, $user->errors[$field]);
                 return false;
             }
-            \Yii::debug(\Yii::t('app','Registration {id}',[
+            Yii::debug(Yii::t('app','Registration {id}',[
                 'id' => $this->id,
             ]), static::class);
             return true;
@@ -162,21 +163,21 @@ abstract class SocialBase extends Model
      * @param bool $remember
      * @return bool
      * @throws NotSupportedException
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     final public function login(int $duration = 0) : bool
     {
         /** @var IdentityInterface $user */
         if($this->validate() && ( ($user = $this->FieldSearch()) !== null )) {
-            $login = \Yii::$app->user->login($user, $duration);
+            $login = Yii::$app->user->login($user, $duration);
 
-            \Yii::debug(\Yii::t('app','Authorization {status}',[
+            Yii::debug(Yii::t('app','Authorization {status}',[
                 'status' => $login?"successful":"failed",
             ]), static::class);
             return $login;
         }
 
-        \Yii::debug(\Yii::t('app','Authorization failed'), static::class);
+        Yii::debug(Yii::t('app','Authorization failed'), static::class);
         return false;
     }
 
@@ -216,7 +217,7 @@ abstract class SocialBase extends Model
         $eventArgs->errors = $this->errors;
         $eventArgs->result = new UnauthorizedHttpException("User {$this->id} not found.");
         $this->trigger(self::EVENT_ERROR, $eventArgs);
-        if($eventArgs->result instanceof \Exception) {
+        if($eventArgs->result instanceof Exception) {
             throw $eventArgs->result;
         }
         return $eventArgs->result;
@@ -227,7 +228,7 @@ abstract class SocialBase extends Model
      * @param $state
      * @param
      * @return string
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     final public static function urlState($state): string
     {
@@ -238,7 +239,7 @@ abstract class SocialBase extends Model
      * Ссылка на страницу авторизации
      * @param bool $register
      * @return string
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     final public static function url(bool $register = false) : string
     {
@@ -250,11 +251,11 @@ abstract class SocialBase extends Model
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     final public static function a(string $text, $register=false): string
     {
-        $reflection = new \ReflectionClass(static::class);
+        $reflection = new ReflectionClass(static::class);
         return Html::a($text, static::url($register), [
             'class'=> 'social-' .strtolower($reflection->getShortName())
         ]);
