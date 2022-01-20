@@ -104,7 +104,7 @@ abstract class SocialBase extends Model
     {
         return [
             [['redirectUrl', 'id'], 'required'],
-            ['redirectUrl','url']
+            ['redirectUrl', 'url'],
         ];
     }
 

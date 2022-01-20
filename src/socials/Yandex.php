@@ -57,7 +57,7 @@ class Yandex extends SocialOAuth
             throw new BadRequestHttpException("[Yandex]Error: {$get['error']}. {$get['error_description']}");
         }
 
-        $this->responseCode('authorize', $state);
+        $this->getCode('authorize', $state);
     }
 
 }

@@ -33,6 +33,9 @@ class Google extends SocialBase
     }
 
 
+    /**
+     * @throws \Google\Exception
+     */
     public function setConfigFile(string $path)
     {
         $this->getGoogleClient()->setAuthConfig(Yii::getAlias($path));
