@@ -233,7 +233,7 @@ abstract class Social extends Model
     final public static function url(?string $name = null) : string
     {
         $name = $name ?? static::socialName();
-        return Url::to([ SocialConfiguration::config()->route, 'state' => $name ]);
+        return Url::to([ SocialConfiguration::config()->route, 'state' => strtolower($name) ]);
     }
 
     /**
