@@ -4,7 +4,7 @@ namespace Celebron\social;
 
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
-use yii\httpclient\{Exception, Request, Response};
+use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\web\BadRequestHttpException;
 
 abstract class SocialOAuth extends Social
@@ -13,12 +13,30 @@ abstract class SocialOAuth extends Social
     public string $clientId;
     public string $clientSecret;
 
+    public string $clientUrl = '';
+    private ?Client $_client = null;
+
     public function rules (): array
     {
         return ArrayHelper::merge(parent::rules(),[
+            [['clientUrl'], 'url'],
             [['clientId', 'clientSecret'], 'string'],
             [['clientId', 'clientSecret'],'required'],
         ]);
+    }
+
+    /**
+     * CurlClient
+     * @return Client
+     */
+    final public function getClient (): Client
+    {
+        if ($this->_client === null) {
+            $this->_client = new Client();
+            $this->_client->transport = CurlTransport::class;
+        }
+        $this->_client->baseUrl = $this->clientUrl;
+        return $this->_client;
     }
 
     /**

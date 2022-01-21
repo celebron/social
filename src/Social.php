@@ -15,7 +15,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\httpclient\Client;
-use yii\httpclient\CurlTransport;
 use yii\httpclient\Request;
 use yii\web\Controller;
 use yii\web\IdentityInterface;
@@ -35,7 +34,7 @@ abstract class Social extends Model
     public const EVENT_ERROR = "error";
 
     public string $field;
-    public string $clientUrl;
+
 
     public string $state;
     public ?string $code;
@@ -45,7 +44,7 @@ abstract class Social extends Model
     public mixed $id;
     protected array $data = [];
 
-    private ?Client $_client = null;
+
 
     /**
      * @return array
@@ -53,7 +52,7 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            [[ 'redirectUrl', 'clientUrl' ], 'url' ],
+            [['redirectUrl'], 'url' ],
             ['field', 'fieldValidator' ],
             ['code', 'codeValidator', 'skipOnEmpty' => false ],
         ];
@@ -90,21 +89,6 @@ abstract class Social extends Model
     abstract protected function requestCode ();
 
     abstract protected function requestId () : mixed;
-
-
-    /**
-     * CurlClient
-     * @return Client
-     */
-    final public function getClient (): Client
-    {
-        if ($this->_client === null) {
-            $this->_client = new Client();
-            $this->_client->transport = CurlTransport::class;
-        }
-        $this->_client->baseUrl = $this->clientUrl;
-        return $this->_client;
-    }
 
     /**
      * Выполниет редирет

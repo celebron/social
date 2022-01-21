@@ -19,6 +19,8 @@ class Google extends Social
 {
     private ?Google_Client $_googleClient = null;
 
+    public string $clientUrl = '';
+
     /**
      * @return Google_Client
      */

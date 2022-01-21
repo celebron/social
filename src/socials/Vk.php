@@ -16,6 +16,7 @@ use yii\web\BadRequestHttpException;
  */
 class Vk extends SocialOAuth
 {
+    public string $clientUrl = '';
     public array $scope;
 
     /**
