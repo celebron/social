@@ -25,6 +25,7 @@ use yii\web\UnauthorizedHttpException;
 
 /**
  *
+ * @property-read mixed $userId
  * @property-read Client $client
  */
 abstract class Social extends Model
@@ -41,7 +42,7 @@ abstract class Social extends Model
     public string $redirectUrl;
 
 
-    protected mixed $id;
+    public mixed $id;
     protected array $data = [];
 
     private ?Client $_client = null;
