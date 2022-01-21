@@ -94,16 +94,16 @@ class SocialConfiguration extends Component
     }
 
     /**
-     * @param $classname
+     * @param $socialname
      * @return Social
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      * @throws \Exception
      */
-    public static function ensure($classname): Social
+    public static function ensure($socialname): Social
     {
         $config = static::config();
-        $classArray = ArrayHelper::getValue($config->getSocials(), $classname);
+        $classArray = ArrayHelper::getValue($config->getSocials(), $socialname);
         if($classArray !== null) {
             $class =  \Yii::createObject($classArray);
             if($class instanceof Social) {
@@ -111,7 +111,7 @@ class SocialConfiguration extends Component
             }
             throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
         }
-        throw new NotFoundHttpException("Social {$classname} not registered");
+        throw new NotFoundHttpException("Social {$socialname} not registered");
     }
 
 }
