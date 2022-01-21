@@ -55,7 +55,7 @@ class SocialConfiguration extends Component
      * Регистрация соцсетей
      * @throws \ReflectionException
      */
-    public function setSocials(array ...$value): void
+    public function setSocials(array $value): void
     {
         $result= [];
         foreach ($value as $key=>$di)
