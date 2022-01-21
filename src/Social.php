@@ -140,7 +140,6 @@ abstract class Social extends Model
         return false;
     }
 
-
     /**
      * Авторизация в системе
      * @param int $duration
