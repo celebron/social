@@ -7,79 +7,77 @@ use yii\helpers\ArrayHelper;
 use yii\httpclient\{Exception, Request, Response};
 use yii\web\BadRequestHttpException;
 
-abstract class SocialOAuth extends SocialBase
+abstract class SocialOAuth extends Social
 {
 
-    public ?string $clientId = null;
-    public ?string $clientSecret = null;
+    public string $clientId;
+    public string $clientSecret;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function init ()
+    public function rules (): array
     {
-       if(($this->clientId === null) || $this->clientSecret === null) {
-           throw new InvalidConfigException('Not set $clientId and(or) $clientSecret',0);
-       }
+        return ArrayHelper::merge(parent::rules(),[
+            [['clientId', 'clientSecret'], 'string'],
+            [['clientId', 'clientSecret'],'required'],
+        ]);
     }
 
     /**
      * @param string $url
-     * @param string $state
      * @param array $data
      * @return Request
      */
-    public function getCodeUrl(string $url, string $state, array $data=[]) : Request
+    public function getCodeUrl(string $url, array $data=[]) : Request
     {
-        $data_merge = [
+        $urlQuery = ArrayHelper::merge([
             0 => $url,
             'redirect_uri' => $this->redirectUrl,
-            'state' => $state,
+            'state' => $this->state,
             'response_type' => 'code',
             'client_id' => $this->clientId,
-        ];
-
-        $urlQuery = ArrayHelper::merge($data_merge, $data);
+        ], $data);
         return $this->getClient()->get($urlQuery);
     }
 
     /**
-     * @param string $code
      * @param array $data
      * @return array
      */
-    public function getTokenData(string $code, array $data = []): array
+    public function getTokenData(array $data = []): array
     {
-        $data_merge = [
+        return ArrayHelper::merge([
             'redirect_uri' => $this->redirectUrl,
             'grant_type' => 'authorization_code',
-            'code'=>$code,
+            'code' => $this->code,
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
-        ];
-        return ArrayHelper::merge($data_merge, $data);
+        ], $data);
     }
+
 
     /**
      * @param string $url
-     * @param string $code
      * @param array $data
      * @param array $headers
      * @param array $params
-     * @return mixed
+     * @return Response
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function getToken(string $url, string $code, array $data=[], array $headers=[], array $params=[]): Response
+    public function getToken(string $url, array $data=[], array $headers=[], array $params=[]): Response
     {
-        $sendUrl = $this->getClient()->post($url, $this->getTokenData($code, $data), $headers, $params);
+        $sendUrl = $this->getClient()->post($url, $this->getTokenData($data), $headers, $params);
         return $this->send($sendUrl,'token');
     }
 
-    public function getCode($url, $state, $data=[]): void
+    /**
+     * @param string $url
+     * @param array $data
+     * @return void
+     */
+    public function getCode(string $url, array $data=[]): void
     {
-        $this->redirect($this->getCodeUrl($url, $state,$data));
+        $this->redirect($this->getCodeUrl($url, $data));
     }
 
     /**
@@ -127,9 +125,9 @@ abstract class SocialOAuth extends SocialBase
     {
         $data = $response->getData();
         if (isset($data['error'], $data['error_description'])) {
-            throw new BadRequestHttpException('[' . static::getSocialName() . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
+            throw new BadRequestHttpException('[' . static::socialName() . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
         }
-        throw new BadRequestHttpException('[' . static::getSocialName() . "]Response not correct. Code E{$response->getStatusCode()}");
+        throw new BadRequestHttpException('[' . static::socialName() . "]Response not correct. Code E{$response->getStatusCode()}");
     }
 
 }

@@ -5,8 +5,6 @@ namespace Celebron\social;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\di\Instance;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
@@ -21,38 +19,28 @@ class SocialAction extends Action
     /**
      * @throws InvalidConfigException
      * @throws HttpException
-     * @throws BadRequestHttpException
      * @throws NotSupportedException
      */
     final public function run(string $state, ?string $code=null)
     {
-        $explode = explode('_', $state, 2);
-        $classname = $explode[0];
+        $explode = \explode('_',$state,2);
+        $social = SocialConfiguration::ensure($state[0]);
         $tag = $explode[1] ?? self::ACTION_LOGIN;
 
-        $config = SocialConfiguration::config();
-        if(!ArrayHelper::keyExists($classname, $config->socials))
-        {
-            throw new BadRequestHttpException();
-        }
+        $social->state = $state;
+        $social->code = $code;
+        $social->redirectUrl = Url::to([$this->controller->getRoute()],true);
 
-
-        /** @var SocialBase $class */
-        $class = Instance::ensure($config->socials[$classname], SocialBase::class);
-        $class->redirectUrl = Url::to([$this->controller->getRoute()],true);
-
-        $class->validateCode($code, $state);
-
-        if (($tag === self::ACTION_LOGIN) && $class->login()) {
-            return $class->loginSuccess($this->controller);
+        if (($tag === self::ACTION_LOGIN) && $social->login()) {
+            return $social->loginSuccess($this->controller);
         }
 
         //Режим регистрации
-        if (($tag === self::ACTION_REGISTER) && $class->register()) {
-            return $class->registerSuccess($this->controller);
+        if (($tag === self::ACTION_REGISTER) && $social->register()) {
+            return $social->registerSuccess($this->controller);
         }
 
-        return $class->error($this->controller);
+        return $social->error($this->controller);
     }
 
 }

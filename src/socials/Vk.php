@@ -4,8 +4,10 @@ namespace Celebron\social\socials;
 use Celebron\social\SocialOAuth;
 use VK\Exceptions\VKClientException;
 use VK\Exceptions\VKOAuthException;
-use yii\httpclient\{ Request, Response };
+use yii\httpclient\{Exception, Request, Response};
 use VK\OAuth\{VKOAuth, VKOAuthDisplay, VKOAuthResponseType};
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
 
 
 /**
@@ -17,25 +19,21 @@ class Vk extends SocialOAuth
     public array $scope;
 
     /**
-     * @param $attribute
-     * @param $params
      * @return int
      * @throws VKClientException
      * @throws VKOAuthException
      */
-    public function requestId(string $code) : mixed
+    public function requestId() : mixed
     {
         $oauth = new VKOAuth();
-        $this->data = $oauth->getAccessToken($this->clientId, $this->clientSecret, $this->redirectUrl,$code);
-        return (int)$this->data['user_id'];
+        $this->data = $oauth->getAccessToken($this->clientId, $this->clientSecret, $this->redirectUrl,$this->code);
+        return $this->data['user_id'];
     }
 
     /**
-     * @param $data
-     * @param bool $err
-     * @return Response
+     * @return Request
      */
-    public function getLink(string $state):Request
+    public function getLink():Request
     {
         $oauth = new VKOAuth();
         $link = $oauth->getAuthorizeUrl(VKOAuthResponseType::CODE,
@@ -43,16 +41,18 @@ class Vk extends SocialOAuth
             $this->redirectUrl,
             VKOAuthDisplay::PAGE,
             $this->scope,
-            $state);
+            $this->state);
         return $this->getClient()->get($link);
     }
 
     /**
-     * @return mixed
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
-    public function requestCode (string $state) : void
+    public function requestCode ()
     {
-        $link = $this->getLink($state);
+        $link = $this->getLink();
         $this->sendRedirect($link);
         exit();
     }

@@ -26,10 +26,10 @@ class Yandex extends SocialOAuth
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function requestId (string $code) : mixed
+    public function requestId () : mixed
     {
         $text = $this->clientId . ':' . $this->clientSecret;
-        $oauthData = $this->getToken('token',$code, [], [ Header::AUTHORIZATION => 'Basic ' . base64_encode($text)]);
+        $oauthData = $this->getToken('token', [], [ Header::AUTHORIZATION => 'Basic ' . base64_encode($text)]);
 
         if($oauthData->isOk) {
             $login = $this->getClient()->get(
@@ -47,17 +47,18 @@ class Yandex extends SocialOAuth
     }
 
     /**
-     * @return mixed
+     * @return void
      * @throws BadRequestHttpException
      */
-    public function requestCode (string $state) : void
+    public function requestCode ()
     {
         $get = Yii::$app->request->get();
         if (isset($get['error'])) {
             throw new BadRequestHttpException("[Yandex]Error: {$get['error']}. {$get['error_description']}");
         }
 
-        $this->getCode('authorize', $state);
+        $this->getCode('authorize');
+        exit();
     }
 
 }

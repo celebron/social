@@ -6,6 +6,11 @@
             "Celebron\\social\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Celebron\\social\\test\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "celebron",
@@ -20,7 +25,8 @@
         }
     ],
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.4"
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
@@ -29,5 +35,10 @@
         "yiisoft/http": "^1.2",
         "vkcom/vk-php-sdk": "^5.80",
         "php": "^8.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.3.x-dev"
+        }
     }
 }

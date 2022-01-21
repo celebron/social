@@ -3,7 +3,8 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialBase;
+use Celebron\social\Social;
+use Google\Exception;
 use Google_Client;
 use Google_Service_Oauth2;
 use Yii;
@@ -14,7 +15,7 @@ use yii\web\BadRequestHttpException;
  * @property-write string $configFile
  * @property-read Google_Client $googleClient
  */
-class Google extends SocialBase
+class Google extends Social
 {
     private ?Google_Client $_googleClient = null;
 
@@ -25,7 +26,7 @@ class Google extends SocialBase
     {
         if($this->_googleClient === null) {
             $this->_googleClient = new Google_Client();
-            $this->_googleClient->setApplicationName("Celebron APP | Auth service");
+            $this->_googleClient->setApplicationName("Celebron/social");
             $this->_googleClient->addScope("email");
             $this->_googleClient->addScope("profile");
         }
@@ -34,38 +35,39 @@ class Google extends SocialBase
 
 
     /**
-     * @throws \Google\Exception
+     * @throws Exception
      */
-    public function setConfigFile(string $path)
+    public function setConfigFile(string $path): void
     {
         $this->getGoogleClient()->setAuthConfig(Yii::getAlias($path));
     }
 
 
     /**
-     * @inheritDoc
+     * @return mixed
+     * @throws BadRequestHttpException
      */
-    public function requestId (string $code) : mixed
+    public function requestId () : mixed
     {
-        $token = $this->getGoogleClient()->fetchAccessTokenWithAuthCode($code);
+        $token = $this->getGoogleClient()->fetchAccessTokenWithAuthCode($this->code);
         //Если нету токина, то вернуть назад
         if(empty($token['access_token']))  {
-            throw new BadRequestHttpException('[' . static::getSocialName() . "]Access token not received");
+            throw new BadRequestHttpException('[' . static::socialName() . "]Access token not received");
         }
         $this->getGoogleClient()->setAccessToken($token['access_token']);
         $google_oauth = new Google_Service_Oauth2($this->getGoogleClient());
-        $this->data = $google_oauth->userinfo->get();
-        return $this->data->id;
+        $this->data['info'] = $google_oauth->userinfo->get();
+        return $this->data['info']->id;
     }
 
 
     /**
-     * @inheritDoc
+     * @return void
      */
-    public function requestCode (string $state) : void
+    public function requestCode ()
     {
-        $this->getGoogleClient()->setState($state);
+        $this->getGoogleClient()->setState($this->state);
         $this->redirect($this->getGoogleClient()->createAuthUrl());
-        exit;
+        exit();
     }
 }
