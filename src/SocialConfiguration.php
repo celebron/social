@@ -77,11 +77,11 @@ class SocialConfiguration extends Component
      */
     public function init ()
     {
-        $this->setSocials(
+        $this->setSocials([
             [ 'class' => Yandex::class ],
             [ 'class' => Google::class ],
             [ 'class' => Vk::class ],
-        );
+        ]);
     }
 
     /**

@@ -254,6 +254,6 @@ abstract class Social extends Model
 
     protected static function warning($text): void
     {
-        Yii::warning('[' . static::socialName() . ']' . $text, static::class);
+        Yii::warning($text, static::class);
     }
 }
