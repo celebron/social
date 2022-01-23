@@ -238,6 +238,14 @@ abstract class Social extends Model
     }
 
     /**
+     * @throws InvalidConfigException
+     */
+    public static function urlState($state)
+    {
+        return Url::to([ SocialConfiguration::config()->route, 'state' => strtolower($state) ]);
+    }
+
+    /**
      * Ссылка на страницу авторизации
      * @param string|null $name
      * @return string
@@ -245,8 +253,8 @@ abstract class Social extends Model
      */
     final public static function url(?string $tag = null) : string
     {
-        $name = implode('_',[ static::socialName() , $tag ])  ;
-        return Url::to([ SocialConfiguration::config()->route, 'state' => strtolower($name) ]);
+        $state = implode('_',[ static::socialName() , $tag ])  ;
+        return static::urlState($state);
     }
 
     /**
