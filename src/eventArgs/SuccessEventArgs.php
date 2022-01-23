@@ -7,7 +7,7 @@ use yii\web\Controller;
 
 class SuccessEventArgs extends Event
 {
-    public mixed $result;
+    public mixed $result = null;
 
     public function __construct (public Controller $controller, $config = [])
     {
