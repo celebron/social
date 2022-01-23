@@ -72,7 +72,7 @@ abstract class Social extends Model
         ];
     }
 
-    public function activeValidation($a)
+    public function activeValidator($a)
     {
         if(!$this->$a) {
             $this->addError($a, static::socialName(). ' not active!');
