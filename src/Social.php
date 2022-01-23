@@ -13,6 +13,7 @@ use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
@@ -65,7 +66,7 @@ abstract class Social extends Model
         return [
             [['redirectUrl'], 'url' ],
             ['field', 'fieldValidator', 'message'=> "Field not support" ],
-            ['code', 'codeValidator', 'skipOnEmpty' => false ],
+            ['code', 'codeValidator', 'skipOnEmpty' => false, 'message' => 'User id not found to social ' . static::socialName() ],
         ];
     }
 
@@ -79,16 +80,17 @@ abstract class Social extends Model
         $class = Yii::createObject(Yii::$app->user->identityClass);
         if($class instanceof ActiveRecord) {
             $columns = $class->attributes();
-            if(!ArrayHelper::keyExists($this->$a, $columns)) {
+            if(!ArrayHelper::isIn($this->$a, $columns)) {
                 $this->addError($a, $p['message']);
             }
         }
     }
 
     /**
-     * @throws NotFoundHttpException
+     * @param $a
+     * @param $p
      */
-    final public function codeValidator($a)
+    final public function codeValidator($a, $p)
     {
         if ($this->$a === null) {
             $this->requestCode();
@@ -98,7 +100,7 @@ abstract class Social extends Model
         $this->_id = $this->requestId();
 
         if ($this->_id === null) {
-            throw new NotFoundHttpException('User id not found to social ' . static::socialName());
+            $this->addError($this->$a,$p['message']);
         }
         static::debug("User id $this->_id");
     }
@@ -242,10 +244,13 @@ abstract class Social extends Model
      */
     final public static function a(string $text, ?string $register=null, array $data = []): string
     {
-        unset($data['class']);
-        return Html::a($text, static::url($register), ArrayHelper::merge([
-            'class' => 'social-' .strtolower(self::socialName()),
-        ], $data));
+        if(isset($data['class'])) {
+            $data['class'] = [
+                'social-' .strtolower(self::socialName()),
+                $data['class']
+            ];
+        }
+        return Html::a($text, static::url($register), $data);
     }
 
     protected static function debug($text): void
