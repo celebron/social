@@ -18,6 +18,7 @@ use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -65,18 +66,10 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            [['active'], 'activeValidator'],
             [['redirectUrl'], 'url' ],
             ['field', 'fieldValidator'],
             ['code', 'codeValidator', 'skipOnEmpty' => false ],
         ];
-    }
-
-    public function activeValidator($a)
-    {
-        if(!$this->$a) {
-            $this->addError($a, static::socialName(). ' not active!');
-        }
     }
 
     /**
@@ -100,7 +93,7 @@ abstract class Social extends Model
      * @param $a
      * @param $p
      */
-    final public function codeValidator($a, $p)
+    final public function codeValidator($a)
     {
         if ($this->$a === null) {
             $this->requestCode();
@@ -110,7 +103,7 @@ abstract class Social extends Model
         $this->_id = $this->requestId();
 
         if ($this->_id === null) {
-            $this->addError($this->$a,$p['message']);
+            $this->addError($this->$a, "Request returned null");
         }
         static::debug("User id $this->_id");
     }
@@ -153,7 +146,7 @@ abstract class Social extends Model
     {
         /** @var ActiveRecord $user */
         $user = Yii::$app->user->identity;
-        if($this->validate()) {
+        if($this->active && $this->validate()) {
             $field = $this->field;
             $user->$field = $this->_id;
             if(!$user->save()) {
@@ -165,7 +158,6 @@ abstract class Social extends Model
             self::debug("Registered user id $this->_id");
             return true;
         }
-        self::warning($this->errors);
         return false;
     }
 
@@ -178,12 +170,11 @@ abstract class Social extends Model
      */
     final public function login(int $duration = 0) : bool
     {
-        if($this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
+        if($this->active && $this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
             return $login;
         }
-        self::warning($this->errors);
         return false;
     }
 
@@ -220,8 +211,13 @@ abstract class Social extends Model
     public function error(Controller $controller): mixed
     {
         $eventArgs = new ErrorEventArgs($controller);
-        $eventArgs->errors = $this->errors;
-        $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
+        if($this->active) {
+            $eventArgs->errors = $this->errors;
+            $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
+        } else {
+            $eventArgs->errors = [];
+            $eventArgs->result = new ForbiddenHttpException(social::socialName() . " not active.");
+        }
         $this->trigger(self::EVENT_ERROR, $eventArgs);
         if($eventArgs->result instanceof Exception) {
             throw $eventArgs->result;
@@ -268,8 +264,4 @@ abstract class Social extends Model
         Yii::debug('[' . static::socialName() . ']' . $text, static::class);
     }
 
-    protected static function warning($text): void
-    {
-        Yii::warning($text, static::class);
-    }
 }
