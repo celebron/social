@@ -23,8 +23,8 @@ use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 
 /**
- *
- * @property-read mixed $userId
+ *Базовый класс авторизации соц.сетей.
+ * @property-read mixed $id
  * @property-read Client $client
  */
 abstract class Social extends Model
@@ -33,18 +33,29 @@ abstract class Social extends Model
     public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
     public const EVENT_ERROR = "error";
 
+    ////В config
+
+    /** @var string  */
     public string $field;
 
 
+    ///В Controllers
     public string $state;
     public ?string $code;
     public string $redirectUrl;
 
 
-    public mixed $id;
+
     protected array $data = [];
+    private mixed $_id;
 
-
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
 
     /**
      * @return array
@@ -53,7 +64,7 @@ abstract class Social extends Model
     {
         return [
             [['redirectUrl'], 'url' ],
-            ['field', 'fieldValidator' ],
+            ['field', 'fieldValidator', 'message'=> "Field not support" ],
             ['code', 'codeValidator', 'skipOnEmpty' => false ],
         ];
     }
@@ -65,7 +76,13 @@ abstract class Social extends Model
      */
     final public function fieldValidator($a, $p)
     {
-        //TODO: Реализация системы проверки филда
+        $class = Yii::createObject(Yii::$app->user->identityClass);
+        if($class instanceof ActiveRecord) {
+            $columns = $class->attributes();
+            if(!ArrayHelper::keyExists($this->$a, $columns)) {
+                $this->addError($a, $p['message']);
+            }
+        }
     }
 
     /**
@@ -78,12 +95,12 @@ abstract class Social extends Model
             return;
         }
 
-        $this->id = $this->requestId();
+        $this->_id = $this->requestId();
 
-        if ($this->id === null) {
+        if ($this->_id === null) {
             throw new NotFoundHttpException('User id not found to social ' . static::socialName());
         }
-        static::debug("User id $this->id");
+        static::debug("User id $this->_id");
     }
 
     abstract protected function requestCode ();
@@ -111,7 +128,7 @@ abstract class Social extends Model
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
         if($class instanceof FieldSearchInterface){
-            return $class::fieldSearch($this->field, $this->id);
+            return $class::fieldSearch($this->field, $this->_id);
         }
         throw new NotSupportedException($class::class . ' does not extend ' . FieldSearchInterface::class);
     }
@@ -126,14 +143,14 @@ abstract class Social extends Model
         $user = Yii::$app->user->identity;
         if($this->validate()) {
             $field = $this->field;
-            $user->$field = $this->id;
+            $user->$field = $this->_id;
             if(!$user->save()) {
-                self::debug("Not registered user id $this->id.");
+                self::debug("Not registered user id $this->_id.");
                 $this->addError($field, $user->errors[$field]);
                 return false;
             }
 
-            self::debug("Registered user id $this->id");
+            self::debug("Registered user id $this->_id");
             return true;
         }
         self::warning($this->errors);
@@ -151,7 +168,7 @@ abstract class Social extends Model
     {
         if($this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
-            self::debug("User login ($this->id) " . $login ? "succeeded": "failed");
+            self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
             return $login;
         }
         self::warning($this->errors);
@@ -192,7 +209,7 @@ abstract class Social extends Model
     {
         $eventArgs = new ErrorEventArgs($controller);
         $eventArgs->errors = $this->errors;
-        $eventArgs->result = new UnauthorizedHttpException("User $this->id not found.");
+        $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
         $this->trigger(self::EVENT_ERROR, $eventArgs);
         if($eventArgs->result instanceof Exception) {
             throw $eventArgs->result;
