@@ -28,7 +28,7 @@ class Vk extends SocialOAuth
     {
         $oauth = new VKOAuth();
         $this->data = $oauth->getAccessToken($this->clientId, $this->clientSecret, $this->redirectUrl,$this->code);
-        return $this->data['user_id'];
+        return (string)$this->data['user_id'];
     }
 
     /**
