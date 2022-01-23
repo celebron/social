@@ -40,7 +40,7 @@ class SocialAction extends Action
             return $social->registerSuccess($this->controller);
         }
 
-        return $social->error($this->controller);
+        return $social->error($tag, $this->controller);
     }
 
 }

@@ -217,12 +217,18 @@ abstract class Social extends Model
      * @throws UnauthorizedHttpException
      * @throws ForbiddenHttpException
      */
-    public function error(Controller $controller): mixed
+    public function error(string $tag, Controller $controller): mixed
     {
-        $eventArgs = new ErrorEventArgs($controller);
+        $eventArgs = new ErrorEventArgs($tag, $controller);
         $eventArgs->errors = $this->getErrorSummary(true);
+
         if($this->active) {
-            $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
+            if($this->hasErrors()) {
+                $text = implode("\n",$eventArgs->errors);
+                $eventArgs->result = new ForbiddenHttpException("Validate error - {$text}");
+            } else {
+                $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
+            }
         } else {
             $eventArgs->result = new ForbiddenHttpException( 'Social ' . static::socialName() . " not active.");
         }
