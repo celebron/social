@@ -243,9 +243,9 @@ abstract class Social extends Model
      * @return string
      * @throws InvalidConfigException
      */
-    final public static function url(?string $name = null) : string
+    final public static function url(?string $tag = null) : string
     {
-        $name = $name ?? static::socialName();
+        $name = implode('_',[ static::socialName() , $tag ])  ;
         return Url::to([ SocialConfiguration::config()->route, 'state' => strtolower($name) ]);
     }
 
