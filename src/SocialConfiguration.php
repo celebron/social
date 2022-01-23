@@ -45,7 +45,7 @@ class SocialConfiguration extends Component
         $result = [];
         foreach ($this->getSocials() as $key=>$social) {
             $classname = $social['class'];
-            $activate = $social['activate'] ?? false;
+            $activate = $social['active'] ?? false;
             if(!$activate) {
                 continue;
             }
