@@ -22,6 +22,7 @@ class SocialAction extends Action
      */
     final public function run(string $state, ?string $code=null)
     {
+
         $explode = \explode('_',$state,2);
         $social = SocialConfiguration::ensure($explode[0]);
         $tag = $explode[1] ?? self::ACTION_LOGIN;

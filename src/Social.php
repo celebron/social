@@ -187,6 +187,10 @@ abstract class Social extends Model
     {
         $eventArgs = new SuccessEventArgs($controller);
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
+        if($eventArgs->result === null) {
+            $controller->goBack();
+            exit;
+        }
         return $eventArgs->result;
     }
 
@@ -253,8 +257,11 @@ abstract class Social extends Model
      */
     final public static function url(?string $tag = null) : string
     {
-        $state = implode('_',[ static::socialName() , $tag ])  ;
-        return static::urlState($state);
+        $params[] = static::socialName();
+        if($tag !== null) {
+            $params[] = $tag;
+        }
+        return static::urlState(implode('_', $params));
     }
 
     /**
