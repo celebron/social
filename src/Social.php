@@ -65,17 +65,17 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            [['active'], 'activeValidation', 'message' => static::socialName() . ' not activated'],
+            [['active'], 'activeValidator'],
             [['redirectUrl'], 'url' ],
-            ['field', 'fieldValidator', 'message'=> "Field not support" ],
-            ['code', 'codeValidator', 'skipOnEmpty' => false, 'message' => 'User id not found to social ' . static::socialName() ],
+            ['field', 'fieldValidator'],
+            ['code', 'codeValidator', 'skipOnEmpty' => false ],
         ];
     }
 
-    public function activeValidation($a, $p)
+    public function activeValidation($a)
     {
         if(!$this->$a) {
-            $this->addError($a, $p['message']);
+            $this->addError($a, static::socialName(). ' not active!');
         }
     }
 
@@ -83,14 +83,15 @@ abstract class Social extends Model
      * @param $a
      * @param $p
      * @return void
+     * @throws InvalidConfigException
      */
-    final public function fieldValidator($a, $p)
+    final public function fieldValidator($a)
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
         if($class instanceof ActiveRecord) {
             $columns = $class->attributes();
             if(!ArrayHelper::isIn($this->$a, $columns)) {
-                $this->addError($a, $p['message']);
+                $this->addError($a, "Field {$this->$a} not exists");
             }
         }
     }
