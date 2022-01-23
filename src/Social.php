@@ -38,6 +38,7 @@ abstract class Social extends Model
 
     /** @var string  */
     public string $field;
+    public bool $active = false;
 
 
     ///В Controllers
@@ -64,10 +65,18 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
+            [['active'], 'activeValidation', 'message' => static::socialName() . ' not activated'],
             [['redirectUrl'], 'url' ],
             ['field', 'fieldValidator', 'message'=> "Field not support" ],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'message' => 'User id not found to social ' . static::socialName() ],
         ];
+    }
+
+    public function activeValidation($a, $p)
+    {
+        if(!$this->$a) {
+            $this->addError($a, $p['message']);
+        }
     }
 
     /**

@@ -6,7 +6,6 @@ use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\helpers\Url;
-use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 
 class SocialAction extends Action
