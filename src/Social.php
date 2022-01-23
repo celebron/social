@@ -212,12 +212,12 @@ abstract class Social extends Model
     public function error(string $tag, Controller $controller): mixed
     {
         $eventArgs = new ErrorEventArgs($tag, $controller);
-        $eventArgs->errors = $this->getErrorSummary(true);
+        $eventArgs->errors = $this->getErrorSummary(false);
 
         if($this->active) {
             if($this->hasErrors()) {
                 $text = implode("\n",$eventArgs->errors);
-                $eventArgs->result = new ForbiddenHttpException("Validate error - {$text}");
+                $eventArgs->result = new ForbiddenHttpException('Social ' . static::socialName() . " validation failed.\n {$text}");
             } else {
                 $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
             }
