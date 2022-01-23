@@ -50,7 +50,7 @@ abstract class Social extends Model
 
 
     protected array $data = [];
-    private mixed $_id;
+    private mixed $_id = null;
 
     /**
      * @return mixed
@@ -216,7 +216,7 @@ abstract class Social extends Model
             $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
         } else {
             $eventArgs->errors = [];
-            $eventArgs->result = new ForbiddenHttpException(static::socialName() . " not active.");
+            $eventArgs->result = new ForbiddenHttpException( 'Social ' . static::socialName() . " not active.");
         }
         $this->trigger(self::EVENT_ERROR, $eventArgs);
         if($eventArgs->result instanceof Exception) {
