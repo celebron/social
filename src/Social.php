@@ -199,6 +199,10 @@ abstract class Social extends Model
     {
         $eventArgs = new SuccessEventArgs($controller);
         $this->trigger(self::EVENT_REGISTER_SUCCESS, $eventArgs);
+        if($eventArgs->result === null) {
+            $controller->goBack();
+            exit;
+        }
         return $eventArgs->result;
     }
 
