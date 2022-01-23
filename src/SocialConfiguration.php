@@ -45,6 +45,10 @@ class SocialConfiguration extends Component
         $result = [];
         foreach ($this->getSocials() as $key=>$social) {
             $classname = $social['class'];
+            $activate = $social['activate'] ?? false;
+            if(!$activate) {
+                continue;
+            }
             /** @var Social $classname  */
             $result[$key] = $classname::url($register);
         }
@@ -78,9 +82,9 @@ class SocialConfiguration extends Component
     public function init ()
     {
         $this->setSocials([
-            [ 'class' => Yandex::class ],
-            [ 'class' => Google::class ],
-            [ 'class' => Vk::class ],
+            [ 'class' => Yandex::class, 'active' => true, ],
+            [ 'class' => Google::class, 'active' => true, ],
+            [ 'class' => Vk::class, 'active' => true, ],
         ]);
     }
 
@@ -106,7 +110,7 @@ class SocialConfiguration extends Component
         $classArray = ArrayHelper::getValue($config->getSocials(), $socialname);
         if($classArray !== null) {
             $class =  \Yii::createObject($classArray);
-            if($class instanceof Social) {
+            if(($class instanceof Social)) {
                 return $class;
             }
             throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
