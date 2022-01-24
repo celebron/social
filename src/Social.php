@@ -186,6 +186,7 @@ abstract class Social extends Model
     public function loginSuccess(Controller $controller): mixed
     {
         $eventArgs = new SuccessEventArgs($controller);
+        $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $controller->goBack();
     }
@@ -198,6 +199,7 @@ abstract class Social extends Model
     public function registerSuccess(Controller $controller): mixed
     {
         $eventArgs = new SuccessEventArgs($controller);
+        $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_REGISTER_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $controller->goBack();
     }
@@ -213,6 +215,7 @@ abstract class Social extends Model
     {
         $eventArgs = new ErrorEventArgs($tag, $controller);
         $eventArgs->errors = $this->getErrorSummary(false);
+        $eventArgs->data = $this->data;
 
         if($this->active) {
             if($this->hasErrors()) {
