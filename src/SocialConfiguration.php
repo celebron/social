@@ -16,18 +16,33 @@ use yii\web\NotFoundHttpException;
 /**
  * Конфигуратор социальной авторизации
  * @property-read array $links - список линков зарегистрированных соцсетей
- * @property array $socials - зарегистрированые соцсети
+ * @property Social[] $socials - зарегистрированые соцсети
  */
 class SocialConfiguration extends Component
 {
     /** @var string - стандартый роут */
     public string $route = "site/social";
 
+    public function setOnAllOnError(\Closure $closure)
+    {
+        foreach ($this->getSocials() as $social) {
+            $social->on(Social::EVENT_ERROR, $closure);
+        }
+    }
+
+    public function setOnAllRegisterSuccess(\Closure $closure)
+    {
+        foreach ($this->getSocials() as $social) {
+            $social->on(Social::EVENT_REGISTER_SUCCESS, $closure);
+        }
+    }
+
     private array $_socials = [];
+
 
     /**
      * Получение списка активных соцсетей
-     * @return array
+     * @return Social[]
      */
     public function getSocials(): array
     {
@@ -58,18 +73,23 @@ class SocialConfiguration extends Component
     /**
      * Регистрация соцсетей
      * @throws \ReflectionException
+     * @throws InvalidConfigException
      */
     public function setSocials(array $value): void
     {
         $result= [];
-        foreach ($value as $key=>$di)
+        foreach ($value as $key=>$class)
         {
-            if(is_numeric($key)) {
-                $r = new ReflectionClass($di['class']);
-                $key = strtolower($r->getShortName());
+            /** @var Social $object */
+            $object = \Yii::createObject($class);
+            if($object instanceof Social) {
+                if (is_numeric($key)) {
+                    $key = strtolower($object::socialName());
+                }
+                $result[$key] = $object;
+            } else {
+                throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
             }
-
-            $result[$key] = $di;
         }
         $this->_socials = ArrayHelper::merge($this->_socials, $result);
     }
@@ -107,13 +127,9 @@ class SocialConfiguration extends Component
     public static function ensure($socialname): Social
     {
         $config = static::config();
-        $classArray = ArrayHelper::getValue($config->getSocials(), $socialname);
-        if($classArray !== null) {
-            $class =  \Yii::createObject($classArray);
-            if(($class instanceof Social)) {
-                return $class;
-            }
-            throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
+        $object = ArrayHelper::getValue($config->getSocials(), $socialname);
+        if($object !== null) {
+            return $object;
         }
         throw new NotFoundHttpException("Social {$socialname} not registered");
     }
