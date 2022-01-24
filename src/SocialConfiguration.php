@@ -2,10 +2,6 @@
 
 namespace Celebron\social;
 
-use Celebron\social\socials\Google;
-use Celebron\social\socials\Vk;
-use Celebron\social\socials\Yandex;
-use ReflectionClass;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -22,22 +18,12 @@ class SocialConfiguration extends Component
 {
     /** @var string - стандартый роут */
     public string $route = "site/social";
-
-    public function setOnAllOnError(\Closure $closure)
-    {
-        foreach ($this->getSocials() as $social) {
-            $social->on(Social::EVENT_ERROR, $closure);
-        }
-    }
-
-    public function setOnAllRegisterSuccess(\Closure $closure)
-    {
-        foreach ($this->getSocials() as $social) {
-            $social->on(Social::EVENT_REGISTER_SUCCESS, $closure);
-        }
-    }
+    public ?\Closure $onAllError = null;
+    public ?\Closure $onAllRegisterSuccess = null;
+    public ?\Closure $onAllLoginSuccess = null;
 
     private array $_socials = [];
+
 
 
     /**
@@ -59,13 +45,12 @@ class SocialConfiguration extends Component
     {
         $result = [];
         foreach ($this->getSocials() as $key=>$social) {
-            $classname = $social['class'];
-            $activate = $social['active'] ?? false;
-            if(!$activate) {
+            if(!$social->active) {
                 continue;
             }
+
             /** @var Social $classname  */
-            $result[$key] = $classname::url($register);
+            $result[$key] = $social::url($register);
         }
         return $result;
     }
@@ -86,6 +71,15 @@ class SocialConfiguration extends Component
                 if (is_numeric($key)) {
                     $key = strtolower($object::socialName());
                 }
+                if($this->onAllRegisterSuccess !== null) {
+                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess);
+                }
+                if($this->onAllLoginSuccess !== null){
+                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess);
+                }
+                if($this->onAllError !== null) {
+                    $object->on(Social::EVENT_ERROR, $this->onAllError);
+                }
                 $result[$key] = $object;
             } else {
                 throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
@@ -94,19 +88,6 @@ class SocialConfiguration extends Component
         $this->_socials = ArrayHelper::merge($this->_socials, $result);
     }
 
-
-    /**
-     * @return void
-     * @throws \ReflectionException
-     */
-    public function init ()
-    {
-        $this->setSocials([
-            [ 'class' => Yandex::class, 'active' => true, ],
-            [ 'class' => Google::class, 'active' => true, ],
-            [ 'class' => Vk::class, 'active' => true, ],
-        ]);
-    }
 
     /**
      * @return SocialConfiguration
