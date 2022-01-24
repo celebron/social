@@ -22,7 +22,7 @@ class SocialAction extends Action
      */
     final public function run(string $state, ?string $code=null)
     {
-
+        \Yii::beginProfile("Social profiling", static::class);
         $explode = \explode('_',$state,2);
         $social = SocialConfiguration::ensure($explode[0]);
         $tag = $explode[1] ?? self::ACTION_LOGIN;
@@ -32,14 +32,16 @@ class SocialAction extends Action
         $social->redirectUrl = Url::to([$this->controller->getRoute()],true);
 
         if (($tag === self::ACTION_LOGIN) && $social->login()) {
+            \Yii::endProfile("Social profiling", static::class);
             return $social->loginSuccess($this->controller);
         }
 
         //Режим регистрации
         if (($tag === self::ACTION_REGISTER) && $social->register()) {
+            \Yii::endProfile("Social profiling", static::class);
             return $social->registerSuccess($this->controller);
         }
-
+        \Yii::endProfile("Social profiling", static::class);
         return $social->error($tag, $this->controller);
     }
 

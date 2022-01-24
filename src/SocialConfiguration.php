@@ -38,7 +38,7 @@ class SocialConfiguration extends Component
     /**
      * Получение списка ссылок на автризацию
      * @param null $register
-     * @return array
+     * @return string[]
      * @throws InvalidConfigException
      */
     public function getLinks($register = null): array
@@ -57,8 +57,9 @@ class SocialConfiguration extends Component
 
     /**
      * Регистрация соцсетей
-     * @throws \ReflectionException
+     * @param array $value
      * @throws InvalidConfigException
+     * @throws NotSupportedException
      */
     public function setSocials(array $value): void
     {
