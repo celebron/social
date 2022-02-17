@@ -30,7 +30,7 @@ class SocialAction extends Action
         $social->redirectUrl = Url::to([$this->controller->getRoute()],true);
 
         //Режим авторизации
-        if (($tag === self::ACTION_LOGIN) && $social->login()) {
+        if (($tag === self::ACTION_LOGIN) && $social->login($this->duration)) {
             $result =  $social->loginSuccess($this->controller);
             \Yii::endProfile("Social profiling", static::class);
             return $result;
