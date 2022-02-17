@@ -2,9 +2,7 @@
 
 namespace Celebron\social;
 
-use yii\base\Action;
-use yii\base\InvalidConfigException;
-use yii\base\NotSupportedException;
+use yii\base\{Action, InvalidConfigException, NotSupportedException};
 use yii\helpers\Url;
 use yii\web\HttpException;
 
@@ -31,16 +29,20 @@ class SocialAction extends Action
         $social->code = $code;
         $social->redirectUrl = Url::to([$this->controller->getRoute()],true);
 
+        //Режим авторизации
         if (($tag === self::ACTION_LOGIN) && $social->login()) {
+            $result =  $social->loginSuccess($this->controller);
             \Yii::endProfile("Social profiling", static::class);
-            return $social->loginSuccess($this->controller);
+            return $result;
         }
 
         //Режим регистрации
         if (($tag === self::ACTION_REGISTER) && $social->register()) {
+            $result = $social->registerSuccess($this->controller);
             \Yii::endProfile("Social profiling", static::class);
-            return $social->registerSuccess($this->controller);
+            return $result;
         }
+
         \Yii::endProfile("Social profiling", static::class);
         return $social->error($tag, $this->controller);
     }

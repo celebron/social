@@ -21,7 +21,7 @@ abstract class SocialOAuth extends Social
         return ArrayHelper::merge(parent::rules(),[
             [['clientUrl'], 'url'],
             [['clientId', 'clientSecret'], 'string'],
-            [['clientId', 'clientSecret'],'required'],
+            [['clientId', 'clientSecret', 'clientUrl'], 'required'],
         ]);
     }
 
@@ -60,7 +60,7 @@ abstract class SocialOAuth extends Social
      * @param array $data
      * @return array
      */
-    public function getTokenData(array $data = []): array
+    public function getTokenData(array $data): array
     {
         return ArrayHelper::merge([
             'redirect_uri' => $this->redirectUrl,

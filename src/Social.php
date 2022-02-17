@@ -13,19 +13,17 @@ use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 
 /**
- *Базовый класс авторизации соц.сетей.
+ * Базовый класс авторизации соц.сетей.
  * @property-read mixed $id
  * @property-read Client $client
  */
@@ -53,6 +51,7 @@ abstract class Social extends Model
     private mixed $_id = null;
 
     /**
+     * Отображение Id из соц. сети
      * @return mixed
      */
     public function getId()
@@ -66,7 +65,7 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            [['redirectUrl'], 'url' ],
+            ['redirectUrl', 'url' ],
             ['field', 'fieldValidator'],
             ['code', 'codeValidator', 'skipOnEmpty' => false ],
         ];
