@@ -227,9 +227,9 @@ abstract class Social extends Model
             $eventArgs->result = new ForbiddenHttpException( 'Social ' . static::socialName() . " not active.");
         }
         $this->trigger(self::EVENT_ERROR, $eventArgs);
-        if($eventArgs->result instanceof Exception) {
-            throw $eventArgs->result;
-        }
+
+        if($eventArgs->result instanceof Exception) { throw $eventArgs->result; }
+
         return $eventArgs->result;
     }
 

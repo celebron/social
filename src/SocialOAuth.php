@@ -98,24 +98,25 @@ abstract class SocialOAuth extends Social
         $this->redirect($this->getCodeUrl($url, $data));
     }
 
+
     /**
      * @param Request $sender
-     * @param string $theme
-     * @param bool $throw
-     * @return Response
+     * @param Response $response
+     * @param string|null $theme
+     * @return mixed
      * @throws BadRequestHttpException
-     * @throws InvalidConfigException
      * @throws Exception
+     * @throws InvalidConfigException
      */
-    protected function send(Request $sender, string $theme, bool $throw = false) : Response
+    protected function send(Request $sender, string $theme = 'info') : Response
     {
         $response = $this->getClient()->send($sender);
         if ($response->isOk) {
             $this->data[$theme] = $response->getData();
-        } elseif($throw) {
-            $this->getException($response);
+            return $response;
         }
-        return $response;
+
+        $this->getException($response);
     }
 
     /**

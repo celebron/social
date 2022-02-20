@@ -29,21 +29,17 @@ class Yandex extends SocialOAuth
     public function requestId () : mixed
     {
         $text = $this->clientId . ':' . $this->clientSecret;
-        $oauthData = $this->getToken('token', [], [ Header::AUTHORIZATION => 'Basic ' . base64_encode($text)]);
+        $oauthData = $this->getToken('token', [], [Header::AUTHORIZATION => 'Basic ' . base64_encode($text)]);
 
-        if($oauthData->isOk) {
-            $login = $this->getClient()->get(
-                'https://login.yandex.ru/info',
-                [ 'format'=>'json' ],
-                [ Header::AUTHORIZATION => 'OAuth ' . $oauthData->data['access_token'] ]
-            );
+        $login = $this->getClient()->get(
+            'https://login.yandex.ru/info',
+            ['format' => 'json'],
+            [ Header::AUTHORIZATION => 'OAuth ' . $oauthData->data['access_token'] ]
+        );
 
-            $loginData = $this->send($login, true);
-            return $loginData->data['id'];
+        $loginData = $this->send($login);
+        return $loginData->data['id'];
 
-        }
-        $data = $oauthData->getData();
-        throw new BadRequestHttpException("[Yandex]Error: {$data['error']}. {$data['error_description']}");
     }
 
     /**
