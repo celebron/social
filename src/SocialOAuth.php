@@ -21,7 +21,7 @@ abstract class SocialOAuth extends Social
         return ArrayHelper::merge(parent::rules(),[
             [['clientUrl'], 'url'],
             [['clientId', 'clientSecret'], 'string'],
-            [['clientId', 'clientSecret', 'clientUrl'], 'required'],
+            [['clientId', 'clientSecret'], 'required'],
         ]);
     }
 
