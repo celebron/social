@@ -30,10 +30,8 @@
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
-        "google/apiclient": "^2.7",
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
-        "vkcom/vk-php-sdk": "^5.80",
         "php": "^8.0"
     },
     "extra": {

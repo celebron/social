@@ -1,75 +1,61 @@
 <?php
 
-
 namespace Celebron\social\socials;
 
-use Celebron\social\Social;
-use Google\Exception;
-use Google_Client;
-use Google_Service_Oauth2;
-use Yii;
-use yii\web\BadRequestHttpException;
+use yii\base\InvalidArgumentException;
+use yii\helpers\Json;
+use Yiisoft\Http\Header;
+
 
 /**
  *
  * @property-write string $configFile
- * @property-read Google_Client $googleClient
  */
-class Google extends Social
+class Google extends \Celebron\social\SocialOAuth
 {
-    private ?Google_Client $_googleClient = null;
-
-    public string $clientUrl = '';
-
-    /**
-     * @return Google_Client
-     */
-    public function getGoogleClient(): Google_Client
-    {
-        if($this->_googleClient === null) {
-            $this->_googleClient = new Google_Client();
-            $this->_googleClient->setApplicationName("Celebron/social");
-            $this->_googleClient->addScope("email");
-            $this->_googleClient->addScope("profile");
-        }
-        return $this->_googleClient;
-    }
-
+    public string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
+    public string $tokenUrl = 'https://oauth2.googleapis.com/token';
+    public string $apiUrl = 'https://www.googleapis.com';
 
     /**
-     * @throws Exception
-     */
-    public function setConfigFile(string $path): void
-    {
-        $this->getGoogleClient()->setAuthConfig(Yii::getAlias($path));
-    }
-
-
-    /**
-     * @return mixed
-     * @throws BadRequestHttpException
-     */
-    public function requestId () : mixed
-    {
-        $token = $this->getGoogleClient()->fetchAccessTokenWithAuthCode($this->code);
-        //Если нету токина, то вернуть назад
-        if(empty($token['access_token']))  {
-            throw new BadRequestHttpException('[' . static::socialName() . "]Access token not received");
-        }
-        $this->getGoogleClient()->setAccessToken($token['access_token']);
-        $google_oauth = new Google_Service_Oauth2($this->getGoogleClient());
-        $this->data['info'] = $google_oauth->userinfo->get();
-        return $this->data['info']->id;
-    }
-
-
-    /**
+     * @param string $config
      * @return void
      */
-    public function requestCode ()
+    public function setConfigFile(string $file): void
     {
-        $this->getGoogleClient()->setState($this->state);
-        $this->redirect($this->getGoogleClient()->createAuthUrl());
+        $config = \Yii::getAlias($file);
+
+        if (!$config && !file_exists($config)) {
+            throw new InvalidArgumentException(sprintf('file "%s" does not exist', $config));
+        }
+
+        $json = file_get_contents($config);
+        $config = Json::decode($json);
+
+        if(isset($config['web'])) {
+            $config = $config['web'];
+        }
+
+        $this->clientId = $config['client_id'];
+        $this->clientSecret = $config['client_secret'];
+        $this->authUrl = $config['auth_uri'];
+        $this->tokenUrl = $config['token_uri'];
+
+    }
+
+    protected function requestCode ()
+    {
+        $this->getCode($this->authUrl,['access_type' => 'online', 'scope'=>'profile']);
         exit();
+    }
+
+    protected function requestId (): mixed
+    {
+        $data = $this->getToken($this->tokenUrl);
+        $url = $this->client->get($this->apiUrl . '/oauth2/v2/userinfo?alt=json',
+            [ 'format'=>'json' ],
+            [ Header::AUTHORIZATION => $data->data['token_type'] . ' ' . $data->data['access_token'] ]);
+        $d = $this->send($url);
+        return $d->data['id'];
     }
 }

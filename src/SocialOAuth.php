@@ -48,10 +48,10 @@ abstract class SocialOAuth extends Social
     {
         $urlQuery = ArrayHelper::merge([
             0 => $url,
-            'redirect_uri' => $this->redirectUrl,
-            'state' => $this->state,
             'response_type' => 'code',
             'client_id' => $this->clientId,
+            'redirect_uri' => $this->redirectUrl,
+            'state' => $this->state,
         ], $data);
         return $this->getClient()->get($urlQuery);
     }
