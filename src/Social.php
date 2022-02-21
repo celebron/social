@@ -24,8 +24,8 @@ use yii\web\UnauthorizedHttpException;
 
 /**
  * Базовый класс авторизации соц.сетей.
- * @property-read mixed $id
- * @property-read Client $client
+ * @property-read mixed $id - (для чтения) Id из соцеальной сети (относительно field)
+ * @property-read Client $client - (для чтения) Http Client
  */
 abstract class Social extends Model
 {
@@ -35,19 +35,25 @@ abstract class Social extends Model
 
     ////В config
 
-    /** @var string  */
+    /** @var string - поле в базе данных для идентификации  */
     public string $field;
+    /** @var bool - разрешить использование данной социальной сети  */
     public bool $active = false;
 
 
     ///В Controllers
+
+    /** @var string - oAuth2 state */
     public string $state;
+    /** @var string|null - oAuth2 code */
     public ?string $code;
+    /** @var string - oAuth redirectUrl */
     public string $redirectUrl;
 
 
-
+    /** @var array - Данные от социальных сетей */
     protected array $data = [];
+    /** @var mixed|null - Id от соцеальных сетей */
     private mixed $_id = null;
 
     /**
@@ -60,6 +66,7 @@ abstract class Social extends Model
     }
 
     /**
+     * Правила проверки данных
      * @return array
      */
     public function rules (): array
@@ -265,6 +272,11 @@ abstract class Social extends Model
     }
 
     /**
+     * Ссылка на социальную сеть [html::a]
+     * @param string $text - Текст на ссылку
+     * @param string|null $register
+     * @param array $data
+     * @return string
      * @throws InvalidConfigException
      */
     final public static function a(string $text, ?string $register=null, array $data = []): string
