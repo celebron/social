@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -39,9 +40,8 @@ class SocialConfiguration extends Component
     }
 
     /**
-     * Получение списка ссылок на автризацию
-     * @param null $register
-     * @return string[]
+     * @param $register
+     * @return array
      * @throws InvalidConfigException
      */
     public function getLinks($register = null): array
@@ -51,9 +51,10 @@ class SocialConfiguration extends Component
             if(!$social->active) {
                 continue;
             }
-
-            /** @var Social $classname  */
-            $result[$key] = $social::url($register);
+            $result[$key] = [
+                'name' => empty($social->name) ? $key : $social->name,
+                'link' => $social::url($register),
+            ];
         }
         return $result;
     }
