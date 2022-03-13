@@ -39,8 +39,14 @@ abstract class Social extends Model
     public string $field;
     /** @var bool - разрешить использование данной социальной сети  */
     public bool $active = false;
+
+    ////Визуал
+
     /** @var string - название для виджета */
     public string $name;
+
+    /** @var string - иконка для виджета */
+    public string $icon;
 
 
     ///В Controllers

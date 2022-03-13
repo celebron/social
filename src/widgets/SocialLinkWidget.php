@@ -10,6 +10,9 @@ class SocialLinkWidget extends \yii\base\Widget
 {
     public string $groupClass = 'social-auth';
     public array $linkOptions = [];
+    public bool $iconEnable = true;
+    public array $iconOptions = [];
+
     public array $options = [];
 
     /**
@@ -20,14 +23,22 @@ class SocialLinkWidget extends \yii\base\Widget
         $options = ArrayHelper::merge([
             'class' => $this->groupClass,
         ], $this->options);
-        $html = Html::beginTag('div', $options) . "\n";
+        $html = Html::beginTag('div', $options) . PHP_EOL;
         foreach (SocialConfiguration::config()->getLinks() as  $k => $v){
             $linkOption = ArrayHelper::merge([
                 'class' => 'social-' . $k,
             ], $this->linkOptions);
-            $html .= "\t" . Html::a($v['name'], $v['link'], $linkOption) . "\n";
+
+            $icon = $v['name'];
+            if(!is_null($v['icon'] && $this->iconEnable)) {
+                $icon = Html::img($v['icon'], $this->iconOptions);
+            }
+
+            $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . '-' . $k ]) . PHP_EOL;
+            $html .= "\t\t" . Html::a($icon, $v['link'], $linkOption) . PHP_EOL;
+            $html .= "\t" . Html::endTag('div') . PHP_EOL;
         }
-        $html .= Html::endTag('div') . "\n";
+        $html .= Html::endTag('div') . PHP_EOL;
 
         return $html;
     }

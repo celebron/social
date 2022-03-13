@@ -54,6 +54,7 @@ class SocialConfiguration extends Component
             $result[$key] = [
                 'name' => empty($social->name) ? $key : $social->name,
                 'link' => $social::url($register),
+                'icon' => empty($social->icon) ? null : $social->icon,
             ];
         }
         return $result;
