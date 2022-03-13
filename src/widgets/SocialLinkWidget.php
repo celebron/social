@@ -29,9 +29,13 @@ class SocialLinkWidget extends \yii\base\Widget
                 'class' => 'social-' . $k,
             ], $this->linkOptions);
 
+            $iconOptions = ArrayHelper::merge([
+                'alt' => $v['name'],
+            ],$this->iconOptions);
+
             $icon = $v['name'];
             if(!is_null($v['icon'] && $this->iconEnable)) {
-                $icon = Html::img($v['icon'], $this->iconOptions);
+                $icon = Html::img($v['icon'], $iconOptions);
             }
 
             $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . '-' . $k ]) . PHP_EOL;
