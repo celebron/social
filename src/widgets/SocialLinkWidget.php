@@ -9,12 +9,12 @@ use yii\helpers\Html;
 class SocialLinkWidget extends \yii\base\Widget
 {
     public string $groupClass = 'social-auth';
-    public array $linkOptions = [];
+
     public bool $iconEnable = true;
-    public array $iconOptions = [];
 
     public array $options = [];
-
+    public array $linkOptions = [];
+    public array $iconOptions = [];
     /**
      * @throws \yii\base\InvalidConfigException
      */
@@ -34,7 +34,7 @@ class SocialLinkWidget extends \yii\base\Widget
             ],$this->iconOptions);
 
             $icon = $v['name'];
-            if(!is_null($v['icon'] && $this->iconEnable)) {
+            if(!is_null($v['icon']) && $this->iconEnable) {
                 $icon = Html::img($v['icon'], $iconOptions);
             }
 
