@@ -21,7 +21,7 @@ class SocialLinkWidget extends \yii\base\Widget
     public function run()
     {
         $options = ArrayHelper::merge([
-            'class' => $this->groupClass,
+            'class' => $this->groupClass . '-group',
         ], $this->options);
         $html = Html::beginTag('div', $options) . PHP_EOL;
         foreach (SocialConfiguration::config()->getLinks() as  $k => $v){
@@ -38,7 +38,7 @@ class SocialLinkWidget extends \yii\base\Widget
                 $icon = Html::img($v['icon'], $iconOptions);
             }
 
-            $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . '-' . $k ]) . PHP_EOL;
+            $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . ' ' . $k ]) . PHP_EOL;
             $html .= "\t\t" . Html::a($icon, $v['link'], $linkOption) . PHP_EOL;
             $html .= "\t" . Html::endTag('div') . PHP_EOL;
         }
