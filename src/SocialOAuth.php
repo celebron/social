@@ -111,7 +111,7 @@ abstract class SocialOAuth extends Social
     protected function send(Request $sender, string $theme = 'info') : Response
     {
         $response = $this->getClient()->send($sender);
-        if ($response->isOk) {
+        if ($response->isOk && !isset($response->data['error'])) {
             $this->data[$theme] = $response->getData();
             return $response;
         }
