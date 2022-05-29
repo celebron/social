@@ -111,7 +111,7 @@ class SocialConfiguration extends Component
      * @throws NotFoundHttpException
      * @throws \Exception
      */
-    public static function ensure($socialname): Social
+    public static function ensure(string $socialname): Social
     {
         $config = static::config();
         $object = ArrayHelper::getValue($config->getSocials(), $socialname);
@@ -119,6 +119,11 @@ class SocialConfiguration extends Component
             return $object;
         }
         throw new NotFoundHttpException("Social {$socialname} not registered");
+    }
+
+    public static function link(string $socialname, $register = null): string
+    {
+        return self::ensure($socialname)::url($register);
     }
 
 }
