@@ -143,7 +143,7 @@ abstract class Social extends Model
      * @return ActiveRecord|null
      * @throws InvalidConfigException|NotSupportedException
      */
-    protected function fieldSearch(): ?IdentityInterface
+    protected function fieldSearch(): ?FieldSearchInterface
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
         if($class instanceof FieldSearchInterface){
@@ -186,8 +186,10 @@ abstract class Social extends Model
     {
         if($this->active && $this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
+            $user->setAuthKey();
+
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
-            return $login;
+            return $login && $user->save();
         }
         return false;
     }
