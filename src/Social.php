@@ -163,6 +163,7 @@ abstract class Social extends Model
         if($this->active && $this->validate()) {
             $field = $this->field;
             $user->$field = $this->_id;
+            $user->setAuthKey();
             if(!$user->save()) {
                 self::debug("Not registered user id $this->_id.");
                 $this->addError($field, $user->errors[$field]);
@@ -185,8 +186,7 @@ abstract class Social extends Model
     final public function login(int $duration = 0) : bool
     {
         if($this->active && $this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
-            $user->setAuthKey();
-            $login = $user->save() && Yii::$app->user->login($user, $duration);
+            $login = Yii::$app->user->login($user, $duration);
 
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
             return $login;
