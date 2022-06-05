@@ -112,7 +112,9 @@ abstract class SocialOAuth extends Social
     {
         $response = $this->getClient()->send($sender);
         if ($response->isOk && !isset($response->data['error'])) {
+
             $this->data[$theme] = $response->getData();
+            \Yii::debug($this->data[$theme],static::class);
             return $response;
         }
 
@@ -143,6 +145,7 @@ abstract class SocialOAuth extends Social
     protected function getException (Response $response): void
     {
         $data = $response->getData();
+        \Yii::warning($this->data, static::class);
         if (isset($data['error'], $data['error_description'])) {
             throw new BadRequestHttpException('[' . static::socialName() . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
         }

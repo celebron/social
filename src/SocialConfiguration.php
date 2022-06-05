@@ -121,6 +121,14 @@ class SocialConfiguration extends Component
         throw new NotFoundHttpException("Social {$socialname} not registered");
     }
 
+    /**
+     * Получить ссылку на редеректа на соц.сеть
+     * @param string $socialname
+     * @param $register
+     * @return string
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
+     */
     public static function link(string $socialname, $register = null): string
     {
         return self::ensure($socialname)::url($register);
