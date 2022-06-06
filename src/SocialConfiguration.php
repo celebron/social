@@ -19,6 +19,7 @@ class SocialConfiguration extends Component
 {
     /** @var string - стандартый роут */
     public string $route = "site/social";
+    public string $register = 'register';
     /** @var \Closure|null - событие отображение ошибок на все */
     public ?\Closure $onAllError = null;
     /** @var \Closure|null - cобытие регистрации на все */

@@ -16,9 +16,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
-use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 
@@ -68,7 +66,7 @@ abstract class Social extends Model
      * Отображение Id из соц. сети
      * @return mixed
      */
-    public function getId()
+    public function getId(): mixed
     {
         return $this->_id;
     }
@@ -137,8 +135,9 @@ abstract class Social extends Model
 
     /**
      * Поиск по полю в бд
-     * @return ActiveRecord|null
-     * @throws InvalidConfigException|NotSupportedException
+     * @return FieldSearchInterface|null
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
      */
     protected function fieldSearch(): ?FieldSearchInterface
     {
@@ -190,40 +189,40 @@ abstract class Social extends Model
 
     /**
      * Событие положительной авторизации
-     * @param Controller $controller
+     * @param SocialAction $action
      * @return Response
      */
-    public function loginSuccess(Controller $controller): mixed
+    public function loginSuccess(SocialAction $action): mixed
     {
-        $eventArgs = new SuccessEventArgs($controller);
+        $eventArgs = new SuccessEventArgs($action);
         $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
-        return $eventArgs->result ?? $controller->goBack();
+        return $eventArgs->result ?? $action->controller->goBack();
     }
 
     /**
      * Событие положительной регистрации
-     * @param Controller $controller
+     * @param SocialAction $action
      * @return mixed
      */
-    public function registerSuccess(Controller $controller): mixed
+    public function registerSuccess(SocialAction $action): mixed
     {
-        $eventArgs = new SuccessEventArgs($controller);
+        $eventArgs = new SuccessEventArgs($action);
         $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_REGISTER_SUCCESS, $eventArgs);
-        return $eventArgs->result ?? $controller->goBack();
+        return $eventArgs->result ?? $action->controller->goBack();
     }
 
     /**
      * Событие на ошибку
-     * @param Controller $controller
+     * @param SocialAction $action
      * @return mixed
-     * @throws UnauthorizedHttpException
      * @throws ForbiddenHttpException
+     * @throws UnauthorizedHttpException
      */
-    public function error(string $tag, Controller $controller): mixed
+    public function error(SocialAction $action): mixed
     {
-        $eventArgs = new ErrorEventArgs($tag, $controller);
+        $eventArgs = new ErrorEventArgs($action);
         $eventArgs->errors = $this->getErrorSummary(false);
         $eventArgs->data = $this->data;
 
@@ -266,13 +265,9 @@ abstract class Social extends Model
      * @return string
      * @throws InvalidConfigException
      */
-    final public static function url(?string $tag = null) : string
+    final public static function url() : string
     {
-        $params[] = static::socialName();
-        if($tag !== null) {
-            $params[] = $tag;
-        }
-        return static::urlState(implode('_', $params));
+        return static::urlState(static::socialName());
     }
 
     /**
