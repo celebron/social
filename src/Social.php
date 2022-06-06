@@ -95,11 +95,8 @@ abstract class Social extends Model
     final public function fieldValidator($a)
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
-        if($class instanceof ActiveRecord) {
-            $columns = $class->attributes();
-            if(!ArrayHelper::isIn($this->$a, $columns)) {
-                $this->addError($a, "Field {$this->$a} not exists");
-            }
+        if(($class instanceof ActiveRecord) && !ArrayHelper::isIn($this->$a, $class->attributes())) {
+            $this->addError($a, "Field {$this->$a} not exists");
         }
     }
 
@@ -163,13 +160,11 @@ abstract class Social extends Model
         if($this->active && $this->validate()) {
             $field = $this->field;
             $user->$field = $this->_id;
-            $user->setAuthKey();
             if(!$user->save()) {
                 self::debug("Not registered user id $this->_id.");
                 $this->addError($field, $user->errors[$field]);
                 return false;
             }
-
             self::debug("Registered user id $this->_id");
             return true;
         }
@@ -187,7 +182,6 @@ abstract class Social extends Model
     {
         if($this->active && $this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
-
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
             return $login;
         }
