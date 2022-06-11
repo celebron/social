@@ -7,10 +7,15 @@ use yii\helpers\ArrayHelper;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\web\BadRequestHttpException;
 
-abstract class SocialOAuth extends Social
+/**
+ * Оавторизация Oauth2
+ */
+abstract class SocialOAuth2 extends Social
 {
 
+    /** @var string  */
     public string $clientId;
+    /** @var string  */
     public string $clientSecret;
 
     public string $clientUrl = '';
@@ -40,6 +45,7 @@ abstract class SocialOAuth extends Social
     }
 
     /**
+     * формировниие ссылки на получения кода
      * @param string $url
      * @param array $data
      * @return Request
@@ -57,6 +63,7 @@ abstract class SocialOAuth extends Social
     }
 
     /**
+     * Формирования даты для полуния токена
      * @param array $data
      * @return array
      */
@@ -73,10 +80,11 @@ abstract class SocialOAuth extends Social
 
 
     /**
-     * @param string $url
-     * @param array $data
-     * @param array $headers
-     * @param array $params
+     * Получения токена
+     * @param string $url - ссылка
+     * @param array $data - данные
+     * @param array $headers - заголовки
+     * @param array $params - параметры
      * @return Response
      * @throws BadRequestHttpException
      * @throws Exception
@@ -89,6 +97,7 @@ abstract class SocialOAuth extends Social
     }
 
     /**
+     * Редирект на получении кода
      * @param string $url
      * @param array $data
      * @return void
@@ -100,10 +109,10 @@ abstract class SocialOAuth extends Social
 
 
     /**
-     * @param Request $sender
-     * @param Response $response
-     * @param string|null $theme
-     * @return mixed
+     * Выполнение отправки сообщения
+     * @param Request $sender - Запрос
+     * @param string $theme - Тема
+     * @return Response
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
@@ -122,6 +131,7 @@ abstract class SocialOAuth extends Social
     }
 
     /**
+     * Перенаправление
      * @throws Exception
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
@@ -138,6 +148,7 @@ abstract class SocialOAuth extends Social
     }
 
     /**
+     * Отслеживание ошибки
      * @param Response $response
      * @throws BadRequestHttpException
      * @throws Exception

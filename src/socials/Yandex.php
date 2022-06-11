@@ -4,7 +4,7 @@
 namespace Celebron\social\socials;
 
 
-use Celebron\social\SocialOAuth;
+use Celebron\social\SocialOAuth2;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
@@ -12,12 +12,11 @@ use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
 /**
- * Class Yandex
- * @package common\models\auth
+ * oauth2 Yandex
  *
  * @property-read string|mixed $baseUrl
  */
-class Yandex extends SocialOAuth
+class Yandex extends SocialOAuth2
 {
     public string $clientUrl = "https://oauth.yandex.ru";
     /**

@@ -85,12 +85,12 @@ abstract class Social extends Model
     }
 
     /**
+     * Валидация поля аврторизации
      * @param $a
-     * @param $p
      * @return void
      * @throws InvalidConfigException
      */
-    final public function fieldValidator($a)
+    final public function fieldValidator($a) : void
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
         if(($class instanceof ActiveRecord) && !ArrayHelper::isIn($this->$a, $class->attributes())) {
@@ -99,10 +99,10 @@ abstract class Social extends Model
     }
 
     /**
+     *
      * @param $a
-     * @param $p
      */
-    final public function codeValidator($a)
+    final public function codeValidator($a): void
     {
         if ($this->$a === null) {
             $this->requestCode();
@@ -243,6 +243,7 @@ abstract class Social extends Model
     }
 
     /**
+     * Название класса
      * @return string
      */
     final public static function socialName(): string
@@ -251,6 +252,7 @@ abstract class Social extends Model
     }
 
     /**
+     * Ссылка на oauth авторизацию
      * @param bool|string $state
      * @return string
      * @throws InvalidConfigException
@@ -281,6 +283,11 @@ abstract class Social extends Model
         return Html::a($text, static::url($state), $data);
     }
 
+    /**
+     * Дебаг
+     * @param $text
+     * @return void
+     */
     protected static function debug($text): void
     {
         Yii::debug('[' . static::socialName() . ']' . $text, static::class);

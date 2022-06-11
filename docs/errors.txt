@@ -1,0 +1,101 @@
+Array
+(
+    [0] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [1] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [2] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [3] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [4] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [5] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [6] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [7] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [8] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [9] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [10] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [11] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [12] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+    [13] => Array
+        (
+            [line] => 
+            [file] => 
+            [message] => Using empty link.
+        )
+
+)

@@ -17,7 +17,7 @@ use yii\web\NotFoundHttpException;
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
-    /** @var $this - Глобальная конфигурация */
+    /** @var $this - конфигурация */
     public static self $config;
 
     /** @var string - state для регистрации */
@@ -26,8 +26,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public string $route = "social";
     /** @var int - на сколько сохранять участника */
     public int $duration = 0;
-
-
     /** @var \Closure|null - событие отображение ошибок на все */
     public ?\Closure $onAllError = null;
     /** @var \Closure|null - cобытие регистрации на все */
@@ -53,6 +51,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
+     * Список ссылок на соц.сети
      * @param $register
      * @return array
      * @throws InvalidConfigException
@@ -135,7 +134,5 @@ class SocialConfiguration extends Component implements BootstrapInterface
             'class' => SocialController::class,
             'config' => $this,
         ];
-
-
     }
 }

@@ -2,10 +2,13 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialOAuth;
+use Celebron\social\SocialOAuth2;
 use yii\web\BadRequestHttpException;
 
-class Ok extends SocialOAuth
+/**
+ * Oauth2 Ok
+ */
+class Ok extends SocialOAuth2
 {
     public string $scope = 'VALUABLE_ACCESS';
 

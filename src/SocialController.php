@@ -6,6 +6,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Контролер
+ */
 class SocialController extends \yii\web\Controller
 {
     public SocialConfiguration $config;

@@ -2,9 +2,12 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialOAuth;
+use Celebron\social\SocialOAuth2;
 
-class VK extends SocialOAuth
+/***
+ * Oauth2 VK
+ */
+class VK extends SocialOAuth2
 {
     public string $clientUrl = 'https://oauth.vk.com';
     public string $display = 'page';

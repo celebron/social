@@ -8,17 +8,18 @@ use Yiisoft\Http\Header;
 
 
 /**
- *
+ * oauth2 Google
  * @property-write string $configFile
  */
-class Google extends \Celebron\social\SocialOAuth
+class Google extends \Celebron\social\SocialOAuth2
 {
     public string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
     public string $tokenUrl = 'https://oauth2.googleapis.com/token';
     public string $apiUrl = 'https://www.googleapis.com';
 
     /**
-     * @param string $config
+     * Получения конфигурации из файла json
+     * @param string $file
      * @return void
      */
     public function setConfigFile(string $file): void

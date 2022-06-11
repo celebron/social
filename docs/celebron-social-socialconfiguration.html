@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="language" content="en" />
+        
+<link href="./assets/c58bf7d6/css/bootstrap.css" rel="stylesheet">
+<link href="./assets/77c6164/solarized-light.css" rel="stylesheet">
+<link href="./assets/ae500d3f/style.css" rel="stylesheet">
+<script src="./assets/2b59bc4d/jquery.js"></script>
+<script src="./assets/c58bf7d6/js/bootstrap.js"></script>
+<script src="./assets/d4c1da2b/jssearch.js"></script>    <title>SocialConfiguration, Celebron\social\SocialConfiguration - Yii Framework 2.0 API Documentation</title>
+</head>
+<body>
+
+<div class="wrap">
+    <nav id="w22" class="navbar-inverse navbar-fixed-top navbar"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#w22-collapse"><span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span></button><a class="navbar-brand" href="./index.html">Yii Framework 2.0 API Documentation</a></div><div id="w22-collapse" class="collapse navbar-collapse"><ul id="w23" class="navbar-nav nav"><li><a href="./index.html">Class reference</a></li></ul><div class="navbar-form navbar-left" role="search">
+  <div class="form-group">
+    <input id="searchbox" type="text" class="form-control" placeholder="Search">
+  </div>
+</div>
+</div></nav>
+    <div id="search-resultbox" style="display: none;" class="modal-content">
+        <ul id="search-results">
+        </ul>
+    </div>
+
+    
+<div class="row">
+    <div class="col-md-3">
+                <div id="navigation" class="list-group"><a class="list-group-item active" href="#navigation-18" data-toggle="collapse" data-parent="#navigation">Celebron\social <b class="caret"></b></a><div id="navigation-18" class="submenu panel-collapse collapse in"><a class="list-group-item" href="./celebron-social-fieldsearchinterface.html">FieldSearchInterface</a>
+<a class="list-group-item" href="./celebron-social-social.html">Social</a>
+<a class="list-group-item active" href="./celebron-social-socialconfiguration.html">SocialConfiguration</a>
+<a class="list-group-item" href="./celebron-social-socialcontroller.html">SocialController</a>
+<a class="list-group-item" href="./celebron-social-socialoauth2.html">SocialOAuth2</a></div>
+<a class="list-group-item" href="#navigation-19" data-toggle="collapse" data-parent="#navigation">Celebron\social\eventArgs <b class="caret"></b></a><div id="navigation-19" class="submenu panel-collapse collapse"><a class="list-group-item" href="./celebron-social-eventargs-erroreventargs.html">ErrorEventArgs</a>
+<a class="list-group-item" href="./celebron-social-eventargs-successeventargs.html">SuccessEventArgs</a></div>
+<a class="list-group-item" href="#navigation-20" data-toggle="collapse" data-parent="#navigation">Celebron\social\socials <b class="caret"></b></a><div id="navigation-20" class="submenu panel-collapse collapse"><a class="list-group-item" href="./celebron-social-socials-discord.html">Discord</a>
+<a class="list-group-item" href="./celebron-social-socials-google.html">Google</a>
+<a class="list-group-item" href="./celebron-social-socials-ok.html">Ok</a>
+<a class="list-group-item" href="./celebron-social-socials-vk.html">VK</a>
+<a class="list-group-item" href="./celebron-social-socials-yandex.html">Yandex</a></div>
+<a class="list-group-item" href="#navigation-21" data-toggle="collapse" data-parent="#navigation">Celebron\social\widgets <b class="caret"></b></a><div id="navigation-21" class="submenu panel-collapse collapse"><a class="list-group-item" href="./celebron-social-widgets-sociallinkwidget.html">SocialLinkWidget</a></div></div>    </div>
+    <div class="col-md-9 api-content" role="main"><h1>Class Celebron\social\SocialConfiguration</h1>
+<div class="top-nav">
+    <a href="index">All Classes</a>
+            | <a href="#properties">Properties</a>
+                | <a href="#methods">Methods</a>
+            </div>
+
+<table class="summaryTable docClass table table-bordered">
+    <colgroup>
+        <col class="col-name" />
+        <col class="col-value" />
+    </colgroup>
+            <tr><th>Inheritance</th><td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a> &raquo;
+yii\base\Component</td></tr>
+                <tr><th>Implements</th><td>yii\base\BootstrapInterface</td></tr>
+                                    </table>
+
+<div class="class-description">
+    <p><strong>Конфигуратор социальной авторизации</strong></p>
+    
+    </div>
+
+
+
+<a id="properties"></a>
+
+<div class="doc-property summary toggle-target-container">
+    <h2>Public Properties</h2>
+
+    <p><a href="#" class="toggle">Hide inherited properties</a></p>
+
+    <table class="summary-table table table-striped table-bordered table-hover">
+        <colgroup>
+            <col class="col-property" />
+            <col class="col-type" />
+            <col class="col-description" />
+            <col class="col-defined" />
+        </colgroup>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Defined By</th>
+        </tr>
+
+                                    <tr id="$config" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$config-detail">$config</a></td>
+                    <td></td>
+                    <td>- конфигурация</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$duration" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$duration-detail">$duration</a></td>
+                    <td><a href="https://www.php.net/language.types.integer">integer</a></td>
+                    <td>- на сколько сохранять участника</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$links" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$links-detail">$links</a></td>
+                    <td><a href="https://www.php.net/language.types.array">array</a></td>
+                    <td>- список линков зарегистрированных соцсетей</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$onAllError" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$onAllError-detail">$onAllError</a></td>
+                    <td><a href="https://www.php.net/class.closure">Closure</a>|<a href="https://www.php.net/language.types.null">null</a></td>
+                    <td>- событие отображение ошибок на все</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$onAllLoginSuccess" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$onAllLoginSuccess-detail">$onAllLoginSuccess</a></td>
+                    <td><a href="https://www.php.net/class.closure">Closure</a>|<a href="https://www.php.net/language.types.null">null</a></td>
+                    <td>- cобытие автризации на все</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$onAllRegisterSuccess" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$onAllRegisterSuccess-detail">$onAllRegisterSuccess</a></td>
+                    <td><a href="https://www.php.net/class.closure">Closure</a>|<a href="https://www.php.net/language.types.null">null</a></td>
+                    <td>- cобытие регистрации на все</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$register" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$register-detail">$register</a></td>
+                    <td><a href="https://www.php.net/language.types.string">string</a></td>
+                    <td>- state для регистрации</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$route" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$route-detail">$route</a></td>
+                    <td><a href="https://www.php.net/language.types.string">string</a></td>
+                    <td>- роут</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="$socials" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#$socials-detail">$socials</a></td>
+                    <td><a href="celebron-social-social.html">Celebron\social\Social</a>[]</td>
+                    <td>- зарегистрированые соцсети</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                        </table>
+</div>
+
+<a id="methods"></a>
+
+<div class="doc-method summary toggle-target-container">
+    <h2>Public Methods</h2>
+
+    <p><a href="#" class="toggle">Hide inherited methods</a></p>
+
+    <table class="summary-table table table-striped table-bordered table-hover">
+        <colgroup>
+            <col class="col-method" />
+            <col class="col-description" />
+            <col class="col-defined" />
+        </colgroup>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+            <th>Defined By</th>
+        </tr>
+
+                                    <tr id="bootstrap()" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#bootstrap()-detail">bootstrap()</a></td>
+                    <td></td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="getLinks()" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#getLinks()-detail">getLinks()</a></td>
+                    <td>Список ссылок на соц.сети</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="getSocials()" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#getSocials()-detail">getSocials()</a></td>
+                    <td>Получение списка активных соцсетей</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="init()" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#init()-detail">init()</a></td>
+                    <td></td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="link()" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#link()-detail">link()</a></td>
+                    <td>Получить ссылку на редеректа на соц.сеть</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                                                <tr id="setSocials()" class="">
+                    <td><a href="celebron-social-socialconfiguration.html#setSocials()-detail">setSocials()</a></td>
+                    <td>Регистрация соцсетей</td>
+                    <td><a href="celebron-social-socialconfiguration.html">Celebron\social\SocialConfiguration</a></td>
+                </tr>
+                        </table>
+</div>
+
+<a id="events"></a>
+
+<a id="constants"></a>
+
+
+<h2>Property Details</h2>
+
+<div class="property-doc toggle-target-container">
+    <p><a href="#" class="toggle">Hide inherited properties</a></p>
+
+            <div id="$config-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$config-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $config
+                <span class="detail-header-tag small">
+                    public                    static                                                            property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>конфигурация</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public static</span> <span class="signature-type"></span> <a href="celebron-social-socialconfiguration.html#$config-detail">$config</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span></div>
+            
+            
+        </div>
+            <div id="$duration-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$duration-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $duration
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>на сколько сохранять участника</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/language.types.integer">integer</a></span> <a href="celebron-social-socialconfiguration.html#$duration-detail">$duration</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">0</span></div>
+            
+            
+        </div>
+            <div id="$links-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$links-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $links
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>список линков зарегистрированных соцсетей</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/language.types.array">array</a></span> <a href="celebron-social-socialconfiguration.html#$links-detail">$links</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span></div>
+            
+            
+        </div>
+            <div id="$onAllError-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$onAllError-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $onAllError
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>событие отображение ошибок на все</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/class.closure">Closure</a>|<a href="https://www.php.net/language.types.null">null</a></span> <a href="celebron-social-socialconfiguration.html#$onAllError-detail">$onAllError</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span></div>
+            
+            
+        </div>
+            <div id="$onAllLoginSuccess-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$onAllLoginSuccess-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $onAllLoginSuccess
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>cобытие автризации на все</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/class.closure">Closure</a>|<a href="https://www.php.net/language.types.null">null</a></span> <a href="celebron-social-socialconfiguration.html#$onAllLoginSuccess-detail">$onAllLoginSuccess</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span></div>
+            
+            
+        </div>
+            <div id="$onAllRegisterSuccess-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$onAllRegisterSuccess-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $onAllRegisterSuccess
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>cобытие регистрации на все</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/class.closure">Closure</a>|<a href="https://www.php.net/language.types.null">null</a></span> <a href="celebron-social-socialconfiguration.html#$onAllRegisterSuccess-detail">$onAllRegisterSuccess</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span></div>
+            
+            
+        </div>
+            <div id="$register-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$register-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $register
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>state для регистрации</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/language.types.string">string</a></span> <a href="celebron-social-socialconfiguration.html#$register-detail">$register</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'register'</span></div>
+            
+            
+        </div>
+            <div id="$route-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$route-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $route
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>роут</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/language.types.string">string</a></span> <a href="celebron-social-socialconfiguration.html#$route-detail">$route</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"social"</span></div>
+            
+            
+        </div>
+            <div id="$socials-detail">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#$socials-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                $socials
+                <span class="detail-header-tag small">
+                    public                                                                                property
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <ul>
+<li>зарегистрированые соцсети</li>
+</ul>
+                            </div>
+
+            <div class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="celebron-social-social.html">Celebron\social\Social</a>[]</span> <a href="celebron-social-socialconfiguration.html#$socials-detail">$socials</a> <span style="color: #0000BB"></span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span></div>
+            
+            
+        </div>
+    </div>
+
+<h2>Method Details</h2>
+
+<div class="method-doc toggle-target-container">
+    <p><a href="#" class="toggle">Hide inherited methods</a></p>
+
+            <div id="bootstrap()-detail"
+             class="">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#bootstrap()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                bootstrap()
+
+                <span class="detail-header-tag small">
+                    public                                                            method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <p><strong></strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">public</span> <span class="signature-type">void</span> <strong><a href="celebron-social-socialconfiguration.html#bootstrap()-detail">bootstrap</a></strong> ( <span style="color: #0000BB">$app</span> )</td></tr>
+
+                                                            <tr>
+                            <td class="param-name-col"><span style="color: #0000BB">$app</span></td>
+                            <td class="param-type-col"></td>
+                            <td class="param-desc-col">
+                                                           </td>
+                        </tr>
+                    
+                    
+                                                </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseBootstrap" role="button"
+           aria-expanded="false" aria-controls="collapseBootstrap">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseBootstrap">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bootstrap</span> <span class="hljs-params">($app)</span>
+</span>{
+    $app-&gt;urlManager-&gt;addRules([
+        <span class="hljs-string">"{$this-&gt;route}/&lt;social&gt;"</span> =&gt; <span class="hljs-string">"{$this-&gt;route}/handler"</span>,
+    ]);
+    $app-&gt;controllerMap[<span class="hljs-keyword">$this</span>-&gt;route] = [
+        <span class="hljs-string">'class'</span> =&gt; SocialController::class,
+        <span class="hljs-string">'config'</span> =&gt; <span class="hljs-keyword">$this</span>,
+    ];
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+            <div id="getLinks()-detail"
+             class="">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#getLinks()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                getLinks()
+
+                <span class="detail-header-tag small">
+                    public                                                            method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <p><strong>Список ссылок на соц.сети</strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="https://www.php.net/language.types.array">array</a></span> <strong><a href="celebron-social-socialconfiguration.html#getLinks()-detail">getLinks</a></strong> ( <span class="signature-type"><a href="https://www.php.net/language.types.boolean">boolean</a></span> <span style="color: #0000BB">$register&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">false</span> )</td></tr>
+
+                                                            <tr>
+                            <td class="param-name-col"><span style="color: #0000BB">$register</span></td>
+                            <td class="param-type-col"></td>
+                            <td class="param-desc-col">
+                                                           </td>
+                        </tr>
+                    
+                    
+                                            <tr>
+                            <th class="param-name-col">throws</th>
+                            <td class="param-type-col">\yii\base\InvalidConfigException</td>
+                            <td class="param-desc-col">
+                                                            </td>
+                        </tr>
+                                                </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseGetLinks" role="button"
+           aria-expanded="false" aria-controls="collapseGetLinks">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseGetLinks">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLinks</span><span class="hljs-params">(bool $register = false)</span>: <span class="hljs-title">array</span>
+</span>{
+    $result = [];
+    <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">$this</span>-&gt;getSocials() <span class="hljs-keyword">as</span> $key=&gt;$social) {
+        <span class="hljs-keyword">if</span>(!$social-&gt;active) {
+            <span class="hljs-keyword">continue</span>;
+        }
+        $result[$key] = [
+            <span class="hljs-string">'name'</span> =&gt; <span class="hljs-keyword">empty</span>($social-&gt;name) ? $key : $social-&gt;name,
+            <span class="hljs-string">'link'</span> =&gt; $social::url($register),
+            <span class="hljs-string">'icon'</span> =&gt; <span class="hljs-keyword">empty</span>($social-&gt;icon) ? <span class="hljs-keyword">null</span> : $social-&gt;icon,
+        ];
+    }
+    <span class="hljs-keyword">return</span> $result;
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+            <div id="getSocials()-detail"
+             class="">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#getSocials()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                getSocials()
+
+                <span class="detail-header-tag small">
+                    public                                                            method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <p><strong>Получение списка активных соцсетей</strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">public</span> <span class="signature-type"><a href="celebron-social-social.html">Celebron\social\Social</a>[]</span> <strong><a href="celebron-social-socialconfiguration.html#getSocials()-detail">getSocials</a></strong> ( )</td></tr>
+
+                            </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseGetSocials" role="button"
+           aria-expanded="false" aria-controls="collapseGetSocials">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseGetSocials">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSocials</span><span class="hljs-params">()</span>: <span class="hljs-title">array</span>
+</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;_socials;
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+            <div id="init()-detail"
+             class="">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#init()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                init()
+
+                <span class="detail-header-tag small">
+                    public                                                            method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <p><strong></strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">public</span> <span class="signature-type">void</span> <strong><a href="celebron-social-socialconfiguration.html#init()-detail">init</a></strong> ( )</td></tr>
+
+                            </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseInit" role="button"
+           aria-expanded="false" aria-controls="collapseInit">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseInit">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span> <span class="hljs-params">()</span>
+</span>{
+    <span class="hljs-keyword">self</span>::$config = <span class="hljs-keyword">$this</span>;
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+            <div id="link()-detail"
+             class="">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#link()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                link()
+
+                <span class="detail-header-tag small">
+                    public                                        static                    method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <p><strong>Получить ссылку на редеректа на соц.сеть</strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">public static</span> <span class="signature-type"><a href="https://www.php.net/language.types.string">string</a></span> <strong><a href="celebron-social-socialconfiguration.html#link()-detail">link</a></strong> ( <span class="signature-type"><a href="https://www.php.net/language.types.string">string</a></span> <span style="color: #0000BB">$socialname</span>, <span class="signature-type">bool|string</span> <span style="color: #0000BB">$state&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">false</span> )</td></tr>
+
+                                                            <tr>
+                            <td class="param-name-col"><span style="color: #0000BB">$socialname</span></td>
+                            <td class="param-type-col"><a href="https://www.php.net/language.types.string">string</a></td>
+                            <td class="param-desc-col">
+                                                           </td>
+                        </tr>
+                                            <tr>
+                            <td class="param-name-col"><span style="color: #0000BB">$state</span></td>
+                            <td class="param-type-col"></td>
+                            <td class="param-desc-col">
+                                                           </td>
+                        </tr>
+                    
+                    
+                                            <tr>
+                            <th class="param-name-col">throws</th>
+                            <td class="param-type-col">\yii\base\InvalidConfigException</td>
+                            <td class="param-desc-col">
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th class="param-name-col">throws</th>
+                            <td class="param-type-col">\yii\web\NotFoundHttpException</td>
+                            <td class="param-desc-col">
+                                                            </td>
+                        </tr>
+                                                </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseLink" role="button"
+           aria-expanded="false" aria-controls="collapseLink">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseLink">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">link</span><span class="hljs-params">(string $socialname, bool|string $state = false)</span>: <span class="hljs-title">string</span>
+</span>{
+    $url[<span class="hljs-number">0</span>] = <span class="hljs-keyword">self</span>::$config-&gt;route . <span class="hljs-string">'/'</span> . strtolower($socialname);
+    <span class="hljs-keyword">if</span>(is_bool($state) &amp;&amp; $state) {
+        $url[<span class="hljs-string">'state'</span>] = <span class="hljs-keyword">self</span>::$config-&gt;register;
+    }
+    <span class="hljs-keyword">if</span>(is_string($state)) {
+        $url[<span class="hljs-string">'state'</span>] = $state;
+    }
+    <span class="hljs-keyword">return</span> Url::to($url, <span class="hljs-keyword">true</span>);
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+            <div id="setSocials()-detail"
+             class="">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socialconfiguration.html#setSocials()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                setSocials()
+
+                <span class="detail-header-tag small">
+                    public                                                            method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                
+                <p><strong>Регистрация соцсетей</strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">public</span> <span class="signature-type">void</span> <strong><a href="celebron-social-socialconfiguration.html#setSocials()-detail">setSocials</a></strong> ( <span class="signature-type"><a href="https://www.php.net/language.types.array">array</a></span> <span style="color: #0000BB">$value</span> )</td></tr>
+
+                                                            <tr>
+                            <td class="param-name-col"><span style="color: #0000BB">$value</span></td>
+                            <td class="param-type-col"><a href="https://www.php.net/language.types.array">array</a></td>
+                            <td class="param-desc-col">
+                                                           </td>
+                        </tr>
+                    
+                    
+                                            <tr>
+                            <th class="param-name-col">throws</th>
+                            <td class="param-type-col">\yii\base\InvalidConfigException</td>
+                            <td class="param-desc-col">
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th class="param-name-col">throws</th>
+                            <td class="param-type-col">\yii\base\NotSupportedException</td>
+                            <td class="param-desc-col">
+                                                            </td>
+                        </tr>
+                                                </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseSetSocials" role="button"
+           aria-expanded="false" aria-controls="collapseSetSocials">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseSetSocials">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setSocials</span><span class="hljs-params">(array $value)</span>: <span class="hljs-title">void</span>
+</span>{
+    $result= [];
+    <span class="hljs-keyword">foreach</span> ($value <span class="hljs-keyword">as</span> $key=&gt;$class) {
+        <span class="hljs-comment">/** <span class="hljs-doctag">@var</span> Social $object */</span>
+        $object = \Yii::createObject($class);
+        <span class="hljs-keyword">if</span>($object <span class="hljs-keyword">instanceof</span> Social) {
+            <span class="hljs-keyword">if</span> (is_numeric($key)) {
+                $key = strtolower($object::socialName());
+            }
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">$this</span>-&gt;onAllRegisterSuccess !== <span class="hljs-keyword">null</span>) {
+                $object-&gt;on(Social::EVENT_REGISTER_SUCCESS, <span class="hljs-keyword">$this</span>-&gt;onAllRegisterSuccess);
+            }
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">$this</span>-&gt;onAllLoginSuccess !== <span class="hljs-keyword">null</span>){
+                $object-&gt;on(Social::EVENT_LOGIN_SUCCESS, <span class="hljs-keyword">$this</span>-&gt;onAllLoginSuccess);
+            }
+            <span class="hljs-keyword">if</span>(<span class="hljs-keyword">$this</span>-&gt;onAllError !== <span class="hljs-keyword">null</span>) {
+                $object-&gt;on(Social::EVENT_ERROR, <span class="hljs-keyword">$this</span>-&gt;onAllError);
+            }
+            $result[$key] = $object;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NotSupportedException($class::class . <span class="hljs-string">' does not extend '</span> . Social::class);
+        }
+    }
+    <span class="hljs-keyword">$this</span>-&gt;_socials = ArrayHelper::merge(<span class="hljs-keyword">$this</span>-&gt;_socials, $result);
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+    </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    /*<![CDATA[*/
+    $('a.toggle').on('click', function () {
+        var $this = $(this);
+        if ($this.hasClass('properties-hidden')) {
+            $this.text($this.text().replace(/Show/,'Hide'));
+            $this.parents('.toggle-target-container').find('.inherited').show();
+            $this.removeClass('properties-hidden');
+        } else {
+            $this.text($this.text().replace(/Hide/,'Show'));
+            $this.parents('.toggle-target-container').find('.inherited').hide();
+            $this.addClass('properties-hidden');
+        }
+
+        return false;
+    });
+    /*]]>*/
+</script>
+
+
+</div>
+
+<footer class="footer">
+        <p class="pull-right"><small>Page generated on Sat, 11 Jun 2022 23:12:31 +0300</small></p>
+    Powered by <a href="https://www.yiiframework.com/" rel="external">Yii Framework</a></footer>
+
+<script>jQuery(function ($) {
+    var shiftWindow = function () { scrollBy(0, -50) };
+    if (location.hash) setTimeout(shiftWindow, 1);
+    window.addEventListener("hashchange", shiftWindow);
+var element = document.createElement("script");
+element.src = "./jssearch.index.js";
+document.body.appendChild(element);
+
+var searchBox = $('#searchbox');
+
+// search when typing in search field
+searchBox.on("keyup", function(event) {
+    var query = $(this).val();
+
+    if (query == '' || event.which == 27) {
+        $('#search-resultbox').hide();
+        return;
+    } else if (event.which == 13) {
+        var selectedLink = $('#search-resultbox a.selected');
+        if (selectedLink.length != 0) {
+            document.location = selectedLink.attr('href');
+            return;
+        }
+    } else if (event.which == 38 || event.which == 40) {
+        $('#search-resultbox').show();
+
+        var selected = $('#search-resultbox a.selected');
+        if (selected.length == 0) {
+            $('#search-results').find('a').first().addClass('selected');
+        } else {
+            var next;
+            if (event.which == 40) {
+                next = selected.parent().next().find('a').first();
+            } else {
+                next = selected.parent().prev().find('a').first();
+            }
+            if (next.length != 0) {
+                var resultbox = $('#search-results');
+                var position = next.position();
+
+//              TODO scrolling is buggy and jumps around
+//                resultbox.scrollTop(Math.floor(position.top));
+//                console.log(position.top);
+
+                selected.removeClass('selected');
+                next.addClass('selected');
+            }
+        }
+
+        return;
+    }
+    $('#search-resultbox').show();
+    $('#search-results').html('<li><span class="no-results">No results</span></li>');
+
+    var result = jssearch.search(query);
+
+    if (result.length > 0) {
+        var i = 0;
+        var resHtml = '';
+
+        for (var key in result) {
+            if (i++ > 20) {
+                break;
+            }
+            resHtml = resHtml +
+            '<li><a href="' + result[key].file.u.substr(3) +'"><span class="title">' + result[key].file.t + '</span>' +
+            '<span class="description">' + result[key].file.d + '</span></a></li>';
+        }
+        $('#search-results').html(resHtml);
+    }
+});
+
+// hide the search results on ESC
+$(document).on("keyup", function(event) { if (event.which == 27) { $('#search-resultbox').hide(); } });
+// hide search results on click to document
+$(document).bind('click', function (e) { $('#search-resultbox').hide(); });
+// except the following:
+searchBox.bind('click', function(e) { e.stopPropagation(); });
+$('#search-resultbox').bind('click', function(e) { e.stopPropagation(); });
+
+});</script></body>
+</html>
