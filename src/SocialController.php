@@ -29,7 +29,7 @@ class SocialController extends \yii\web\Controller
 
         $socialObject->state = $state;
         $socialObject->code = $code;
-        $socialObject->redirectUrl = Url::to([$this->getRoute()],true);
+        $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
 
         if($register && $socialObject->register()) {
             $result = $socialObject->registerSuccess($this);
