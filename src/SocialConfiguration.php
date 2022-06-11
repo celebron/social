@@ -50,7 +50,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @return array
      * @throws InvalidConfigException
      */
-    public function getLinks($register = null): array
+    public function getLinks(bool $register = false): array
     {
         $result = [];
         foreach ($this->getSocials() as $key=>$social) {
