@@ -2,9 +2,7 @@
 
 namespace Celebron\social;
 
-use JetBrains\PhpStorm\ArrayShape;
-use Yii;
-use yii\base\Application;
+use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -19,8 +17,14 @@ use yii\web\NotFoundHttpException;
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
+
     public string $register = 'register';
+
+    public string $route = "social";
+
     public int $duration = 0;
+
+
     /** @var \Closure|null - событие отображение ошибок на все */
     public ?\Closure $onAllError = null;
     /** @var \Closure|null - cобытие регистрации на все */
@@ -71,8 +75,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function setSocials(array $value): void
     {
         $result= [];
-        foreach ($value as $key=>$class)
-        {
+        foreach ($value as $key=>$class) {
             /** @var Social $object */
             $object = \Yii::createObject($class);
             if($object instanceof Social) {
@@ -103,25 +106,9 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public static function config() : static
     {
-        return Yii::$app->get(static::class);
+        return \Yii::$app->get(static::class);
     }
 
-    /**
-     * @param $socialname
-     * @return Social
-     * @throws InvalidConfigException
-     * @throws NotFoundHttpException
-     * @throws \Exception
-     */
-    public static function ensure(string $socialname): Social
-    {
-        $config = static::config();
-        $object = ArrayHelper::getValue($config->getSocials(), $socialname);
-        if($object !== null) {
-            return $object;
-        }
-        throw new NotFoundHttpException("Social {$socialname} not registered");
-    }
 
     /**
      * Получить ссылку на редеректа на соц.сеть
@@ -131,18 +118,29 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
-    public static function link(string $socialname, $register = null): string
+    public static function link(string $socialname, bool|string $register = false): string
     {
-        return self::ensure($socialname)::url($register);
+        $config = self::config();
+        $url[0] = $config->route . '/' . $socialname;
+        if(is_bool($register) && $register) {
+            $url['state'] = $config->register;
+        }
+        if(is_string($register)) {
+            $url['state'] = $register;
+        }
+        return Url::to($url, true);
     }
 
     public function bootstrap ($app)
     {
-        $app->controllerMap['social'] = [
+        $app->urlManager->addRules([
+            "{$this->route}/<social>" => "{$this->route}/handler",
+        ]);
+        $app->controllerMap[$this->route] = [
             'class' => SocialController::class,
             'config' => $this,
         ];
 
-        $app->urlManager->rules['social/<social>'] = "social/handler";
+
     }
 }

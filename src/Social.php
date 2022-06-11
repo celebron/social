@@ -49,8 +49,8 @@ abstract class Social extends Model
 
     ///В Controllers
 
-    /** @var string - oAuth2 state */
-    public string $state;
+    /** @var null|string - oAuth2 state */
+    public ?string $state;
     /** @var string|null - oAuth2 code */
     public ?string $code;
     /** @var string - oAuth redirectUrl */
@@ -188,38 +188,38 @@ abstract class Social extends Model
 
     /**
      * Событие положительной авторизации
-     * @param SocialAction $action
+     * @param SocialController $action
      * @return Response
      */
-    public function loginSuccess(SocialAction $action): mixed
+    public function loginSuccess(SocialController $action): mixed
     {
         $eventArgs = new SuccessEventArgs($action);
         $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
-        return $eventArgs->result ?? $action->controller->goBack();
+        return $eventArgs->result ?? $action->goBack();
     }
 
     /**
      * Событие положительной регистрации
-     * @param SocialAction $action
+     * @param SocialController $action
      * @return mixed
      */
-    public function registerSuccess(SocialAction $action): mixed
+    public function registerSuccess(SocialController $action): mixed
     {
         $eventArgs = new SuccessEventArgs($action);
         $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_REGISTER_SUCCESS, $eventArgs);
-        return $eventArgs->result ?? $action->controller->goBack();
+        return $eventArgs->result ?? $action->goBack();
     }
 
     /**
      * Событие на ошибку
-     * @param SocialAction $action
+     * @param SocialController $action
      * @return mixed
      * @throws ForbiddenHttpException
      * @throws UnauthorizedHttpException
      */
-    public function error(SocialAction $action): mixed
+    public function error(SocialController $action): mixed
     {
         $eventArgs = new ErrorEventArgs($action);
         $eventArgs->errors = $this->getErrorSummary(false);
@@ -259,25 +259,26 @@ abstract class Social extends Model
     }
 
     /**
-     * Ссылка на страницу авторизации
-     * @param string|null $name
+     * @param bool|string $state
      * @return string
      * @throws InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
      */
-    final public static function url() : string
+    final public static function url(bool|string $state = false) : string
     {
-        return static::urlState(static::socialName());
+        return SocialConfiguration::link(static::socialName(), $state);
     }
 
     /**
      * Ссылка на социальную сеть [html::a]
      * @param string $text - Текст на ссылку
-     * @param string|null $register
+     * @param bool|string $state
      * @param array $data
      * @return string
      * @throws InvalidConfigException
+     * @throws \yii\web\NotFoundHttpException
      */
-    final public static function a(string $text, ?string $register=null, array $data = []): string
+    final public static function a(string $text, bool|string $state = false, array $data = []): string
     {
         if(isset($data['class'])) {
             $data['class'] = [
@@ -285,7 +286,7 @@ abstract class Social extends Model
                 $data['class']
             ];
         }
-        return Html::a($text, static::url($register), $data);
+        return Html::a($text, static::url($state), $data);
     }
 
     protected static function debug($text): void

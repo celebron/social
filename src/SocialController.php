@@ -17,7 +17,7 @@ class SocialController extends \yii\web\Controller
      * @throws \yii\web\ForbiddenHttpException
      * @throws \yii\web\NotFoundHttpException
      */
-    public function actionHandler(string $social, ?string $code, ?string $state)
+    public function actionHandler(string $social, ?string $code = null, ?string $state = null)
     {
         $register = ($state !== null) && str_contains($this->config->register, $state);
 

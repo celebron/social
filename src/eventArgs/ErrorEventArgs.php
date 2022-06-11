@@ -2,14 +2,15 @@
 
 namespace Celebron\social\eventArgs;
 
-use Celebron\social\SocialAction;
-use yii\web\Controller;
+
+use Celebron\social\SocialController;
+
 
 class ErrorEventArgs extends SuccessEventArgs
 {
     public array $errors;
 
-    public function __construct (public SocialAction $acton, $config = [])
+    public function __construct (public SocialController $acton, $config = [])
     {
         parent::__construct($this->acton, $config);
     }
@@ -17,18 +18,18 @@ class ErrorEventArgs extends SuccessEventArgs
     public function goBack(string|array $defaultUrl = null)
     {
         $this->result = null;
-        $this->action->controller->goBack($defaultUrl);
+        $this->action->goBack($defaultUrl);
     }
 
     public function goHome()
     {
         $this->result = null;
-        $this->action->controller->goHome();
+        $this->goHome();
     }
 
     public function redirect(string|array $url)
     {
         $this->result = null;
-        $this->action->controller->redirect($url);
+        $this->action->redirect($url);
     }
 }

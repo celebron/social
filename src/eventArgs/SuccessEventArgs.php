@@ -2,14 +2,14 @@
 
 namespace Celebron\social\eventArgs;
 
-use Celebron\social\SocialAction;
+use Celebron\social\SocialController;
 use yii\base\Event;
 
 class SuccessEventArgs extends Event
 {
     public mixed $result = null;
 
-    public function __construct (public SocialAction $action, $config = [])
+    public function __construct (public SocialController $action, $config = [])
     {
         parent::__construct($config);
     }
