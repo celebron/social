@@ -4,6 +4,8 @@ namespace Celebron\social;
 
 use JetBrains\PhpStorm\ArrayShape;
 use Yii;
+use yii\base\Application;
+use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
@@ -15,11 +17,10 @@ use yii\web\NotFoundHttpException;
  * @property-read array $links - список линков зарегистрированных соцсетей
  * @property Social[] $socials - зарегистрированые соцсети
  */
-class SocialConfiguration extends Component
+class SocialConfiguration extends Component implements BootstrapInterface
 {
-    /** @var string - стандартый роут */
-    public string $route = "site/social";
     public string $register = 'register';
+    public int $duration = 0;
     /** @var \Closure|null - событие отображение ошибок на все */
     public ?\Closure $onAllError = null;
     /** @var \Closure|null - cобытие регистрации на все */
@@ -135,4 +136,13 @@ class SocialConfiguration extends Component
         return self::ensure($socialname)::url($register);
     }
 
+    public function bootstrap ($app)
+    {
+        $app->controllerMap['social'] = [
+            'class' => SocialController::class,
+            'config' => $this,
+        ];
+
+        $app->urlManager->rules['social/<social>'] = "social/handler";
+    }
 }

@@ -159,13 +159,12 @@ abstract class Social extends Model
         if($this->active && $this->validate()) {
             $field = $this->field;
             $user->$field = $this->_id;
-            if(!$user->save()) {
-                self::debug("Not registered user id $this->_id.");
-                $this->addError($field, $user->errors[$field]);
-                return false;
+            if($user->save()) {
+                self::debug("Registered user id $this->_id");
+                return true;
             }
-            self::debug("Registered user id $this->_id");
-            return true;
+            self::debug("Not registered user id $this->_id.");
+            $this->addError($field, $user->errors[$field]);
         }
         return false;
     }
