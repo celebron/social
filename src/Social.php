@@ -31,6 +31,8 @@ abstract class Social extends Model
     public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
     public const EVENT_ERROR = "error";
 
+
+    public static SocialConfiguration $config;
     ////В config
 
     /** @var string - поле в базе данных для идентификации  */

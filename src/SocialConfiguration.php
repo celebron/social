@@ -74,6 +74,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public function setSocials(array $value): void
     {
+        Social::$config = $this;
         $result= [];
         foreach ($value as $key=>$class) {
             /** @var Social $object */
