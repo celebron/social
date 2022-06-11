@@ -109,19 +109,19 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * Получить ссылку на редеректа на соц.сеть
      * @param string $socialname
-     * @param $register
+     * @param $state
      * @return string
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
-    public static function link(string $socialname, bool|string $register = false): string
+    public static function link(string $socialname, bool|string $state = false): string
     {
-        $url[0] = self::$config->route . '/' . $socialname;
-        if(is_bool($register) && $register) {
+        $url[0] = self::$config->route . '/' . strtolower($socialname);
+        if(is_bool($state) && $state) {
             $url['state'] = self::$config->register;
         }
-        if(is_string($register)) {
-            $url['state'] = $register;
+        if(is_string($state)) {
+            $url['state'] = $state;
         }
         return Url::to($url, true);
     }
