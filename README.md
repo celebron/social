@@ -56,6 +56,8 @@ Edit the file `config/web.php` with real data, for example:
     
     
 Ссылка redirect в консолях соц.сетей (oauth2 и прочее)
+-------------
+
     https://сайт.ru/social/<social> 
     
     <social> - название социальной сети (google, yandex и т.п.). Индекс массива $socials [[SocialConfiguration]]
