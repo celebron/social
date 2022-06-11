@@ -17,11 +17,14 @@ use yii\web\NotFoundHttpException;
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
+    /** @var $this - Глобальная конфигурация */
+    public static self $config;
 
+    /** @var string - state для регистрации */
     public string $register = 'register';
-
+    /** @var string - роут */
     public string $route = "social";
-
+    /** @var int - на сколько сохранять участника */
     public int $duration = 0;
 
 
@@ -35,6 +38,10 @@ class SocialConfiguration extends Component implements BootstrapInterface
     private array $_socials = [];
 
 
+    public function init ()
+    {
+        self::$config = $this;
+    }
 
     /**
      * Получение списка активных соцсетей
@@ -74,7 +81,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public function setSocials(array $value): void
     {
-        Social::$config = $this;
         $result= [];
         foreach ($value as $key=>$class) {
             /** @var Social $object */
@@ -100,17 +106,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
         $this->_socials = ArrayHelper::merge($this->_socials, $result);
     }
 
-
-    /**
-     * @return SocialConfiguration
-     * @throws InvalidConfigException
-     */
-    public static function config() : static
-    {
-        return \Yii::$app->get(static::class);
-    }
-
-
     /**
      * Получить ссылку на редеректа на соц.сеть
      * @param string $socialname
@@ -121,10 +116,9 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public static function link(string $socialname, bool|string $register = false): string
     {
-        $config = self::config();
-        $url[0] = $config->route . '/' . $socialname;
+        $url[0] = self::$config->route . '/' . $socialname;
         if(is_bool($register) && $register) {
-            $url['state'] = $config->register;
+            $url['state'] = self::$config->register;
         }
         if(is_string($register)) {
             $url['state'] = $register;

@@ -31,8 +31,6 @@ abstract class Social extends Model
     public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
     public const EVENT_ERROR = "error";
 
-
-    public static SocialConfiguration $config;
     ////В config
 
     /** @var string - поле в базе данных для идентификации  */
@@ -250,14 +248,6 @@ abstract class Social extends Model
     final public static function socialName(): string
     {
         return (new ReflectionClass(static::class))->getShortName();
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    public static function urlState($state)
-    {
-        return Url::to([ SocialConfiguration::config()->route, 'state' => strtolower($state) ]);
     }
 
     /**
