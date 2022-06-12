@@ -33,20 +33,20 @@ class SocialController extends \yii\web\Controller
         $socialObject->state = $state;
         $socialObject->code = $code;
         $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
+        try {
+            if ($register && $socialObject->register()) {
+                return $socialObject->registerSuccess($this);
+            }
 
-        if($register && $socialObject->register()) {
-            $result = $socialObject->registerSuccess($this);
+            if (!$register && $socialObject->login($this->config->duration)) {
+                return $socialObject->loginSuccess($this);
+            }
+
+            return $socialObject->error($this, null);
+        } catch (\Exception $ex) {
+            return $socialObject->error($this, $ex);
+        } finally {
             \Yii::endProfile("Social profiling", static::class);
-            return $result;
         }
-
-        if(!$register && $socialObject->login($this->config->duration)) {
-            $result =  $socialObject->loginSuccess($this);
-            \Yii::endProfile("Social profiling", static::class);
-            return $result;
-        }
-
-        \Yii::endProfile("Social profiling", static::class);
-        return $socialObject->error($this);
     }
 }

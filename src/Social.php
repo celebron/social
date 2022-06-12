@@ -11,12 +11,14 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
+use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 
@@ -89,12 +91,16 @@ abstract class Social extends Model
      * @param $a
      * @return void
      * @throws InvalidConfigException
+     * @throws NotSupportedException
      */
     final public function fieldValidator($a) : void
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
-        if(($class instanceof ActiveRecord) && !ArrayHelper::isIn($this->$a, $class->attributes())) {
-            $this->addError($a, "Field {$this->$a} not exists");
+        if(!($class instanceof ActiveRecord)) {
+            throw new NotInstantiableException(ActiveRecord::class, code: 0);
+        }
+        if(!ArrayHelper::isIn($this->$a, $class->attributes())) {
+            throw new NotSupportedException("Field {$this->$a} not supported to class {$class::class}", code: 1);
         }
     }
 
@@ -110,11 +116,12 @@ abstract class Social extends Model
         }
 
         $this->_id = $this->requestId();
+        static::debug("User id $this->_id");
 
         if ($this->_id === null) {
-            $this->addError($this->$a, "Request returned null");
+            throw new NotFoundHttpException("User not found", code: 2);
         }
-        static::debug("User id $this->_id");
+
     }
 
     abstract protected function requestCode ();
@@ -139,13 +146,14 @@ abstract class Social extends Model
      * @throws InvalidConfigException
      * @throws NotSupportedException
      */
-    protected function fieldSearch(): ?FieldSearchInterface
+    protected function fieldSearch(): ?ActiveRecord
     {
-        $class = Yii::createObject(Yii::$app->user->identityClass);
-        if($class instanceof FieldSearchInterface){
-            return $class::fieldSearch($this->field, $this->_id);
+        $class = \Yii::createObject(\Yii::$app->user->identityClass);
+        if($class instanceof ActiveRecord) {
+            return $class::find()->andWhere([$this->field => $this->_id])->one();
         }
-        throw new NotSupportedException($class::class . ' does not extend ' . FieldSearchInterface::class);
+
+        throw new NotSupportedException("{$class::class} not instance ActiveRecord", code: 3);
     }
 
     /**
@@ -219,25 +227,18 @@ abstract class Social extends Model
      * @throws ForbiddenHttpException
      * @throws UnauthorizedHttpException
      */
-    public function error(SocialController $action): mixed
+    public function error(SocialController $action, ?Exception $ex): mixed
     {
-        $eventArgs = new ErrorEventArgs($action);
-        $eventArgs->errors = $this->getErrorSummary(false);
+        $eventArgs = new ErrorEventArgs($action, $ex);
         $eventArgs->data = $this->data;
-
-        if($this->active) {
-            if($this->hasErrors()) {
-                $text = implode("\n",$eventArgs->errors);
-                $eventArgs->result = new ForbiddenHttpException('Social ' . static::socialName() . " validation failed.\n {$text}");
-            } else {
-                $eventArgs->result = new UnauthorizedHttpException("User $this->_id not found.");
-            }
-        } else {
-            $eventArgs->result = new ForbiddenHttpException( 'Social ' . static::socialName() . " not active.");
-        }
         $this->trigger(self::EVENT_ERROR, $eventArgs);
 
-        if($eventArgs->result instanceof Exception) { throw $eventArgs->result; }
+        if($ex === null && $eventArgs->result === null && !$this->active) {
+            throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
+        }
+        if($ex !== null && $eventArgs->result === null) {
+            throw $ex;
+        }
 
         return $eventArgs->result;
     }

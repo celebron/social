@@ -8,9 +8,8 @@ use Celebron\social\SocialController;
 
 class ErrorEventArgs extends SuccessEventArgs
 {
-    public array $errors;
 
-    public function __construct (public SocialController $acton, $config = [])
+    public function __construct (public SocialController $acton, public ?\Exception $exception, $config = [])
     {
         parent::__construct($this->acton, $config);
     }
