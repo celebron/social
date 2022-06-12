@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\eventArgs\FindUserEventArgs;
 use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -32,6 +33,8 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public ?\Closure $onAllRegisterSuccess = null;
     /** @var \Closure|null - cобытие автризации на все */
     public ?\Closure $onAllLoginSuccess = null;
+
+    public ?\Closure $findUserAlg = null;
 
     private array $_socials = [];
 
@@ -89,14 +92,27 @@ class SocialConfiguration extends Component implements BootstrapInterface
                     $key = strtolower($object::socialName());
                 }
                 if($this->onAllRegisterSuccess !== null) {
-                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess);
+                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess, ['config'=> $this]);
                 }
                 if($this->onAllLoginSuccess !== null){
-                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess);
+                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess, ['config'=> $this]);
                 }
                 if($this->onAllError !== null) {
-                    $object->on(Social::EVENT_ERROR, $this->onAllError);
+                    $object->on(Social::EVENT_ERROR, $this->onAllError, ['config'=> $this]);
                 }
+
+                if($this->findUserAlg === null) {
+                    $object->on(Social::EVENT_FIND_USER, function(FindUserEventArgs $e) {
+                        /** @var Social $sender */
+                        $sender = $e->sender;
+                        if($sender->id !== null) {
+                            $e->user = $e->userQuery->andWhere([$sender->field => $sender->id])->one();
+                        }
+                    },  ['config'=>$this ]);
+                } else {
+                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config'=> $this] );
+                }
+
                 $result[$key] = $object;
             } else {
                 throw new NotSupportedException($class::class . ' does not extend ' . Social::class);

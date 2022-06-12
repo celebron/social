@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\ErrorEventArgs;
+use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
 use Exception;
 use ReflectionClass;
@@ -11,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
+use yii\di\Instance;
 use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -31,6 +33,7 @@ abstract class Social extends Model
     public const EVENT_REGISTER_SUCCESS = "registerSuccess";
     public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
     public const EVENT_ERROR = "error";
+    public const EVENT_FIND_USER = "findUser";
 
     ////В config
 
@@ -147,12 +150,14 @@ abstract class Social extends Model
      */
     protected function fieldSearch(): ?ActiveRecord
     {
-        $class = \Yii::createObject(\Yii::$app->user->identityClass);
-        if($class instanceof ActiveRecord) {
-            return $class::find()->andWhere([$this->field => $this->_id])->one();
+        if ($this->_id === null) {
+            return null;
         }
 
-        throw new NotSupportedException($class::class . ' not instance ActiveRecord', code: 3);
+        $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
+        $findUserEventArgs = new FindUserEventArgs($class::find());
+        $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
+        return $findUserEventArgs->user;
     }
 
     /**
@@ -222,9 +227,9 @@ abstract class Social extends Model
     /**
      * Событие на ошибку
      * @param SocialController $action
+     * @param Exception|null $ex
      * @return mixed
      * @throws ForbiddenHttpException
-     * @throws UnauthorizedHttpException
      */
     public function error(SocialController $action, ?Exception $ex): mixed
     {
