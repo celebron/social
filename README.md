@@ -18,15 +18,16 @@ Configuration
 Edit the file `config/web.php` with real data, for example:
 ```php
     ...,
+     'bootstrap' => [..., 'social' ],
     'components'=>[
-        \Celebron\social\SocialConfiguration::class => [
+        'social' => [
             'class' => Celebron\social\SocialConfiguration::class,
             'socials' => [
                  [
-                     'class' => Yandex::class,
+                     'class' => Yandex::class, //Google::class и т.д.
                      'active' => true,
-                     'clientId' => 
-                     'clientSecret' => 
+                     'clientId' => '...',
+                     'clientSecret' => '...',
                      'field' => 'id_yandex',
                 ],
                 ...    
@@ -36,14 +37,15 @@ Edit the file `config/web.php` with real data, for example:
 ...
 ```
 
-### SocialConfiguration::class
-    [optional] string       $route ('site/social')       - роут для OAuth redirect path   
+### [[SocialConfiguration::class]]
+    [optional] string       $route ('social')            - роут для OAuth redirect path   
+    [optional] string       $register ('register')       - state - регистрации
     [optional] Closure|null $onAllError (null)           - обработка всех ошибок socials
     [optional] Closure|null $onAllRegisterSuccess (null) - обработчик всех успешных регистраций
     [optional] Closure|null $onAllLoginSuccess (null)    - обработчик всех успешных логинов
     [required] array        $socials                     - список всех соц. сетей 
 
-### SocialOAuth::class    (Google::class, Yandex::class, ...)
+### [[SocialOAuth::class]]    (Google::class, Yandex::class, ...)
     [required] string $field               - поле в базе данных
     [optional] bool   $activate (false)    - активировать механизм
     [optional] string $name                - название для Widget
@@ -51,3 +53,11 @@ Edit the file `config/web.php` with real data, for example:
     [required|optional] $clientId          - OAuth clientId
     [required|optional] $clientSecret      - OAuth clientSecret
     [optional] $clientUrl                  - OAuth api url
+    
+    
+Ссылка redirect в консолях соц.сетей (oauth2 и прочее)
+-------------
+
+    https://сайт.ru/social/<social> 
+    
+    <social> - название социальной сети (google, yandex и т.п.). Индекс массива $socials [[SocialConfiguration]]
