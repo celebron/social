@@ -14,7 +14,6 @@ use yii\db\ActiveRecord;
 use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\web\ForbiddenHttpException;
@@ -100,7 +99,7 @@ abstract class Social extends Model
             throw new NotInstantiableException(ActiveRecord::class, code: 0);
         }
         if(!ArrayHelper::isIn($this->$a, $class->attributes())) {
-            throw new NotSupportedException("Field {$this->$a} not supported to class {$class::class}", code: 1);
+            throw new NotSupportedException('Field ' . $this->$a . ' not supported to class ' .$class::class, code: 1);
         }
     }
 
@@ -153,7 +152,7 @@ abstract class Social extends Model
             return $class::find()->andWhere([$this->field => $this->_id])->one();
         }
 
-        throw new NotSupportedException("{$class::class} not instance ActiveRecord", code: 3);
+        throw new NotSupportedException($class::class . ' not instance ActiveRecord', code: 3);
     }
 
     /**
