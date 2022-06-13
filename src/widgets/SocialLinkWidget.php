@@ -6,6 +6,9 @@ use Celebron\social\SocialConfiguration;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
+/**
+ * Виджет списка соцсетей
+ */
 class SocialLinkWidget extends \yii\base\Widget
 {
     public string $groupClass = 'social-auth';

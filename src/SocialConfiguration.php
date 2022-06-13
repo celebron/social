@@ -18,7 +18,7 @@ use yii\web\NotFoundHttpException;
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
-    /** @var $this - конфигурация */
+    /** @var self - конфигурация */
     public static self $config;
 
     /** @var string - state для регистрации */
@@ -33,12 +33,15 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public ?\Closure $onAllRegisterSuccess = null;
     /** @var \Closure|null - cобытие автризации на все */
     public ?\Closure $onAllLoginSuccess = null;
-
+    /** @var \Closure|null - событие поиск пользователя (алгоритм) */
     public ?\Closure $findUserAlg = null;
 
     private array $_socials = [];
 
-
+    /**
+     * Инициализация класса (стандарт Yii2)
+     * @return void
+     */
     public function init ()
     {
         self::$config = $this;
@@ -103,12 +106,8 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
                 if($this->findUserAlg === null) {
                     $object->on(Social::EVENT_FIND_USER, function(FindUserEventArgs $e) {
-                        /** @var Social $sender */
-                        $sender = $e->sender;
-                        if($sender->id !== null) {
-                            $e->user = $e->userQuery->andWhere([$sender->field => $sender->id])->one();
-                        }
-                    },  ['config'=>$this ]);
+                        $e->defaultAlg();
+                    },  ['config'=>$this]);
                 } else {
                     $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config'=> $this] );
                 }
@@ -141,6 +140,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
         return Url::to($url, true);
     }
 
+    /**
+     * Инициализация механизма Bootstrap (Yii2)
+     * @param $app - \Yii::$app
+     * @return void
+     */
     public function bootstrap ($app)
     {
         $app->urlManager->addRules([

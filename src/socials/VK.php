@@ -4,7 +4,7 @@ namespace Celebron\social\socials;
 
 use Celebron\social\SocialOAuth2;
 
-/***
+/**
  * Oauth2 VK
  */
 class VK extends SocialOAuth2

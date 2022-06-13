@@ -62,7 +62,7 @@ abstract class Social extends Model
 
 
     /** @var array - Данные от социальных сетей */
-    protected array $data = [];
+    public array $data = [];
     /** @var mixed|null - Id от соцеальных сетей */
     private mixed $_id = null;
 
@@ -102,13 +102,14 @@ abstract class Social extends Model
             throw new NotInstantiableException(ActiveRecord::class, code: 0);
         }
         if(!ArrayHelper::isIn($this->$a, $class->attributes())) {
-            throw new NotSupportedException('Field ' . $this->$a . ' not supported to class ' .$class::class, code: 1);
+            throw new InvalidConfigException('Field ' . $this->$a . ' not supported to class ' .$class::class, code: 1);
         }
     }
 
     /**
-     *
+     * Валидация кода
      * @param $a
+     * @throws NotFoundHttpException
      */
     final public function codeValidator($a): void
     {
@@ -126,8 +127,16 @@ abstract class Social extends Model
 
     }
 
+    /**
+     * Запрос кода от соц.сети
+     * @return mixed
+     */
     abstract protected function requestCode ();
 
+    /**
+     * Запрос id пользователя от соц.сети
+     * @return mixed
+     */
     abstract protected function requestId () : mixed;
 
     /**
@@ -150,13 +159,10 @@ abstract class Social extends Model
      */
     protected function fieldSearch(): ?ActiveRecord
     {
-        if ($this->_id === null) {
-            return null;
-        }
-
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
         $findUserEventArgs = new FindUserEventArgs($class::find());
         $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
+        \Yii::info($findUserEventArgs->user->toArray(), static::class);
         return $findUserEventArgs->user;
     }
 
@@ -175,8 +181,7 @@ abstract class Social extends Model
                 self::debug("Registered user id $this->_id");
                 return true;
             }
-            self::debug("Not registered user id $this->_id.");
-            $this->addError($field, $user->errors[$field]);
+            \Yii::warning($user->errors, static::class);
         }
         return false;
     }
@@ -206,7 +211,6 @@ abstract class Social extends Model
     public function loginSuccess(SocialController $action): mixed
     {
         $eventArgs = new SuccessEventArgs($action);
-        $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
@@ -219,7 +223,6 @@ abstract class Social extends Model
     public function registerSuccess(SocialController $action): mixed
     {
         $eventArgs = new SuccessEventArgs($action);
-        $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_REGISTER_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
@@ -234,12 +237,12 @@ abstract class Social extends Model
     public function error(SocialController $action, ?Exception $ex): mixed
     {
         $eventArgs = new ErrorEventArgs($action, $ex);
-        $eventArgs->data = $this->data;
         $this->trigger(self::EVENT_ERROR, $eventArgs);
 
         if($ex === null && $eventArgs->result === null && !$this->active) {
             throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
         }
+
         if($ex !== null && $eventArgs->result === null) {
             throw $ex;
         }
@@ -271,7 +274,7 @@ abstract class Social extends Model
     /**
      * Ссылка на социальную сеть [html::a]
      * @param string $text - Текст на ссылку
-     * @param bool|string $state
+     * @param bool|string $state - oauth state (true - register)
      * @param array $data
      * @return string
      * @throws InvalidConfigException

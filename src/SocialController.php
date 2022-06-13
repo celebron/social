@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
  */
 class SocialController extends \yii\web\Controller
 {
+    /** @var SocialConfiguration - Конфигурация */
     public SocialConfiguration $config;
 
     /**

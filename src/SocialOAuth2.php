@@ -13,14 +13,17 @@ use yii\web\BadRequestHttpException;
 abstract class SocialOAuth2 extends Social
 {
 
-    /** @var string  */
+    /** @var string - ид от соц.сети */
     public string $clientId;
-    /** @var string  */
+    /** @var string - секрет от соц.сети  */
     public string $clientSecret;
-
+    /** @var string - url api соц.сети */
     public string $clientUrl = '';
     private ?Client $_client = null;
 
+    /**
+     * @return array
+     */
     public function rules (): array
     {
         return ArrayHelper::merge(parent::rules(),[
