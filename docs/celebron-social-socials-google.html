@@ -231,12 +231,12 @@ yii\base\Model</td></tr>
                     <td>Событие на ошибку</td>
                     <td><a href="celebron-social-social.html">Celebron\social\Social</a></td>
                 </tr>
-                                                                    <tr id="fieldValidator()" class="inherited">
+                                                <tr id="fieldValidator()" class="inherited">
                     <td><a href="celebron-social-socials-google.html#fieldValidator()-detail">fieldValidator()</a></td>
                     <td>Валидация поля аврторизации</td>
                     <td><a href="celebron-social-social.html">Celebron\social\Social</a></td>
                 </tr>
-                                                <tr id="getClient()" class="inherited">
+                                                                    <tr id="getClient()" class="inherited">
                     <td><a href="celebron-social-socials-google.html#getClient()-detail">getClient()</a></td>
                     <td>CurlClient</td>
                     <td><a href="celebron-social-socialoauth2.html">Celebron\social\SocialOAuth2</a></td>
@@ -336,12 +336,12 @@ yii\base\Model</td></tr>
                     <td>Дебаг</td>
                     <td><a href="celebron-social-social.html">Celebron\social\Social</a></td>
                 </tr>
-                                                                    <tr id="fieldSearch()" class="inherited">
-                    <td><a href="celebron-social-socials-google.html#fieldSearch()-detail">fieldSearch()</a></td>
+                                                                                        <tr id="findUser()" class="inherited">
+                    <td><a href="celebron-social-socials-google.html#findUser()-detail">findUser()</a></td>
                     <td>Поиск по полю в бд</td>
                     <td><a href="celebron-social-social.html">Celebron\social\Social</a></td>
                 </tr>
-                                                                                                                                <tr id="getException()" class="inherited">
+                                                                                                            <tr id="getException()" class="inherited">
                     <td><a href="celebron-social-socials-google.html#getException()-detail">getException()</a></td>
                     <td>Отслеживание ошибки</td>
                     <td><a href="celebron-social-socialoauth2.html">Celebron\social\SocialOAuth2</a></td>
@@ -804,80 +804,16 @@ yii\base\Model</td></tr>
 </span>{
     $eventArgs = <span class="hljs-keyword">new</span> ErrorEventArgs($action, $ex);
     <span class="hljs-keyword">$this</span>-&gt;trigger(<span class="hljs-keyword">self</span>::EVENT_ERROR, $eventArgs);
-    <span class="hljs-keyword">if</span>($ex === <span class="hljs-keyword">null</span> &amp;&amp; $eventArgs-&gt;result === <span class="hljs-keyword">null</span> &amp;&amp; !<span class="hljs-keyword">$this</span>-&gt;active) {
-        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ForbiddenHttpException(<span class="hljs-string">'Social '</span> . <span class="hljs-keyword">static</span>::socialName() . <span class="hljs-string">" not active."</span>);
+    <span class="hljs-keyword">if</span>($ex === <span class="hljs-keyword">null</span> &amp;&amp; $eventArgs-&gt;result === <span class="hljs-keyword">null</span>) {
+        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">$this</span>-&gt;active) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ForbiddenHttpException(<span class="hljs-string">'Social '</span> . <span class="hljs-keyword">static</span>::socialName() . <span class="hljs-string">" not active."</span>);
+        }
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NotFoundHttpException(<span class="hljs-string">'['</span>. <span class="hljs-keyword">static</span>::socialName() .<span class="hljs-string">'] User '</span> . <span class="hljs-keyword">$this</span>-&gt;_id .<span class="hljs-string">' not registered'</span>);
     }
     <span class="hljs-keyword">if</span>($ex !== <span class="hljs-keyword">null</span> &amp;&amp; $eventArgs-&gt;result === <span class="hljs-keyword">null</span>) {
         <span class="hljs-keyword">throw</span> $ex;
     }
     <span class="hljs-keyword">return</span> $eventArgs-&gt;result;
-}
-</code>
-            </pre>
-        </div>
-    </div>
-            
-        </div>
-            <div id="fieldSearch()-detail"
-             class="inherited">
-            <div class="detail-header h3">
-                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
-                <a class="tool-link hash" href="celebron-social-socials-google.html#fieldSearch()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
-                
-                fieldSearch()
-
-                <span class="detail-header-tag small">
-                    protected                                                            method
-                                    </span>
-            </div>
-
-            
-            <div class="doc-description">
-                                    <p>
-                        <strong>Defined in:</strong>
-                        <a href="celebron-social-social.html#fieldSearch()-detail">Celebron\social\Social::fieldSearch()</a>                    </p>
-                
-                <p><strong>Поиск по полю в бд</strong></p>
-                                            </div>
-
-            <table class="detail-table table table-striped table-bordered table-hover">
-                <tr><td colspan="3" class="signature"><span class="signature-defs">protected</span> <span class="signature-type">\Celebron\social\FieldSearchInterface|<a href="https://www.php.net/language.types.null">null</a></span> <strong><a href="celebron-social-social.html#fieldSearch()-detail">fieldSearch</a></strong> ( )</td></tr>
-
-                                    
-                    
-                                            <tr>
-                            <th class="param-name-col">throws</th>
-                            <td class="param-type-col">\yii\base\InvalidConfigException</td>
-                            <td class="param-desc-col">
-                                                            </td>
-                        </tr>
-                                            <tr>
-                            <th class="param-name-col">throws</th>
-                            <td class="param-type-col">\yii\base\NotSupportedException</td>
-                            <td class="param-desc-col">
-                                                            </td>
-                        </tr>
-                                                </table>
-
-            
-            
-
-    <p>
-        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseFieldSearch" role="button"
-           aria-expanded="false" aria-controls="collapseFieldSearch">
-            Source code
-        </a>
-    </p>
-    <div class="collapse" id="collapseFieldSearch">
-        <div class="card card-body">
-            <pre>
-                <code class="hljs php language-php"><span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fieldSearch</span><span class="hljs-params">()</span>: ?<span class="hljs-title">ActiveRecord</span>
-</span>{
-    $class = Instance::ensure(\Yii::$app-&gt;user-&gt;identityClass, ActiveRecord::class);
-    $findUserEventArgs = <span class="hljs-keyword">new</span> FindUserEventArgs($class::find());
-    <span class="hljs-keyword">$this</span>-&gt;trigger(<span class="hljs-keyword">self</span>::EVENT_FIND_USER, $findUserEventArgs);
-    \Yii::info($findUserEventArgs-&gt;user-&gt;toArray(), <span class="hljs-keyword">static</span>::class);
-    <span class="hljs-keyword">return</span> $findUserEventArgs-&gt;user;
 }
 </code>
             </pre>
@@ -953,6 +889,67 @@ yii\base\Model</td></tr>
     <span class="hljs-keyword">if</span>(!ArrayHelper::isIn(<span class="hljs-keyword">$this</span>-&gt;$a, $class-&gt;attributes())) {
         <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> InvalidConfigException(<span class="hljs-string">'Field '</span> . <span class="hljs-keyword">$this</span>-&gt;$a . <span class="hljs-string">' not supported to class '</span> .$class::class, code: <span class="hljs-number">1</span>);
     }
+}
+</code>
+            </pre>
+        </div>
+    </div>
+            
+        </div>
+            <div id="findUser()-detail"
+             class="inherited">
+            <div class="detail-header h3">
+                <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a class="tool-link hash" href="celebron-social-socials-google.html#findUser()-detail" title="direct link to this method"><span class="glyphicon icon-hash"></span></a>
+                
+                findUser()
+
+                <span class="detail-header-tag small">
+                    protected                                                            method
+                                    </span>
+            </div>
+
+            
+            <div class="doc-description">
+                                    <p>
+                        <strong>Defined in:</strong>
+                        <a href="celebron-social-social.html#findUser()-detail">Celebron\social\Social::findUser()</a>                    </p>
+                
+                <p><strong>Поиск по полю в бд</strong></p>
+                                            </div>
+
+            <table class="detail-table table table-striped table-bordered table-hover">
+                <tr><td colspan="3" class="signature"><span class="signature-defs">protected</span> <span class="signature-type">\yii\web\IdentityInterface|\yii\db\ActiveRecord</span> <strong><a href="celebron-social-social.html#findUser()-detail">findUser</a></strong> ( )</td></tr>
+
+                                    
+                    
+                                            <tr>
+                            <th class="param-name-col">throws</th>
+                            <td class="param-type-col">\yii\base\InvalidConfigException</td>
+                            <td class="param-desc-col">
+                                                            </td>
+                        </tr>
+                                                </table>
+
+            
+            
+
+    <p>
+        <a class="btn btn-link" data-toggle="collapse" data-target="#collapseFindUser" role="button"
+           aria-expanded="false" aria-controls="collapseFindUser">
+            Source code
+        </a>
+    </p>
+    <div class="collapse" id="collapseFindUser">
+        <div class="card card-body">
+            <pre>
+                <code class="hljs php language-php"><span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findUser</span><span class="hljs-params">()</span>: <span class="hljs-title">IdentityInterface</span>|<span class="hljs-title">ActiveRecord</span>
+</span>{
+    $class = Instance::ensure(\Yii::$app-&gt;user-&gt;identityClass, ActiveRecord::class);
+    $findUserEventArgs = <span class="hljs-keyword">new</span> FindUserEventArgs($class::find());
+    <span class="hljs-keyword">$this</span>-&gt;trigger(<span class="hljs-keyword">self</span>::EVENT_FIND_USER, $findUserEventArgs);
+    \Yii::info($findUserEventArgs-&gt;user?-&gt;toArray(), <span class="hljs-keyword">static</span>::class);
+    <span class="hljs-keyword">return</span> $findUserEventArgs-&gt;user;
 }
 </code>
             </pre>
@@ -1478,12 +1475,6 @@ yii\base\Model</td></tr>
                             <td class="param-desc-col">
                                                             </td>
                         </tr>
-                                            <tr>
-                            <th class="param-name-col">throws</th>
-                            <td class="param-type-col">\yii\base\NotSupportedException</td>
-                            <td class="param-desc-col">
-                                                            </td>
-                        </tr>
                                                 </table>
 
             
@@ -1500,7 +1491,7 @@ yii\base\Model</td></tr>
             <pre>
                 <code class="hljs php language-php"><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span><span class="hljs-params">(int $duration = <span class="hljs-number">0</span>)</span> : <span class="hljs-title">bool</span>
 </span>{
-    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">$this</span>-&gt;active &amp;&amp; <span class="hljs-keyword">$this</span>-&gt;validate() &amp;&amp; ( ($user = <span class="hljs-keyword">$this</span>-&gt;fieldSearch()) !== <span class="hljs-keyword">null</span> )) {
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">$this</span>-&gt;active &amp;&amp; <span class="hljs-keyword">$this</span>-&gt;validate() &amp;&amp; ( ($user = <span class="hljs-keyword">$this</span>-&gt;findUser()) !== <span class="hljs-keyword">null</span> )) {
         $login = Yii::$app-&gt;user-&gt;login($user, $duration);
         <span class="hljs-keyword">self</span>::debug(<span class="hljs-string">"User login ($this-&gt;_id) "</span> . $login ? <span class="hljs-string">"succeeded"</span>: <span class="hljs-string">"failed"</span>);
         <span class="hljs-keyword">return</span> $login;
@@ -2286,7 +2277,7 @@ yii\base\Model</td></tr>
 </div>
 
 <footer class="footer">
-        <p class="pull-right"><small>Page generated on Mon, 13 Jun 2022 17:33:01 +0300</small></p>
+        <p class="pull-right"><small>Page generated on Mon, 13 Jun 2022 18:51:42 +0300</small></p>
     Powered by <a href="https://www.yiiframework.com/" rel="external">Yii Framework</a></footer>
 
 <script>jQuery(function ($) {

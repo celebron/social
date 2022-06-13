@@ -6,6 +6,7 @@ use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
 use Exception;
+use phpDocumentor\Reflection\Types\Static_;
 use ReflectionClass;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -19,6 +20,7 @@ use yii\helpers\Html;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\web\ForbiddenHttpException;
+use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -153,16 +155,15 @@ abstract class Social extends Model
 
     /**
      * Поиск по полю в бд
-     * @return FieldSearchInterface|null
+     * @return IdentityInterface|ActiveRecord
      * @throws InvalidConfigException
-     * @throws NotSupportedException
      */
-    protected function fieldSearch(): ?ActiveRecord
+    protected function findUser(): IdentityInterface|ActiveRecord
     {
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
         $findUserEventArgs = new FindUserEventArgs($class::find());
         $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
-        \Yii::info($findUserEventArgs->user->toArray(), static::class);
+        \Yii::info($findUserEventArgs->user?->toArray(), static::class);
         return $findUserEventArgs->user;
     }
 
@@ -191,11 +192,10 @@ abstract class Social extends Model
      * @param int $duration
      * @return bool
      * @throws InvalidConfigException
-     * @throws NotSupportedException
      */
     final public function login(int $duration = 0) : bool
     {
-        if($this->active && $this->validate() && ( ($user = $this->fieldSearch()) !== null )) {
+        if($this->active && $this->validate() && ( ($user = $this->findUser()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
             return $login;
@@ -239,8 +239,12 @@ abstract class Social extends Model
         $eventArgs = new ErrorEventArgs($action, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
 
-        if($ex === null && $eventArgs->result === null && !$this->active) {
-            throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
+        if($ex === null && $eventArgs->result === null) {
+            if(!$this->active) {
+                throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
+            }
+
+            throw new NotFoundHttpException('['. static::socialName() .'] User ' . $this->_id .' not registered');
         }
 
         if($ex !== null && $eventArgs->result === null) {

@@ -58,656 +58,1370 @@ Array
 
     [8] => Array
         (
-            [line] => 22
-            [file] => src\eventArgs\FindUserEventArgs.php
-            [message] => No docblock for element '$userQuery'
+            [line] => 21
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No docblock for element '$acton'
         )
 
     [9] => Array
         (
-            [line] => 22
-            [file] => src\eventArgs\FindUserEventArgs.php
-            [message] => No short description for element '$userQuery'
+            [line] => 21
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No short description for element '$acton'
         )
 
     [10] => Array
         (
-            [line] => 23
-            [file] => src\eventArgs\FindUserEventArgs.php
-            [message] => No docblock for element '$userQuery'
+            [line] => 21
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No docblock for element '$exception'
         )
 
     [11] => Array
         (
-            [line] => 23
-            [file] => src\eventArgs\FindUserEventArgs.php
-            [message] => No short description for element '$userQuery'
+            [line] => 21
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No short description for element '$exception'
         )
 
     [12] => Array
         (
             [line] => 21
-            [file] => src\eventArgs\SuccessEventArgs.php
-            [message] => No docblock for element '$action'
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No docblock for element '$acton'
         )
 
     [13] => Array
         (
             [line] => 21
-            [file] => src\eventArgs\SuccessEventArgs.php
-            [message] => No short description for element '$action'
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No short description for element '$acton'
         )
 
     [14] => Array
+        (
+            [line] => 21
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No docblock for element '$exception'
+        )
+
+    [15] => Array
+        (
+            [line] => 21
+            [file] => src\eventArgs\ErrorEventArgs.php
+            [message] => No short description for element '$exception'
+        )
+
+    [16] => Array
+        (
+            [line] => 22
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No docblock for element '$userQuery'
+        )
+
+    [17] => Array
+        (
+            [line] => 22
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No short description for element '$userQuery'
+        )
+
+    [18] => Array
+        (
+            [line] => 23
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No docblock for element '$userQuery'
+        )
+
+    [19] => Array
+        (
+            [line] => 23
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No short description for element '$userQuery'
+        )
+
+    [20] => Array
+        (
+            [line] => 23
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No docblock for element '$userQuery'
+        )
+
+    [21] => Array
+        (
+            [line] => 23
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No short description for element '$userQuery'
+        )
+
+    [22] => Array
+        (
+            [line] => 23
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No docblock for element '$userQuery'
+        )
+
+    [23] => Array
+        (
+            [line] => 23
+            [file] => src\eventArgs\FindUserEventArgs.php
+            [message] => No short description for element '$userQuery'
+        )
+
+    [24] => Array
         (
             [line] => 21
             [file] => src\eventArgs\SuccessEventArgs.php
             [message] => No docblock for element '$action'
         )
 
-    [15] => Array
+    [25] => Array
         (
             [line] => 21
             [file] => src\eventArgs\SuccessEventArgs.php
             [message] => No short description for element '$action'
         )
 
-    [16] => Array
-        (
-            [line] => 14
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element '$clientUrl'
-        )
-
-    [17] => Array
-        (
-            [line] => 14
-            [file] => src\socials\Discord.php
-            [message] => No short description for element '$clientUrl'
-        )
-
-    [18] => Array
-        (
-            [line] => 15
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element '$scope'
-        )
-
-    [19] => Array
-        (
-            [line] => 15
-            [file] => src\socials\Discord.php
-            [message] => No short description for element '$scope'
-        )
-
-    [20] => Array
-        (
-            [line] => 17
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element 'requestCode'
-        )
-
-    [21] => Array
-        (
-            [line] => 38
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element 'getCodeUrl'
-        )
-
-    [22] => Array
-        (
-            [line] => 14
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element '$clientUrl'
-        )
-
-    [23] => Array
-        (
-            [line] => 14
-            [file] => src\socials\Discord.php
-            [message] => No short description for element '$clientUrl'
-        )
-
-    [24] => Array
-        (
-            [line] => 15
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element '$scope'
-        )
-
-    [25] => Array
-        (
-            [line] => 15
-            [file] => src\socials\Discord.php
-            [message] => No short description for element '$scope'
-        )
-
     [26] => Array
         (
-            [line] => 17
-            [file] => src\socials\Discord.php
-            [message] => No docblock for element 'requestCode'
+            [line] => 21
+            [file] => src\eventArgs\SuccessEventArgs.php
+            [message] => No docblock for element '$action'
         )
 
     [27] => Array
         (
+            [line] => 21
+            [file] => src\eventArgs\SuccessEventArgs.php
+            [message] => No short description for element '$action'
+        )
+
+    [28] => Array
+        (
+            [line] => 21
+            [file] => src\eventArgs\SuccessEventArgs.php
+            [message] => No docblock for element '$action'
+        )
+
+    [29] => Array
+        (
+            [line] => 21
+            [file] => src\eventArgs\SuccessEventArgs.php
+            [message] => No short description for element '$action'
+        )
+
+    [30] => Array
+        (
+            [line] => 21
+            [file] => src\eventArgs\SuccessEventArgs.php
+            [message] => No docblock for element '$action'
+        )
+
+    [31] => Array
+        (
+            [line] => 21
+            [file] => src\eventArgs\SuccessEventArgs.php
+            [message] => No short description for element '$action'
+        )
+
+    [32] => Array
+        (
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$clientUrl'
+        )
+
+    [33] => Array
+        (
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$clientUrl'
+        )
+
+    [34] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$scope'
+        )
+
+    [35] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$scope'
+        )
+
+    [36] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [37] => Array
+        (
             [line] => 38
             [file] => src\socials\Discord.php
             [message] => No docblock for element 'getCodeUrl'
         )
 
-    [28] => Array
-        (
-            [line] => 16
-            [file] => src\socials\Google.php
-            [message] => No docblock for element '$authUrl'
-        )
-
-    [29] => Array
-        (
-            [line] => 16
-            [file] => src\socials\Google.php
-            [message] => No short description for element '$authUrl'
-        )
-
-    [30] => Array
-        (
-            [line] => 17
-            [file] => src\socials\Google.php
-            [message] => No docblock for element '$tokenUrl'
-        )
-
-    [31] => Array
-        (
-            [line] => 17
-            [file] => src\socials\Google.php
-            [message] => No short description for element '$tokenUrl'
-        )
-
-    [32] => Array
-        (
-            [line] => 18
-            [file] => src\socials\Google.php
-            [message] => No docblock for element '$apiUrl'
-        )
-
-    [33] => Array
-        (
-            [line] => 18
-            [file] => src\socials\Google.php
-            [message] => No short description for element '$apiUrl'
-        )
-
-    [34] => Array
-        (
-            [line] => 47
-            [file] => src\socials\Google.php
-            [message] => No docblock for element 'requestCode'
-        )
-
-    [35] => Array
-        (
-            [line] => 53
-            [file] => src\socials\Google.php
-            [message] => No docblock for element 'requestId'
-        )
-
-    [36] => Array
-        (
-            [line] => 16
-            [file] => src\socials\Google.php
-            [message] => No docblock for element '$authUrl'
-        )
-
-    [37] => Array
-        (
-            [line] => 16
-            [file] => src\socials\Google.php
-            [message] => No short description for element '$authUrl'
-        )
-
     [38] => Array
         (
-            [line] => 17
-            [file] => src\socials\Google.php
-            [message] => No docblock for element '$tokenUrl'
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$clientUrl'
         )
 
     [39] => Array
         (
-            [line] => 17
-            [file] => src\socials\Google.php
-            [message] => No short description for element '$tokenUrl'
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$clientUrl'
         )
 
     [40] => Array
         (
-            [line] => 18
-            [file] => src\socials\Google.php
-            [message] => No docblock for element '$apiUrl'
+            [line] => 15
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$scope'
         )
 
     [41] => Array
         (
-            [line] => 18
-            [file] => src\socials\Google.php
-            [message] => No short description for element '$apiUrl'
+            [line] => 15
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$scope'
         )
 
     [42] => Array
         (
-            [line] => 47
-            [file] => src\socials\Google.php
+            [line] => 17
+            [file] => src\socials\Discord.php
             [message] => No docblock for element 'requestCode'
         )
 
     [43] => Array
         (
-            [line] => 53
-            [file] => src\socials\Google.php
-            [message] => No docblock for element 'requestId'
+            [line] => 38
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element 'getCodeUrl'
         )
 
     [44] => Array
         (
-            [line] => 13
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element '$scope'
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$clientUrl'
         )
 
     [45] => Array
         (
-            [line] => 13
-            [file] => src\socials\Ok.php
-            [message] => No short description for element '$scope'
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$clientUrl'
         )
 
     [46] => Array
         (
             [line] => 15
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element '$clientPublic'
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$scope'
         )
 
     [47] => Array
         (
             [line] => 15
-            [file] => src\socials\Ok.php
-            [message] => No short description for element '$clientPublic'
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$scope'
         )
 
     [48] => Array
         (
             [line] => 17
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element '$clientCodeUrl'
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element 'requestCode'
         )
 
     [49] => Array
         (
-            [line] => 17
-            [file] => src\socials\Ok.php
-            [message] => No short description for element '$clientCodeUrl'
+            [line] => 38
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element 'getCodeUrl'
         )
 
     [50] => Array
         (
-            [line] => 18
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element '$clientApiUrl'
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$clientUrl'
         )
 
     [51] => Array
         (
-            [line] => 18
-            [file] => src\socials\Ok.php
-            [message] => No short description for element '$clientApiUrl'
+            [line] => 14
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$clientUrl'
         )
 
     [52] => Array
         (
-            [line] => 20
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element 'requestCode'
+            [line] => 15
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element '$scope'
         )
 
     [53] => Array
         (
-            [line] => 25
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element 'sig'
+            [line] => 15
+            [file] => src\socials\Discord.php
+            [message] => No short description for element '$scope'
         )
 
     [54] => Array
         (
-            [line] => 31
-            [file] => src\socials\Ok.php
-            [message] => No docblock for element 'requestId'
+            [line] => 17
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element 'requestCode'
         )
 
     [55] => Array
+        (
+            [line] => 38
+            [file] => src\socials\Discord.php
+            [message] => No docblock for element 'getCodeUrl'
+        )
+
+    [56] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$authUrl'
+        )
+
+    [57] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$authUrl'
+        )
+
+    [58] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$tokenUrl'
+        )
+
+    [59] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$tokenUrl'
+        )
+
+    [60] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$apiUrl'
+        )
+
+    [61] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$apiUrl'
+        )
+
+    [62] => Array
+        (
+            [line] => 47
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [63] => Array
+        (
+            [line] => 53
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [64] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$authUrl'
+        )
+
+    [65] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$authUrl'
+        )
+
+    [66] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$tokenUrl'
+        )
+
+    [67] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$tokenUrl'
+        )
+
+    [68] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$apiUrl'
+        )
+
+    [69] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$apiUrl'
+        )
+
+    [70] => Array
+        (
+            [line] => 47
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [71] => Array
+        (
+            [line] => 53
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [72] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$authUrl'
+        )
+
+    [73] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$authUrl'
+        )
+
+    [74] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$tokenUrl'
+        )
+
+    [75] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$tokenUrl'
+        )
+
+    [76] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$apiUrl'
+        )
+
+    [77] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$apiUrl'
+        )
+
+    [78] => Array
+        (
+            [line] => 47
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [79] => Array
+        (
+            [line] => 53
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [80] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$authUrl'
+        )
+
+    [81] => Array
+        (
+            [line] => 16
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$authUrl'
+        )
+
+    [82] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$tokenUrl'
+        )
+
+    [83] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$tokenUrl'
+        )
+
+    [84] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No docblock for element '$apiUrl'
+        )
+
+    [85] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Google.php
+            [message] => No short description for element '$apiUrl'
+        )
+
+    [86] => Array
+        (
+            [line] => 47
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [87] => Array
+        (
+            [line] => 53
+            [file] => src\socials\Google.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [88] => Array
         (
             [line] => 13
             [file] => src\socials\Ok.php
             [message] => No docblock for element '$scope'
         )
 
-    [56] => Array
+    [89] => Array
         (
             [line] => 13
             [file] => src\socials\Ok.php
             [message] => No short description for element '$scope'
         )
 
-    [57] => Array
+    [90] => Array
         (
             [line] => 15
             [file] => src\socials\Ok.php
             [message] => No docblock for element '$clientPublic'
         )
 
-    [58] => Array
+    [91] => Array
         (
             [line] => 15
             [file] => src\socials\Ok.php
             [message] => No short description for element '$clientPublic'
         )
 
-    [59] => Array
+    [92] => Array
         (
             [line] => 17
             [file] => src\socials\Ok.php
             [message] => No docblock for element '$clientCodeUrl'
         )
 
-    [60] => Array
+    [93] => Array
         (
             [line] => 17
             [file] => src\socials\Ok.php
             [message] => No short description for element '$clientCodeUrl'
         )
 
-    [61] => Array
+    [94] => Array
         (
             [line] => 18
             [file] => src\socials\Ok.php
             [message] => No docblock for element '$clientApiUrl'
         )
 
-    [62] => Array
+    [95] => Array
         (
             [line] => 18
             [file] => src\socials\Ok.php
             [message] => No short description for element '$clientApiUrl'
         )
 
-    [63] => Array
+    [96] => Array
         (
             [line] => 20
             [file] => src\socials\Ok.php
             [message] => No docblock for element 'requestCode'
         )
 
-    [64] => Array
+    [97] => Array
         (
             [line] => 25
             [file] => src\socials\Ok.php
             [message] => No docblock for element 'sig'
         )
 
-    [65] => Array
+    [98] => Array
         (
             [line] => 31
             [file] => src\socials\Ok.php
             [message] => No docblock for element 'requestId'
         )
 
-    [66] => Array
+    [99] => Array
+        (
+            [line] => 13
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$scope'
+        )
+
+    [100] => Array
+        (
+            [line] => 13
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$scope'
+        )
+
+    [101] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientPublic'
+        )
+
+    [102] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientPublic'
+        )
+
+    [103] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientCodeUrl'
+        )
+
+    [104] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientCodeUrl'
+        )
+
+    [105] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientApiUrl'
+        )
+
+    [106] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientApiUrl'
+        )
+
+    [107] => Array
+        (
+            [line] => 20
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [108] => Array
+        (
+            [line] => 25
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'sig'
+        )
+
+    [109] => Array
+        (
+            [line] => 31
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [110] => Array
+        (
+            [line] => 13
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$scope'
+        )
+
+    [111] => Array
+        (
+            [line] => 13
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$scope'
+        )
+
+    [112] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientPublic'
+        )
+
+    [113] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientPublic'
+        )
+
+    [114] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientCodeUrl'
+        )
+
+    [115] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientCodeUrl'
+        )
+
+    [116] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientApiUrl'
+        )
+
+    [117] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientApiUrl'
+        )
+
+    [118] => Array
+        (
+            [line] => 20
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [119] => Array
+        (
+            [line] => 25
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'sig'
+        )
+
+    [120] => Array
+        (
+            [line] => 31
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [121] => Array
+        (
+            [line] => 13
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$scope'
+        )
+
+    [122] => Array
+        (
+            [line] => 13
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$scope'
+        )
+
+    [123] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientPublic'
+        )
+
+    [124] => Array
+        (
+            [line] => 15
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientPublic'
+        )
+
+    [125] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientCodeUrl'
+        )
+
+    [126] => Array
+        (
+            [line] => 17
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientCodeUrl'
+        )
+
+    [127] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element '$clientApiUrl'
+        )
+
+    [128] => Array
+        (
+            [line] => 18
+            [file] => src\socials\Ok.php
+            [message] => No short description for element '$clientApiUrl'
+        )
+
+    [129] => Array
+        (
+            [line] => 20
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [130] => Array
+        (
+            [line] => 25
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'sig'
+        )
+
+    [131] => Array
+        (
+            [line] => 31
+            [file] => src\socials\Ok.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [132] => Array
         (
             [line] => 12
             [file] => src\socials\VK.php
             [message] => No docblock for element '$clientUrl'
         )
 
-    [67] => Array
+    [133] => Array
         (
             [line] => 12
             [file] => src\socials\VK.php
             [message] => No short description for element '$clientUrl'
         )
 
-    [68] => Array
+    [134] => Array
         (
             [line] => 13
             [file] => src\socials\VK.php
             [message] => No docblock for element '$display'
         )
 
-    [69] => Array
+    [135] => Array
         (
             [line] => 13
             [file] => src\socials\VK.php
             [message] => No short description for element '$display'
         )
 
-    [70] => Array
+    [136] => Array
         (
             [line] => 15
             [file] => src\socials\VK.php
             [message] => No docblock for element 'requestCode'
         )
 
-    [71] => Array
+    [137] => Array
         (
             [line] => 21
             [file] => src\socials\VK.php
             [message] => No docblock for element 'requestId'
         )
 
-    [72] => Array
+    [138] => Array
         (
             [line] => 12
             [file] => src\socials\VK.php
             [message] => No docblock for element '$clientUrl'
         )
 
-    [73] => Array
+    [139] => Array
         (
             [line] => 12
             [file] => src\socials\VK.php
             [message] => No short description for element '$clientUrl'
         )
 
-    [74] => Array
+    [140] => Array
         (
             [line] => 13
             [file] => src\socials\VK.php
             [message] => No docblock for element '$display'
         )
 
-    [75] => Array
+    [141] => Array
         (
             [line] => 13
             [file] => src\socials\VK.php
             [message] => No short description for element '$display'
         )
 
-    [76] => Array
+    [142] => Array
         (
             [line] => 15
             [file] => src\socials\VK.php
             [message] => No docblock for element 'requestCode'
         )
 
-    [77] => Array
+    [143] => Array
         (
             [line] => 21
             [file] => src\socials\VK.php
             [message] => No docblock for element 'requestId'
         )
 
-    [78] => Array
+    [144] => Array
+        (
+            [line] => 12
+            [file] => src\socials\VK.php
+            [message] => No docblock for element '$clientUrl'
+        )
+
+    [145] => Array
+        (
+            [line] => 12
+            [file] => src\socials\VK.php
+            [message] => No short description for element '$clientUrl'
+        )
+
+    [146] => Array
+        (
+            [line] => 13
+            [file] => src\socials\VK.php
+            [message] => No docblock for element '$display'
+        )
+
+    [147] => Array
+        (
+            [line] => 13
+            [file] => src\socials\VK.php
+            [message] => No short description for element '$display'
+        )
+
+    [148] => Array
+        (
+            [line] => 15
+            [file] => src\socials\VK.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [149] => Array
+        (
+            [line] => 21
+            [file] => src\socials\VK.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [150] => Array
+        (
+            [line] => 12
+            [file] => src\socials\VK.php
+            [message] => No docblock for element '$clientUrl'
+        )
+
+    [151] => Array
+        (
+            [line] => 12
+            [file] => src\socials\VK.php
+            [message] => No short description for element '$clientUrl'
+        )
+
+    [152] => Array
+        (
+            [line] => 13
+            [file] => src\socials\VK.php
+            [message] => No docblock for element '$display'
+        )
+
+    [153] => Array
+        (
+            [line] => 13
+            [file] => src\socials\VK.php
+            [message] => No short description for element '$display'
+        )
+
+    [154] => Array
+        (
+            [line] => 15
+            [file] => src\socials\VK.php
+            [message] => No docblock for element 'requestCode'
+        )
+
+    [155] => Array
+        (
+            [line] => 21
+            [file] => src\socials\VK.php
+            [message] => No docblock for element 'requestId'
+        )
+
+    [156] => Array
         (
             [line] => 21
             [file] => src\socials\Yandex.php
             [message] => No docblock for element '$clientUrl'
         )
 
-    [79] => Array
+    [157] => Array
         (
             [line] => 21
             [file] => src\socials\Yandex.php
             [message] => No short description for element '$clientUrl'
         )
 
-    [80] => Array
+    [158] => Array
         (
             [line] => 21
             [file] => src\socials\Yandex.php
             [message] => No docblock for element '$clientUrl'
         )
 
-    [81] => Array
+    [159] => Array
         (
             [line] => 21
             [file] => src\socials\Yandex.php
             [message] => No short description for element '$clientUrl'
         )
 
-    [82] => Array
+    [160] => Array
+        (
+            [line] => 21
+            [file] => src\socials\Yandex.php
+            [message] => No docblock for element '$clientUrl'
+        )
+
+    [161] => Array
+        (
+            [line] => 21
+            [file] => src\socials\Yandex.php
+            [message] => No short description for element '$clientUrl'
+        )
+
+    [162] => Array
+        (
+            [line] => 21
+            [file] => src\socials\Yandex.php
+            [message] => No docblock for element '$clientUrl'
+        )
+
+    [163] => Array
+        (
+            [line] => 21
+            [file] => src\socials\Yandex.php
+            [message] => No short description for element '$clientUrl'
+        )
+
+    [164] => Array
         (
             [line] => 14
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$groupClass'
         )
 
-    [83] => Array
+    [165] => Array
         (
             [line] => 14
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$groupClass'
         )
 
-    [84] => Array
+    [166] => Array
         (
             [line] => 16
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$iconEnable'
         )
 
-    [85] => Array
+    [167] => Array
         (
             [line] => 16
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$iconEnable'
         )
 
-    [86] => Array
+    [168] => Array
         (
             [line] => 18
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$options'
         )
 
-    [87] => Array
+    [169] => Array
         (
             [line] => 18
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$options'
         )
 
-    [88] => Array
+    [170] => Array
         (
             [line] => 19
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$linkOptions'
         )
 
-    [89] => Array
+    [171] => Array
         (
             [line] => 19
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$linkOptions'
         )
 
-    [90] => Array
+    [172] => Array
         (
             [line] => 20
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$iconOptions'
         )
 
-    [91] => Array
+    [173] => Array
         (
             [line] => 20
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$iconOptions'
         )
 
-    [92] => Array
+    [174] => Array
         (
             [line] => 14
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$groupClass'
         )
 
-    [93] => Array
+    [175] => Array
         (
             [line] => 14
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$groupClass'
         )
 
-    [94] => Array
+    [176] => Array
         (
             [line] => 16
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$iconEnable'
         )
 
-    [95] => Array
+    [177] => Array
         (
             [line] => 16
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$iconEnable'
         )
 
-    [96] => Array
+    [178] => Array
         (
             [line] => 18
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$options'
         )
 
-    [97] => Array
+    [179] => Array
         (
             [line] => 18
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$options'
         )
 
-    [98] => Array
+    [180] => Array
         (
             [line] => 19
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$linkOptions'
         )
 
-    [99] => Array
+    [181] => Array
         (
             [line] => 19
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No short description for element '$linkOptions'
         )
 
-    [100] => Array
+    [182] => Array
         (
             [line] => 20
             [file] => src\widgets\SocialLinkWidget.php
             [message] => No docblock for element '$iconOptions'
         )
 
-    [101] => Array
+    [183] => Array
+        (
+            [line] => 20
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$iconOptions'
+        )
+
+    [184] => Array
+        (
+            [line] => 14
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$groupClass'
+        )
+
+    [185] => Array
+        (
+            [line] => 14
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$groupClass'
+        )
+
+    [186] => Array
+        (
+            [line] => 16
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$iconEnable'
+        )
+
+    [187] => Array
+        (
+            [line] => 16
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$iconEnable'
+        )
+
+    [188] => Array
+        (
+            [line] => 18
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$options'
+        )
+
+    [189] => Array
+        (
+            [line] => 18
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$options'
+        )
+
+    [190] => Array
+        (
+            [line] => 19
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$linkOptions'
+        )
+
+    [191] => Array
+        (
+            [line] => 19
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$linkOptions'
+        )
+
+    [192] => Array
+        (
+            [line] => 20
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$iconOptions'
+        )
+
+    [193] => Array
+        (
+            [line] => 20
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$iconOptions'
+        )
+
+    [194] => Array
+        (
+            [line] => 14
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$groupClass'
+        )
+
+    [195] => Array
+        (
+            [line] => 14
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$groupClass'
+        )
+
+    [196] => Array
+        (
+            [line] => 16
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$iconEnable'
+        )
+
+    [197] => Array
+        (
+            [line] => 16
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$iconEnable'
+        )
+
+    [198] => Array
+        (
+            [line] => 18
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$options'
+        )
+
+    [199] => Array
+        (
+            [line] => 18
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$options'
+        )
+
+    [200] => Array
+        (
+            [line] => 19
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$linkOptions'
+        )
+
+    [201] => Array
+        (
+            [line] => 19
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No short description for element '$linkOptions'
+        )
+
+    [202] => Array
+        (
+            [line] => 20
+            [file] => src\widgets\SocialLinkWidget.php
+            [message] => No docblock for element '$iconOptions'
+        )
+
+    [203] => Array
         (
             [line] => 20
             [file] => src\widgets\SocialLinkWidget.php
