@@ -30,7 +30,7 @@ class ErrorEventArgs extends SuccessEventArgs
      */
     public function goBack(string|array $defaultUrl = null): void
     {
-        $this->result = null;
+        $this->result = true;
         $this->action->goBack($defaultUrl);
     }
 
@@ -40,7 +40,7 @@ class ErrorEventArgs extends SuccessEventArgs
      */
     public function goHome(): void
     {
-        $this->result = null;
+        $this->result = true;
         $this->goHome();
     }
 
@@ -51,7 +51,7 @@ class ErrorEventArgs extends SuccessEventArgs
      */
     public function redirect(string|array $url): void
     {
-        $this->result = null;
+        $this->result = true;
         $this->action->redirect($url);
     }
 }

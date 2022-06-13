@@ -232,7 +232,8 @@ abstract class Social extends Model
      * @param SocialController $action
      * @param Exception|null $ex
      * @return mixed
-     * @throws ForbiddenHttpException
+     * @throws ForbiddenHttpException|NotFoundHttpException
+     * @throws Exception
      */
     public function error(SocialController $action, ?Exception $ex): mixed
     {
