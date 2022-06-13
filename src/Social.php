@@ -158,7 +158,7 @@ abstract class Social extends Model
      * @return IdentityInterface|ActiveRecord
      * @throws InvalidConfigException
      */
-    protected function findUser(): IdentityInterface|ActiveRecord
+    protected function findUser(): ?IdentityInterface
     {
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
         $findUserEventArgs = new FindUserEventArgs($class::find());
