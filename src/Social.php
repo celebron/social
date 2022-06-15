@@ -6,7 +6,6 @@ use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
 use Exception;
-use phpDocumentor\Reflection\Types\Static_;
 use ReflectionClass;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -23,7 +22,6 @@ use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\UnauthorizedHttpException;
 
 /**
  * Базовый класс авторизации соц.сетей.
@@ -240,15 +238,14 @@ abstract class Social extends Model
         $eventArgs = new ErrorEventArgs($action, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
 
-        if($ex === null && $eventArgs->result === null) {
-            if(!$this->active) {
-                throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
-            }
-
-            throw new NotFoundHttpException('['. static::socialName() .'] User ' . $this->_id .' not registered');
+        if(!$this->active) {
+            throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
         }
 
-        if($ex !== null && $eventArgs->result === null) {
+        if($eventArgs->result === null) {
+            if($ex === null) {
+                throw new NotFoundHttpException('['. static::socialName() .'] User ' . $this->_id .' not registered');
+            }
             throw $ex;
         }
 
