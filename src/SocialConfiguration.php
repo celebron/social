@@ -2,8 +2,9 @@
 
 namespace Celebron\social;
 
-use JetBrains\PhpStorm\ArrayShape;
-use Yii;
+use Celebron\social\eventArgs\FindUserEventArgs;
+use yii\helpers\Url;
+use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
@@ -15,20 +16,36 @@ use yii\web\NotFoundHttpException;
  * @property-read array $links - список линков зарегистрированных соцсетей
  * @property Social[] $socials - зарегистрированые соцсети
  */
-class SocialConfiguration extends Component
+class SocialConfiguration extends Component implements BootstrapInterface
 {
-    /** @var string - стандартый роут */
-    public string $route = "site/social";
+    /** @var self - конфигурация */
+    public static self $config;
+
+    /** @var string - state для регистрации */
+    public string $register = 'register';
+    /** @var string - роут */
+    public string $route = "social";
+    /** @var int - на сколько сохранять участника */
+    public int $duration = 0;
     /** @var \Closure|null - событие отображение ошибок на все */
     public ?\Closure $onAllError = null;
     /** @var \Closure|null - cобытие регистрации на все */
     public ?\Closure $onAllRegisterSuccess = null;
     /** @var \Closure|null - cобытие автризации на все */
     public ?\Closure $onAllLoginSuccess = null;
+    /** @var \Closure|null - событие поиск пользователя (алгоритм) */
+    public ?\Closure $findUserAlg = null;
 
     private array $_socials = [];
 
-
+    /**
+     * Инициализация класса (стандарт Yii2)
+     * @return void
+     */
+    public function init ()
+    {
+        self::$config = $this;
+    }
 
     /**
      * Получение списка активных соцсетей
@@ -40,11 +57,12 @@ class SocialConfiguration extends Component
     }
 
     /**
+     * Список ссылок на соц.сети
      * @param $register
      * @return array
      * @throws InvalidConfigException
      */
-    public function getLinks($register = null): array
+    public function getLinks(bool $register = false): array
     {
         $result = [];
         foreach ($this->getSocials() as $key=>$social) {
@@ -69,8 +87,7 @@ class SocialConfiguration extends Component
     public function setSocials(array $value): void
     {
         $result= [];
-        foreach ($value as $key=>$class)
-        {
+        foreach ($value as $key=>$class) {
             /** @var Social $object */
             $object = \Yii::createObject($class);
             if($object instanceof Social) {
@@ -78,14 +95,23 @@ class SocialConfiguration extends Component
                     $key = strtolower($object::socialName());
                 }
                 if($this->onAllRegisterSuccess !== null) {
-                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess);
+                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess, ['config'=> $this]);
                 }
                 if($this->onAllLoginSuccess !== null){
-                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess);
+                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess, ['config'=> $this]);
                 }
                 if($this->onAllError !== null) {
-                    $object->on(Social::EVENT_ERROR, $this->onAllError);
+                    $object->on(Social::EVENT_ERROR, $this->onAllError, ['config'=> $this]);
                 }
+
+                if($this->findUserAlg === null) {
+                    $object->on(Social::EVENT_FIND_USER, function(FindUserEventArgs $e) {
+                        $e->defaultAlg();
+                    },  ['config'=>$this]);
+                } else {
+                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config'=> $this] );
+                }
+
                 $result[$key] = $object;
             } else {
                 throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
@@ -94,44 +120,39 @@ class SocialConfiguration extends Component
         $this->_socials = ArrayHelper::merge($this->_socials, $result);
     }
 
-
-    /**
-     * @return SocialConfiguration
-     * @throws InvalidConfigException
-     */
-    public static function config() : static
-    {
-        return Yii::$app->get(static::class);
-    }
-
-    /**
-     * @param $socialname
-     * @return Social
-     * @throws InvalidConfigException
-     * @throws NotFoundHttpException
-     * @throws \Exception
-     */
-    public static function ensure(string $socialname): Social
-    {
-        $config = static::config();
-        $object = ArrayHelper::getValue($config->getSocials(), $socialname);
-        if($object !== null) {
-            return $object;
-        }
-        throw new NotFoundHttpException("Social {$socialname} not registered");
-    }
-
     /**
      * Получить ссылку на редеректа на соц.сеть
      * @param string $socialname
-     * @param $register
+     * @param $state
      * @return string
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
-    public static function link(string $socialname, $register = null): string
+    public static function link(string $socialname, bool|string $state = false): string
     {
-        return self::ensure($socialname)::url($register);
+        $url[0] = self::$config->route . '/' . strtolower($socialname);
+        if(is_bool($state) && $state) {
+            $url['state'] = self::$config->register;
+        }
+        if(is_string($state)) {
+            $url['state'] = $state;
+        }
+        return Url::to($url, true);
     }
 
+    /**
+     * Инициализация механизма Bootstrap (Yii2)
+     * @param $app - \Yii::$app
+     * @return void
+     */
+    public function bootstrap ($app)
+    {
+        $app->urlManager->addRules([
+            "{$this->route}/<social>" => "{$this->route}/handler",
+        ]);
+        $app->controllerMap[$this->route] = [
+            'class' => SocialController::class,
+            'config' => $this,
+        ];
+    }
 }

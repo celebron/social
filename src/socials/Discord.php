@@ -2,11 +2,14 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialOAuth;
+use Celebron\social\SocialOAuth2;
 use yii\httpclient\Request;
 use Yiisoft\Http\Header;
 
-class Discord extends SocialOAuth
+/**
+ * oauth2 Discord
+ */
+class Discord extends SocialOAuth2
 {
     public string $clientUrl = 'https://discord.com/api';
     public array $scope = [ 'identify' ];

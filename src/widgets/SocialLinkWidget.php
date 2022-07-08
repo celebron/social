@@ -6,6 +6,9 @@ use Celebron\social\SocialConfiguration;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
+/**
+ * Виджет списка соцсетей
+ */
 class SocialLinkWidget extends \yii\base\Widget
 {
     public string $groupClass = 'social-auth';
@@ -24,7 +27,7 @@ class SocialLinkWidget extends \yii\base\Widget
             'class' => $this->groupClass . '-group',
         ], $this->options);
         $html = Html::beginTag('div', $options) . PHP_EOL;
-        foreach (SocialConfiguration::config()->getLinks() as  $k => $v){
+        foreach (SocialConfiguration::$config->getLinks() as  $k => $v){
             $linkOption = ArrayHelper::merge([
                 'class' => 'social-' . $k,
             ], $this->linkOptions);
