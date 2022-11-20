@@ -30,12 +30,20 @@ class SocialLinkWidget extends Widget
 
 
     /**
+     * <div class='social-auth-begin'>
+     *  <div class='social-auth social-vk'>
+     *  </div>
+     *  <div class='social-auth social-google'>
+     *  </div>
+     * </div>
+     */
+    /**
      * @throws \yii\base\InvalidConfigException
      */
     public function run()
     {
         $options = ArrayHelper::merge([
-            'class' => $this->groupClass . '-group',
+            'class' => $this->groupClass . '-widget',
         ], $this->options);
         $html = Html::beginTag('div', $options) . PHP_EOL;
         foreach (SocialConfiguration::$config->getLinks() as  $k => $v){
