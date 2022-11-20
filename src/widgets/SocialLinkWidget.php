@@ -61,7 +61,7 @@ class SocialLinkWidget extends Widget
                 $icon = Html::img($v['icon'], $iconOptions);
             }
 
-            $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . ' ' . $k ]) . PHP_EOL;
+            $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . ' social-' . $k ]) . PHP_EOL;
             $html .= "\t\t" . Html::a($icon, $this->register ?$v['register']:$v['login'], $linkOption) . PHP_EOL;
             $html .= "\t" . Html::endTag('div') . PHP_EOL;
         }
