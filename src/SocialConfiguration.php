@@ -38,7 +38,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public ?\Closure $findUserAlg = null;
 
     private array $_socials = [];
-    private array $_links = [];
 
     /**
      * Инициализация класса (стандарт Yii2)
@@ -65,7 +64,16 @@ class SocialConfiguration extends Component implements BootstrapInterface
     #[\JetBrains\PhpStorm\ArrayShape(['name' => "string", 'login' => "string", 'register' => "string", 'icon' => "string"])]
     public function getLinks(): array
     {
-        return $this->_links;
+        $links = [];
+        foreach ($this->getSocials() as $key=>$social) {
+            $links[$key] =[
+                'name' => empty($social->name) ? $key : $social->name,
+                'login' => $social::url(false),
+                'register' => $social::url(true),
+                'icon' => empty($object->icon) ? null : $object->icon,
+            ];
+        }
+        return $links;
     }
 
     /**
@@ -113,13 +121,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 } else {
                     $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this] );
                 }
-
-                $this->_links[$key] = [
-                    'name' => empty($object->name) ? $key : $object->name,
-                    'login' => $object::url(),
-                    'register' => $object::url($this->register),
-                    'icon' => empty($object->icon) ? null : $object->icon,
-                ];
 
                 $this->_socials[$key] = $object;
             } else {
