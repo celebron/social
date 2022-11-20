@@ -89,7 +89,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
             $object = \Yii::createObject($class);
             if($object instanceof Social) {
                 //Регистрируем только активные классы
-                if(!$class->active) {
+                if(!$object->active) {
                     continue;
                 }
 
