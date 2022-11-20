@@ -2,14 +2,16 @@
 
 namespace Celebron\social\widgets;
 
+use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
  * Виджет списка соцсетей
  */
-class SocialLinkWidget extends \yii\base\Widget
+class SocialLinkWidget extends Widget
 {
     public string $groupClass = 'social-auth';
 
@@ -19,15 +21,18 @@ class SocialLinkWidget extends \yii\base\Widget
     public array $linkOptions = [];
     public array $iconOptions = [];
 
-    public function run()
+    public function init ()
     {
-
+        parent::init();
+        SocialAsset::register($this->view);
     }
+
+
 
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public function run1()
+    public function run()
     {
         $options = ArrayHelper::merge([
             'class' => $this->groupClass . '-group',

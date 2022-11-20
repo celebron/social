@@ -65,12 +65,13 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function getLinks(): array
     {
         $links = [];
+
         foreach ($this->getSocials() as $key=>$social) {
             $links[$key] =[
                 'name' => empty($social->name) ? $key : $social->name,
                 'login' => $social::url(false),
                 'register' => $social::url(true),
-                'icon' => empty($object->icon) ? null : $object->icon,
+                'icon' => empty($object->icon) ? null : \Yii::getAlias($object->icon),
             ];
         }
         return $links;
