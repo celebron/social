@@ -14,7 +14,8 @@ use yii\web\NotFoundHttpException;
 /**
  * Конфигуратор социальной авторизации
  * @property-read array $links - список линков зарегистрированных соцсетей
- * @property Social[] $socials - зарегистрированые соцсети
+ * @property-read Social[] $socials - зарегистрированые соцсети
+ * @property-write array $socials - регистрация классов
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
@@ -37,6 +38,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public ?\Closure $findUserAlg = null;
 
     private array $_socials = [];
+    private array $_links = [];
 
     /**
      * Инициализация класса (стандарт Yii2)
@@ -58,24 +60,12 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     /**
      * Список ссылок на соц.сети
-     * @param $register
      * @return array
-     * @throws InvalidConfigException
      */
-    public function getLinks(bool $register = false): array
+    #[\JetBrains\PhpStorm\ArrayShape(['name' => "string", 'login' => "string", 'register' => "string", 'icon' => "string"])]
+    public function getLinks(): array
     {
-        $result = [];
-        foreach ($this->getSocials() as $key=>$social) {
-            if(!$social->active) {
-                continue;
-            }
-            $result[$key] = [
-                'name' => empty($social->name) ? $key : $social->name,
-                'link' => $social::url($register),
-                'icon' => empty($social->icon) ? null : $social->icon,
-            ];
-        }
-        return $result;
+        return $this->_links;
     }
 
     /**
@@ -86,47 +76,64 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public function setSocials(array $value): void
     {
-        $result= [];
         foreach ($value as $key=>$class) {
             /** @var Social $object */
             $object = \Yii::createObject($class);
             if($object instanceof Social) {
+                //Регистрируем только активные классы
+                if(!$class->active) {
+                    continue;
+                }
+
+                //если ключ числовой, то пееводим его в socialName
                 if (is_numeric($key)) {
                     $key = strtolower($object::socialName());
                 }
+
+                //Установка обработчика всех успешных регистраций
                 if($this->onAllRegisterSuccess !== null) {
                     $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess, ['config'=> $this]);
                 }
+
+                //Установлка обработчика всех успешных авторизаций
                 if($this->onAllLoginSuccess !== null){
                     $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess, ['config'=> $this]);
                 }
+
+                //Установлка обработчика всех ошибок
                 if($this->onAllError !== null) {
                     $object->on(Social::EVENT_ERROR, $this->onAllError, ['config'=> $this]);
                 }
 
+                //Настройка алгоритма поиска пользователя
                 if($this->findUserAlg === null) {
                     $object->on(Social::EVENT_FIND_USER, function(FindUserEventArgs $e) {
                         $e->defaultAlg();
                     },  ['config'=>$this]);
                 } else {
-                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config'=> $this] );
+                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this] );
                 }
 
-                $result[$key] = $object;
+                $this->_links[$key] = [
+                    'name' => empty($object->name) ? $key : $object->name,
+                    'login' => $object::url(),
+                    'register' => $object::url($this->register),
+                    'icon' => empty($object->icon) ? null : $object->icon,
+                ];
+
+                $this->_socials[$key] = $object;
             } else {
                 throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
             }
         }
-        $this->_socials = ArrayHelper::merge($this->_socials, $result);
+
     }
 
     /**
      * Получить ссылку на редеректа на соц.сеть
      * @param string $socialname
-     * @param $state
+     * @param bool|string $state
      * @return string
-     * @throws InvalidConfigException
-     * @throws NotFoundHttpException
      */
     public static function link(string $socialname, bool|string $state = false): string
     {

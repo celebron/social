@@ -18,10 +18,16 @@ class SocialLinkWidget extends \yii\base\Widget
     public array $options = [];
     public array $linkOptions = [];
     public array $iconOptions = [];
+
+    public function run()
+    {
+
+    }
+
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public function run()
+    public function run1()
     {
         $options = ArrayHelper::merge([
             'class' => $this->groupClass . '-group',

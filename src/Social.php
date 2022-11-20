@@ -93,7 +93,6 @@ abstract class Social extends Model
      * @param $a
      * @return void
      * @throws InvalidConfigException
-     * @throws NotSupportedException
      */
     final public function fieldValidator($a) : void
     {
@@ -258,15 +257,20 @@ abstract class Social extends Model
      */
     final public static function socialName(): string
     {
-        return (new ReflectionClass(static::class))->getShortName();
+        $reflect = new ReflectionClass(static::class);
+        $attributes = $reflect->getAttributes(SocialName::class);
+        $socialName = $reflect->getShortName();
+        if(count($attributes) > 0) {
+            $socialName = $attributes[0]->getArguments()[0];
+        }
+
+        return $socialName;
     }
 
     /**
      * Ссылка на oauth авторизацию
      * @param bool|string $state
      * @return string
-     * @throws InvalidConfigException
-     * @throws \yii\web\NotFoundHttpException
      */
     final public static function url(bool|string $state = false) : string
     {
@@ -279,8 +283,6 @@ abstract class Social extends Model
      * @param bool|string $state - oauth state (true - register)
      * @param array $data
      * @return string
-     * @throws InvalidConfigException
-     * @throws \yii\web\NotFoundHttpException
      */
     final public static function a(string $text, bool|string $state = false, array $data = []): string
     {
