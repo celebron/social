@@ -179,7 +179,7 @@ abstract class Social extends Model
                 self::debug("Registered user id $this->_id");
                 return true;
             }
-            \Yii::warning($user->errors, static::class);
+            \Yii::warning($user->getErrorSummary(true), static::class);
         }
         return false;
     }
