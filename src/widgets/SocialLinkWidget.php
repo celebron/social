@@ -16,6 +16,7 @@ class SocialLinkWidget extends Widget
     public string $groupClass = 'social-auth';
 
     public bool $iconEnable = true;
+    public bool $register = false;
 
     public array $options = [];
     public array $linkOptions = [];
@@ -61,7 +62,7 @@ class SocialLinkWidget extends Widget
             }
 
             $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . ' ' . $k ]) . PHP_EOL;
-            $html .= "\t\t" . Html::a($icon, $v['link'], $linkOption) . PHP_EOL;
+            $html .= "\t\t" . Html::a($icon, $this->register ?$v['register']:$v['login'], $linkOption) . PHP_EOL;
             $html .= "\t" . Html::endTag('div') . PHP_EOL;
         }
         $html .= Html::endTag('div') . PHP_EOL;
