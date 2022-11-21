@@ -297,13 +297,22 @@ abstract class Social extends Model
      */
     final public static function a(string $text, bool|string $state = false, array $data = []): string
     {
+        $defaultData = [
+            'class' => [ 'social-' . strtolower(static::socialName()) ],
+        ];
+
         if(isset($data['class'])) {
-            $data['class'] = [
-                'social-' .strtolower(static::socialName()),
-                $data['class']
-            ];
+            if(is_array($data['class'])) {
+                $defaultData['class'] = ArrayHelper::merge($defaultData['class'], $data['class']);
+            } else {
+                $defaultData['class'] = ArrayHelper::merge($defaultData['class'],[ $data['class'] ]);
+            }
+            unset($data['class']);
         }
-        return Html::a($text, static::url($state), $data);
+
+        $defaultData = ArrayHelper::merge($defaultData, $data);
+
+        return Html::a($text, static::url($state), $defaultData);
     }
 
     /**
@@ -325,7 +334,7 @@ abstract class Social extends Model
                 if(is_array($data['img']['class'])) {
                     $dataImg['class'] = ArrayHelper::merge($dataImg['class'], $data['img']['class']);
                 } else {
-                    $dataImg['class'] = ArrayHelper::merge([$dataImg['class']], $data['img']['class']);
+                    $dataImg['class'] = ArrayHelper::merge($dataImg, [ $data['img']['class'] ]);
                 }
                 unset($data['img']['class']);
             }
