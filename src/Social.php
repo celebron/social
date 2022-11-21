@@ -295,8 +295,9 @@ abstract class Social extends Model
      * @param array $data
      * @return string
      */
-    final public static function a(string $text, bool|string $state = false, array $data = []): string
+    final public static function a(?string $text = null, bool|string $state = false, array $data = []): string
     {
+        $social = SocialConfiguration::getSocial(static::socialName());
         $defaultData = [
             'class' => [ 'social-' . strtolower(static::socialName()) ],
         ];
@@ -312,7 +313,7 @@ abstract class Social extends Model
 
         $defaultData = ArrayHelper::merge($defaultData, $data);
 
-        return Html::a($text, static::url($state), $defaultData);
+        return Html::a($text ?? $social->name, static::url($state), $defaultData);
     }
 
     /**
