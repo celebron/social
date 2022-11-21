@@ -306,8 +306,15 @@ abstract class Social extends Model
         return Html::a($text, static::url($state), $data);
     }
 
+    /**
+     * Ссылка с иконкой
+     * @param bool|string $state
+     * @param array $data
+     * @return string
+     */
     final public static function icon(bool|string $state = false, array $data =[]): string
     {
+        $data = ArrayHelper::merge(['a'=>[], 'img'=>[]], $data);
         $social = SocialConfiguration::getSocial(static::socialName());
         $dataA = $data['a'];
         $iconAttribute = 'icon-' . strtolower(static::socialName());
