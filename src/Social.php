@@ -314,8 +314,14 @@ abstract class Social extends Model
      */
     final public static function icon(bool|string $state = false, array $data =[]): string
     {
-        $data = ArrayHelper::merge(['a'=>[], 'img'=>[]], $data);
         $social = SocialConfiguration::getSocial(static::socialName());
+        $data = ArrayHelper::merge([
+            'a' => [],
+            'img' => [
+                'alt' => $social->name,
+                ],
+        ], $data);
+
         $dataA = $data['a'];
         $iconAttribute = 'icon-' . strtolower(static::socialName());
         if(isset($dataA['class'])) {

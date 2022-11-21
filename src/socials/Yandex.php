@@ -19,6 +19,8 @@ use Yiisoft\Http\Header;
 class Yandex extends SocialOAuth2
 {
     public string $clientUrl = "https://oauth.yandex.ru";
+    public string $icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
+
     /**
      * @return mixed
      * @throws BadRequestHttpException
