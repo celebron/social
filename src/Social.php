@@ -315,24 +315,26 @@ abstract class Social extends Model
     final public static function icon(bool|string $state = false, array $data =[]): string
     {
         $social = SocialConfiguration::getSocial(static::socialName());
-        $data = ArrayHelper::merge([
-            'a' => [],
-            'img' => [
-                'alt' => $social->name,
-                ],
-        ], $data);
 
-        $dataA = $data['a'];
-        $iconAttribute = 'icon-' . strtolower(static::socialName());
-        if(isset($dataA['class'])) {
-            if(is_array($dataA['class'])) {
-                $dataA['class'] = ArrayHelper::merge([$iconAttribute], $dataA['class']);
-            } else {
-                $dataA['class'] = [$iconAttribute, $dataA['class']];
+        $dataImg = [
+            'class'=> [ 'icon-' . strtolower(static::socialName()) ],
+            'alt' => $social->name,
+        ];
+        if(isset($data['img'])) {
+            if(isset($data['img']['class'])) {
+                if(is_array($data['img']['class'])) {
+                    $dataImg['class'] = ArrayHelper::merge($dataImg['class'], $data['img']['class']);
+                } else {
+                    $dataImg['class'] = ArrayHelper::merge([$dataImg['class']], $data['img']['class']);
+                }
+                unset($data['img']['class']);
             }
+            $dataImg = ArrayHelper::merge($dataImg, $data['img']);
         }
 
-        $image = Html::img(Yii::getAlias($social->icon),  $data['img']);
+        $dataA =isset($data['a'])?$data['a']:[];
+
+        $image = Html::img(Yii::getAlias($social->icon),  $dataImg);
         return static::a($image, $state, $dataA);
     }
 
