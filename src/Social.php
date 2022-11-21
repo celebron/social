@@ -50,7 +50,7 @@ abstract class Social extends Model
     public string $name;
 
     /** @var string - иконка для виджета */
-    public string $icon;
+    public string $icon = '';
 
 
     ///В Controllers
