@@ -52,22 +52,23 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * Получение списка активных соцсетей
      * @return Social[]
      */
-    public function getSocials(): array
+    public function getSocials (): array
     {
         return $this->_socials;
     }
+
 
     /**
      * Список ссылок на соц.сети
      * @return array
      */
     #[\JetBrains\PhpStorm\ArrayShape(['name' => "string", 'login' => "string", 'register' => "string", 'icon' => "string"])]
-    public function getLinks(): array
+    public function getLinks (): array
     {
         $links = [];
 
-        foreach ($this->getSocials() as $key=>$social) {
-            $links[$key] =[
+        foreach ($this->getSocials() as $key => $social) {
+            $links[$key] = [
                 'name' => empty($social->name) ? $key : $social->name,
                 'login' => $social::url(false),
                 'register' => $social::url(true),
@@ -83,14 +84,14 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @throws InvalidConfigException
      * @throws NotSupportedException
      */
-    public function setSocials(array $value): void
+    public function setSocials (array $value): void
     {
-        foreach ($value as $key=>$class) {
+        foreach ($value as $key => $class) {
             /** @var Social $object */
             $object = \Yii::createObject($class);
-            if($object instanceof Social) {
+            if ($object instanceof Social) {
                 //Регистрируем только активные классы
-                if(!$object->active) {
+                if (!$object->active) {
                     continue;
                 }
 
@@ -100,27 +101,27 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 }
 
                 //Установка обработчика всех успешных регистраций
-                if($this->onAllRegisterSuccess !== null) {
-                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess, ['config'=> $this]);
+                if ($this->onAllRegisterSuccess !== null) {
+                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess, ['config' => $this]);
                 }
 
                 //Установлка обработчика всех успешных авторизаций
-                if($this->onAllLoginSuccess !== null){
-                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess, ['config'=> $this]);
+                if ($this->onAllLoginSuccess !== null) {
+                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess, ['config' => $this]);
                 }
 
                 //Установлка обработчика всех ошибок
-                if($this->onAllError !== null) {
-                    $object->on(Social::EVENT_ERROR, $this->onAllError, ['config'=> $this]);
+                if ($this->onAllError !== null) {
+                    $object->on(Social::EVENT_ERROR, $this->onAllError, ['config' => $this]);
                 }
 
                 //Настройка алгоритма поиска пользователя
-                if($this->findUserAlg === null) {
-                    $object->on(Social::EVENT_FIND_USER, function(FindUserEventArgs $e) {
+                if ($this->findUserAlg === null) {
+                    $object->on(Social::EVENT_FIND_USER, function (FindUserEventArgs $e) {
                         $e->defaultAlg();
-                    },  ['config'=>$this]);
+                    }, ['config' => $this]);
                 } else {
-                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this] );
+                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
                 }
 
                 $this->_socials[$key] = $object;
@@ -137,16 +138,23 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @param bool|string $state
      * @return string
      */
-    public static function link(string $socialname, bool|string $state = false): string
+    public static function link (string $socialname, bool|string $state = false): string
     {
         $url[0] = self::$config->route . '/' . strtolower($socialname);
-        if(is_bool($state) && $state) {
+        if (is_bool($state) && $state) {
             $url['state'] = self::$config->register;
         }
-        if(is_string($state)) {
+        if (is_string($state)) {
             $url['state'] = $state;
         }
         return Url::to($url, true);
+    }
+
+    public static function getSocial(string $socialname)
+    {
+        $socials = static::$config->getSocials();
+        $socialKeys = array_keys($socials, $socialname, true);
+        return $socials[strtolower($socialKeys[0])];
     }
 
     /**

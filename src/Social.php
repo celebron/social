@@ -299,11 +299,24 @@ abstract class Social extends Model
     {
         if(isset($data['class'])) {
             $data['class'] = [
-                'social-' .strtolower(self::socialName()),
+                'social-' .strtolower(static::socialName()),
                 $data['class']
             ];
         }
         return Html::a($text, static::url($state), $data);
+    }
+
+    final public static function icon(bool|string $state = false, array $data =[]): string
+    {
+        $social = SocialConfiguration::getSocial(static::socialName());
+        if(isset($data['class'])) {
+            $data['class'] = [
+              'social-' . strtolower(static::socialName()),
+              $data['class'],
+            ];
+        }
+
+        return Html::img(Yii::getAlias($social->icon), $data);
     }
 
     /**
