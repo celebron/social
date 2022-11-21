@@ -309,14 +309,18 @@ abstract class Social extends Model
     final public static function icon(bool|string $state = false, array $data =[]): string
     {
         $social = SocialConfiguration::getSocial(static::socialName());
-        if(isset($data['class'])) {
-            $data['class'] = [
-              'social-' . strtolower(static::socialName()),
-              $data['class'],
-            ];
+        $dataA = $data['a'];
+        $iconAttribute = 'icon-' . strtolower(static::socialName());
+        if(isset($dataA['class'])) {
+            if(is_array($dataA['class'])) {
+                $dataA['class'] = ArrayHelper::merge([$iconAttribute], $dataA['class']);
+            } else {
+                $dataA['class'] = [$iconAttribute, $dataA['class']];
+            }
         }
 
-        return Html::img(Yii::getAlias($social->icon), $data);
+        $image = Html::img(Yii::getAlias($social->icon),  $data['img']);
+        return static::a($image, $state, $dataA);
     }
 
     /**
