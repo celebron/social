@@ -150,11 +150,15 @@ class SocialConfiguration extends Component implements BootstrapInterface
         return Url::to($url, true);
     }
 
-    public static function getSocial(string $socialname)
+    /**
+     * Выводит Social класс по имени класса
+     * @param string $socialname
+     * @return Social
+     */
+    public static function getSocial(string $socialname) : Social
     {
         $socials = static::$config->getSocials();
-        $socialKeys = array_keys($socials, $socialname, true);
-        return $socials[strtolower($socialKeys[0])];
+        return $socials[strtolower($socialname)];
     }
 
     /**
