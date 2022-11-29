@@ -162,7 +162,7 @@ abstract class Social extends Model
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
         $findUserEventArgs = new FindUserEventArgs($class::find());
         $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
-        \Yii::info($findUserEventArgs->user?->toArray(), static::class);
+        \Yii::debug($findUserEventArgs->user?->toArray(), static::class);
         return $findUserEventArgs->user;
     }
 
@@ -247,10 +247,6 @@ abstract class Social extends Model
     {
         $eventArgs = new ErrorEventArgs($action, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
-
-        if(!$this->active) {
-            throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
-        }
 
         if($eventArgs->result === null) {
             if($ex === null) {
