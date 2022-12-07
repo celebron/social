@@ -380,7 +380,7 @@ abstract class Social extends Model
      * @return string
      * @throws NotFoundHttpException
      */
-    final public static function icon(bool|string $state = false, array $data =[]): string
+    final public static function icon(bool|string|null $state = false, array $data =[]): string
     {
         try {
             $social = SocialConfiguration::socialStatic(static::socialName());
