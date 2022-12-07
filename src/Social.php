@@ -327,7 +327,7 @@ abstract class Social extends Model
      * @return string
      * @throws Exception
      */
-    final public static function a(?string $text = null, bool|string $state = false, array $data = []): string
+    final public static function a(?string $text = null, bool|string|null $state = false, array $data = []): string
     {
         try {
             $social = SocialConfiguration::socialStatic(static::socialName());
