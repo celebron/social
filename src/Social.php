@@ -162,7 +162,7 @@ abstract class Social extends Model
     protected function findUser(): ?IdentityInterface
     {
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
-        $query = $class::find()->andWhere([$this->field => $this->id])->one();
+        $query = $class::find()->andWhere([$this->field => $this->id]);
         $findUserEventArgs = new FindUserEventArgs($query);
         $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
         \Yii::debug($findUserEventArgs->user?->toArray(), static::class);
