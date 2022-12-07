@@ -173,10 +173,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
     {
         /** @var Social $object */
         $object = ArrayHelper::getValue($this->getSocials(), strtolower($socialname));
-        $object->scenario = $scenario;
+
         if($object === null) {
             throw new NotFoundHttpException("Social {$socialname} not registered");
         }
+        $object->scenario = $scenario;
         return $object;
     }
 
