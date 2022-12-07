@@ -169,13 +169,20 @@ class SocialConfiguration extends Component implements BootstrapInterface
         return  static::$config->getSocial($socialname);
     }
 
+    /**
+     * @param string $socialname
+     * @param string $scenario
+     * @return Social
+     * @throws NotFoundHttpException
+     * @throws \Exception
+     */
     public function getSocial(string $socialname, string $scenario = Social::SCENARIO_DEFAULT): Social
     {
         /** @var Social $object */
         $object = ArrayHelper::getValue($this->getSocials(), strtolower($socialname));
 
         if($object === null) {
-            throw new NotFoundHttpException("Social {$socialname} not registered");
+            throw new NotFoundHttpException("Social '{$socialname}' not registered");
         }
         $object->scenario = $scenario;
         return $object;

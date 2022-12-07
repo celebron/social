@@ -328,27 +328,29 @@ abstract class Social extends Model
      */
     final public static function a(?string $text = null, bool|string $state = false, array $data = []): string
     {
-        $social = SocialConfiguration::socialStatic(static::socialName());
-        if($social === null) {
-            return '';
-        }
+        try {
+            $social = SocialConfiguration::socialStatic(static::socialName());
+            $defaultData = [
+                'class' => [ 'social-' . strtolower(static::socialName()) ],
+            ];
 
-        $defaultData = [
-            'class' => [ 'social-' . strtolower(static::socialName()) ],
-        ];
-
-        if(isset($data['class'])) {
-            if(is_array($data['class'])) {
-                $defaultData['class'] = ArrayHelper::merge($defaultData['class'], $data['class']);
-            } else {
-                $defaultData['class'] = ArrayHelper::merge($defaultData['class'],[ $data['class'] ]);
+            if(isset($data['class'])) {
+                if(is_array($data['class'])) {
+                    $defaultData['class'] = ArrayHelper::merge($defaultData['class'], $data['class']);
+                } else {
+                    $defaultData['class'] = ArrayHelper::merge($defaultData['class'],[ $data['class'] ]);
+                }
+                unset($data['class']);
             }
-            unset($data['class']);
+
+            $defaultData = ArrayHelper::merge($defaultData, $data);
+
+            return Html::a($text ?? $social->name, static::url($state), $defaultData);
+        } catch (NotFoundHttpException $ex) {
+            return $ex->getMessage();
         }
 
-        $defaultData = ArrayHelper::merge($defaultData, $data);
 
-        return Html::a($text ?? $social->name, static::url($state), $defaultData);
     }
 
     /**
