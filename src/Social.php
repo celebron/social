@@ -88,7 +88,7 @@ abstract class Social extends Model
     {
         return [
             ['redirectUrl', 'url', 'on' => self::SCENARIO_LOGONED ],
-            ['field', 'fieldValidator'],
+            ['field', 'fieldValidator', 'on' => self::SCENARIO_LOGONED],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_LOGONED ],
         ];
     }
