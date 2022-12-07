@@ -369,28 +369,37 @@ abstract class Social extends Model
      */
     final public static function icon(bool|string $state = false, array $data =[]): string
     {
-        $social = SocialConfiguration::socialStatic(static::socialName());
+        try {
+            $social = SocialConfiguration::socialStatic(static::socialName());
 
-        $dataImg = [
-            'class'=> [ 'icon-' . strtolower(static::socialName()) ],
-            'alt' => $social->name,
-        ];
-        if(isset($data['img'])) {
-            if(isset($data['img']['class'])) {
-                if(is_array($data['img']['class'])) {
-                    $dataImg['class'] = ArrayHelper::merge($dataImg['class'], $data['img']['class']);
-                } else {
-                    $dataImg['class'] = ArrayHelper::merge($dataImg, [ $data['img']['class'] ]);
+            $dataImg = [
+                'class' => ['icon-' . strtolower(static::socialName())],
+                'alt' => $social->name,
+            ];
+            if (isset($data['img'])) {
+                if (isset($data['img']['class'])) {
+                    if (is_array($data['img']['class'])) {
+                        $dataImg['class'] = ArrayHelper::merge($dataImg['class'], $data['img']['class']);
+                    } else {
+                        $dataImg['class'] = ArrayHelper::merge($dataImg, [$data['img']['class']]);
+                    }
+                    unset($data['img']['class']);
                 }
-                unset($data['img']['class']);
+                $dataImg = ArrayHelper::merge($dataImg, $data['img']);
             }
-            $dataImg = ArrayHelper::merge($dataImg, $data['img']);
+
+            $dataA = isset($data['a']) ? $data['a'] : [];
+
+            $image = Html::img(Yii::getAlias($social->icon), $dataImg);
+            return static::a($image, $state, $dataA);
+        } catch (NotFoundHttpException $ex) {
+            $error = ArrayHelper::getValue($data, 'error');
+            if ($error === null) {
+                return $ex->getMessage();
+            }
+
+            return sprintf($error, $ex->getMessage(), $ex->statusCode, $ex->getTraceAsString());
         }
-
-        $dataA =isset($data['a'])?$data['a']:[];
-
-        $image = Html::img(Yii::getAlias($social->icon),  $dataImg);
-        return static::a($image, $state, $dataA);
     }
 
     /**
