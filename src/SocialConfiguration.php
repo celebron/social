@@ -124,11 +124,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 }
 
                 //Настройка алгоритма поиска пользователя
-                if ($this->findUserAlg === null) {
-                    $object->on(Social::EVENT_FIND_USER, function (FindUserEventArgs $e) {
-                        $e->defaultAlg();
-                    }, ['config' => $this]);
-                } else {
+                if ($this->findUserAlg !== null) {
                     $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
                 }
 

@@ -25,14 +25,4 @@ class FindUserEventArgs extends Event
         parent::__construct($config);
     }
 
-    /**
-     * Алгоритм поиска по-умолчанию
-     * @return void
-     */
-    public function defaultAlg(): void
-    {
-        if($this->sender->id !== null) {
-            $this->user = $this->userQuery->andWhere([$this->sender->field => $this->sender->id])->one();
-        }
-    }
 }
