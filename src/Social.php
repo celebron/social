@@ -33,7 +33,11 @@ abstract class Social extends Model
     public const EVENT_REGISTER_SUCCESS = "registerSuccess";
     public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
     public const EVENT_ERROR = "error";
+    public const EVENT_DELETE_SUCCESS = 'deleteSuccess';
     public const EVENT_FIND_USER = "findUser";
+
+    public const SCENARIO_MANIPULATE = 'manipulate';
+    public const SCENARIO_LOGONED = 'logoned';
 
     ////В config
 
@@ -86,7 +90,7 @@ abstract class Social extends Model
         return [
             ['redirectUrl', 'url' ],
             ['field', 'fieldValidator'],
-            ['code', 'codeValidator', 'skipOnEmpty' => false ],
+            ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_LOGONED ],
         ];
     }
 
@@ -130,9 +134,9 @@ abstract class Social extends Model
 
     /**
      * Запрос кода от соц.сети
-     * @return mixed
+     * @return void;
      */
-    abstract protected function requestCode ();
+    abstract protected function requestCode () : void;
 
     /**
      * Запрос id пользователя от соц.сети
@@ -172,19 +176,20 @@ abstract class Social extends Model
      */
     final public function register() : bool
     {
-        /** @var ActiveRecord $user */
-        $user = Yii::$app->user->identity;
-        if($this->active && $this->validate()) {
-            $field = $this->field;
-            $user->$field = $this->_id;
-            if($user->save()) {
-                self::debug("Registered user id $this->_id");
-                return true;
-            }
-            \Yii::warning($user->getErrorSummary(true), static::class);
+        if($this->validate()) {
+            return $this->modifiedUser($this->_id);
         }
         return false;
     }
+
+    final public function delete() : bool
+    {
+        if($this->validate()) {
+            return $this->modifiedUser(null);
+        }
+        return false;
+    }
+
 
     /**
      * Авторизация в системе
@@ -194,12 +199,28 @@ abstract class Social extends Model
      */
     final public function login(int $duration = 0) : bool
     {
-        if($this->active && $this->validate() && ( ($user = $this->findUser()) !== null )) {
+        if($this->validate() && ( ($user = $this->findUser()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
             return $login;
         }
         return false;
+    }
+
+    public function deleteSuccess(SocialController $action)
+    {
+        $eventArgs = new SuccessEventArgs($action);
+        $eventArgs->useSession = $this->useSession;
+        $this->trigger(self::EVENT_DELETE_SUCCESS, $eventArgs);
+        if($eventArgs->useSession) {
+            if(!\Yii::$app->session->isActive) {
+                \Yii::$app->session->open();
+            }
+            $session = \Yii::$app->session;
+            \Yii::debug('Used session to save token', static::class);
+            $session[static::socialName() . '.token'] = null;
+        }
+        return $eventArgs->result ?? $action->goBack();
     }
 
     /**
@@ -256,6 +277,20 @@ abstract class Social extends Model
         }
 
         return $eventArgs->result;
+    }
+
+    protected function modifiedUser($data) : bool
+    {
+        /** @var ActiveRecord|IdentityInterface $user */
+        $user = Yii::$app->user->identity;
+        $field = $this->field;
+        $user->$field = $data;
+        if ($user->save()) {
+            self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
+            return true;
+        }
+        \Yii::warning($user->getErrorSummary(true), static::class);
+        return false;
     }
 
     /**

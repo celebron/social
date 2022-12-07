@@ -15,7 +15,7 @@ use yii\web\NotFoundHttpException;
  * Конфигуратор социальной авторизации
  * @property-read array $links - список линков зарегистрированных соцсетей
  * @property-read Social[] $socials - зарегистрированые соцсети
- * @property-write array $socials - регистрация классов
+ //* @property-write array $socials - регистрация классов
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
@@ -34,6 +34,8 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public ?\Closure $onAllRegisterSuccess = null;
     /** @var \Closure|null - cобытие автризации на все */
     public ?\Closure $onAllLoginSuccess = null;
+    /** @var \Closure|null - событие удаление на все */
+    public ?\Closure $onAllDeleteSuccess = null;
     /** @var \Closure|null - событие поиск пользователя (алгоритм) */
     public ?\Closure $findUserAlg = null;
 
@@ -115,6 +117,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
                     $object->on(Social::EVENT_ERROR, $this->onAllError, ['config' => $this]);
                 }
 
+                //Установить обработчик на все успешные удаления (разных соцсетей)
+                if($this->onAllDeleteSuccess !== null) {
+                    $object->on(Social::EVENT_DELETE_SUCCESS, $this->onAllDeleteSuccess, ['config'=>$this]);
+                }
+
                 //Настройка алгоритма поиска пользователя
                 if ($this->findUserAlg === null) {
                     $object->on(Social::EVENT_FIND_USER, function (FindUserEventArgs $e) {
@@ -154,14 +161,22 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * Выводит Social класс по имени класса
      * @param string $socialname
      * @return Social
+     * @throws NotFoundHttpException
      */
-    public static function getSocial(string $socialname) : ?Social
+    public static function socialStatic(string $socialname) : Social
     {
-        $socials = static::$config->getSocials();
-        if(array_key_exists(strtolower($socialname), $socials)) {
-            return $socials[strtolower($socialname)];
+        return  static::$config->getSocial($socialname);
+    }
+
+    public function getSocial(string $socialname, string $scenario): Social
+    {
+        /** @var Social $object */
+        $object = ArrayHelper::getValue($this->getSocials(), strtolower($socialname));
+        $object->scenario = $scenario;
+        if($object === null) {
+            throw new NotFoundHttpException("Social {$socialname} not registered");
         }
-        return null;
+        return $object;
     }
 
     /**
@@ -173,6 +188,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     {
         $app->urlManager->addRules([
             "{$this->route}/<social>" => "{$this->route}/handler",
+            "{$this->route}/<social>/delete" => "{$this->route}/delete",
         ]);
         $app->controllerMap[$this->route] = [
             'class' => SocialController::class,

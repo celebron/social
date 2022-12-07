@@ -14,7 +14,7 @@ class Discord extends SocialOAuth2
     public string $clientUrl = 'https://discord.com/api';
     public array $scope = [ 'identify' ];
 
-    protected function requestCode ()
+    protected function requestCode () : void
     {
         $this->getCode('oauth2/authorize',['scope'=>implode(' ', $this->scope)]);
         exit();
@@ -67,7 +67,7 @@ class Discord extends SocialOAuth2
             } else {
                 $url .= '&';
             }
-            $url .= http_build_query($params, encoding_type: PHP_QUERY_RFC3986);
+            $url .= http_build_query($params, enc_type: PHP_QUERY_RFC3986);
         }
 
         return $url;
