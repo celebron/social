@@ -294,6 +294,10 @@ abstract class Social extends Model
     final public static function a(?string $text = null, bool|string $state = false, array $data = []): string
     {
         $social = SocialConfiguration::getSocial(static::socialName());
+        if($social === null) {
+            return '';
+        }
+
         $defaultData = [
             'class' => [ 'social-' . strtolower(static::socialName()) ],
         ];

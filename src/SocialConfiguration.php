@@ -169,7 +169,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @param $app - \Yii::$app
      * @return void
      */
-    public function bootstrap ($app)
+    public function bootstrap ($app): void
     {
         $app->urlManager->addRules([
             "{$this->route}/<social>" => "{$this->route}/handler",
