@@ -44,7 +44,7 @@ class Google extends \Celebron\social\SocialOAuth2
 
     }
 
-    protected function requestCode ()
+    protected function requestCode () : void
     {
         $this->getCode($this->authUrl,['access_type' => 'online', 'scope'=>'profile']);
         exit();

@@ -47,7 +47,7 @@ class Yandex extends SocialOAuth2
      * @return void
      * @throws BadRequestHttpException
      */
-    public function requestCode ()
+    public function requestCode () : void
     {
         $get = Yii::$app->request->get();
         if (isset($get['error'])) {
