@@ -5,6 +5,7 @@ namespace Celebron\social;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -29,12 +30,13 @@ class SocialController extends \yii\web\Controller
         if(\Yii::$app->user->isGuest) {
             throw new UnauthorizedHttpException();
         }
-        $socialObject = $this->config->getSocial($social, Social::SCENARIO_MANIPULATE);
         try {
+            $socialObject = $this->config->getSocial($social, Social::SCENARIO_MANIPULATE);
+
             if ($socialObject->delete()) {
                 return $socialObject->deleteSuccess($this);
             }
-            return $socialObject->error($this, null);
+            return $socialObject->error($this, new HttpException(400,"Social '{$social}' not delete from userid " . \Yii::$app->user->id));
         } catch (\Exception $ex) {
             return $socialObject->error($this, $ex);
         } finally {

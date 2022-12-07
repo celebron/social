@@ -36,7 +36,6 @@ abstract class Social extends Model
     public const EVENT_DELETE_SUCCESS = 'deleteSuccess';
     public const EVENT_FIND_USER = "findUser";
 
-    public const SCENARIO_MANIPULATE = 'manipulate';
     public const SCENARIO_LOGONED = 'logoned';
 
     ////В config
@@ -88,7 +87,7 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            ['redirectUrl', 'url' ],
+            ['redirectUrl', 'url', 'on' => self::SCENARIO_LOGONED ],
             ['field', 'fieldValidator'],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_LOGONED ],
         ];
@@ -176,18 +175,16 @@ abstract class Social extends Model
      */
     final public function register() : bool
     {
-        if($this->validate()) {
-            return $this->modifiedUser($this->_id);
-        }
-        return false;
+        return $this->modifiedUser($this->_id);
     }
 
+    /**
+     * Удаление записи соц УЗ.
+     * @return bool
+     */
     final public function delete() : bool
     {
-        if($this->validate()) {
-            return $this->modifiedUser(null);
-        }
-        return false;
+        return $this->modifiedUser(null);
     }
 
 
@@ -281,15 +278,19 @@ abstract class Social extends Model
 
     protected function modifiedUser($data) : bool
     {
-        /** @var ActiveRecord|IdentityInterface $user */
-        $user = Yii::$app->user->identity;
-        $field = $this->field;
-        $user->$field = $data;
-        if ($user->save()) {
-            self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
-            return true;
+        if($this->validate()) {
+            /** @var ActiveRecord|IdentityInterface $user */
+            $user = Yii::$app->user->identity;
+            $field = $this->field;
+            $user->$field = $data;
+            if ($user->save()) {
+                self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
+                return true;
+            }
+            \Yii::warning($user->getErrorSummary(true), static::class);
+            return false;
         }
-        \Yii::warning($user->getErrorSummary(true), static::class);
+        \Yii::warning($this->getErrorSummary(true), static::class);
         return false;
     }
 
@@ -334,9 +335,9 @@ abstract class Social extends Model
             $defaultData = [
                 'class' => [ 'social-' . strtolower(static::socialName()) ],
                 'defaultValue' => [
-                    'register' => 'Register to ' . $social->name,
+                    'register' => 'Register',
                     'login' => $social->name,
-                    'delete' => 'Delete to ' . $social->name,
+                    'delete' => 'Delete',
                 ]
             ];
 
