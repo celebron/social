@@ -333,6 +333,11 @@ abstract class Social extends Model
             $social = SocialConfiguration::socialStatic(static::socialName());
             $defaultData = [
                 'class' => [ 'social-' . strtolower(static::socialName()) ],
+                'defaultValue' => [
+                    'register' => 'Register to ' . $social->name,
+                    'login' => $social->name,
+                    'delete' => 'Delete to ' . $social->name,
+                ]
             ];
 
             if(isset($data['class'])) {
@@ -345,7 +350,15 @@ abstract class Social extends Model
             }
 
             $defaultData = ArrayHelper::merge($defaultData, $data);
-
+            //Дефолтовые значения при $text = null
+            if($text === null ) {
+                if(is_bool($state)) {
+                    $text = $state ? $defaultData['defaultValue']['register'] : $defaultData['defaultValue']['login'];
+                }
+                if($state === null) {
+                    $text = $defaultData['defaultValue']['delete'];
+                }
+            }
             return Html::a($text ?? $social->name, static::url($state), $defaultData);
         } catch (NotFoundHttpException $ex) {
             $error = ArrayHelper::getValue($data, 'error');
