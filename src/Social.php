@@ -352,12 +352,11 @@ abstract class Social extends Model
             if($error === null) {
                 return $text ?? $ex->getMessage();
             }
-            if(is_string($error)) {
-                return sprintf($error, $ex->getMessage(), $text, $ex->statusCode, $ex->getTraceAsString());
-            }
             if(is_bool($error) && $error) {
                 return $ex->getMessage();
             }
+
+            return sprintf($error, $ex->getMessage(), $text, $ex->statusCode, $ex->getTraceAsString());
         }
     }
 
