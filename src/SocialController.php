@@ -36,7 +36,8 @@ class SocialController extends \yii\web\Controller
             if ($socialObject->delete()) {
                 return $socialObject->deleteSuccess($this);
             }
-            return $socialObject->error($this, new HttpException(400,"Social '{$social}' not delete from userid " . \Yii::$app->user->id));
+
+            return $socialObject->error($this, new HttpException(400,"[$social]Not delete from userid " . \Yii::$app->user->id));
         } catch (\Exception $ex) {
             return $socialObject->error($this, $ex);
         } finally {
@@ -57,11 +58,12 @@ class SocialController extends \yii\web\Controller
         $register = ($state !== null) && str_contains($this->config->register, $state);
 
         \Yii::beginProfile("Social profiling", static::class);
-        $socialObject = $this->config->getSocial($social, Social::SCENARIO_LOGONED);
-        $socialObject->state = $state;
-        $socialObject->code = $code;
-        $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
         try {
+            $socialObject = $this->config->getSocial($social, Social::SCENARIO_LOGONED);
+            $socialObject->state = $state;
+            $socialObject->code = $code;
+            $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
+
             if ($register && $socialObject->register()) {
                 return $socialObject->registerSuccess($this);
             }
@@ -70,7 +72,7 @@ class SocialController extends \yii\web\Controller
                 return $socialObject->loginSuccess($this);
             }
 
-            return $socialObject->error($this, null);
+            return $socialObject->error($this, new NotFoundHttpException("[$social]User ' . {$socialObject->id} .' not registered by site"));
         } catch (\Exception $ex) {
             return $socialObject->error($this, $ex);
         } finally {

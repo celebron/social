@@ -88,7 +88,7 @@ abstract class Social extends Model
     {
         return [
             ['redirectUrl', 'url', 'on' => self::SCENARIO_LOGONED ],
-            ['field', 'fieldValidator', 'on' => self::SCENARIO_LOGONED],
+            ['field', 'fieldValidator','on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LOGONED]],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_LOGONED ],
         ];
     }
@@ -175,7 +175,7 @@ abstract class Social extends Model
      */
     final public function register() : bool
     {
-        return $this->modifiedUser($this->_id);
+        return $this->validate() && $this->modifiedUser($this->_id);
     }
 
     /**
@@ -184,7 +184,7 @@ abstract class Social extends Model
      */
     final public function delete() : bool
     {
-        return $this->modifiedUser(null);
+        return $this->validate() && $this->modifiedUser(null);
     }
 
 
@@ -267,31 +267,26 @@ abstract class Social extends Model
         $this->trigger(self::EVENT_ERROR, $eventArgs);
 
         if($eventArgs->result === null) {
-            if($ex === null) {
-                throw new NotFoundHttpException('['. static::socialName() .'] User ' . $this->_id .' not registered');
-            }
             throw $ex;
         }
 
         return $eventArgs->result;
     }
 
-    protected function modifiedUser($data) : bool
+    protected function modifiedUser(mixed $data) : bool
     {
-        if($this->validate()) {
-            /** @var ActiveRecord|IdentityInterface $user */
-            $user = Yii::$app->user->identity;
-            $field = $this->field;
-            $user->$field = $data;
-            if ($user->save()) {
-                self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
-                return true;
-            }
-            \Yii::warning($user->getErrorSummary(true), static::class);
-            return false;
+        /** @var ActiveRecord|IdentityInterface $user */
+        $user = Yii::$app->user->identity;
+        $field = $this->field;
+        $user->$field = $data;
+
+        if ($user->save()) {
+            self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
+            return true;
         }
-        \Yii::warning($this->getErrorSummary(true), static::class);
+        \Yii::warning($user->getErrorSummary(true), static::class);
         return false;
+
     }
 
     /**
