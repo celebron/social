@@ -67,7 +67,7 @@ class Discord extends SocialOAuth2
             } else {
                 $url .= '&';
             }
-            $url .= http_build_query($params, enc_type: PHP_QUERY_RFC3986);
+            $url .= http_build_query($params, encoding_type: PHP_QUERY_RFC3986);
         }
 
         return $url;
