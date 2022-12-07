@@ -31,7 +31,7 @@ class SocialController extends \yii\web\Controller
             throw new UnauthorizedHttpException();
         }
         try {
-            $socialObject = $this->config->getSocial($social, Social::SCENARIO_MANIPULATE);
+            $socialObject = $this->config->getSocial($social);
 
             if ($socialObject->delete()) {
                 return $socialObject->deleteSuccess($this);
