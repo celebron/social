@@ -311,10 +311,10 @@ abstract class Social extends Model
 
     /**
      * Ссылка на oauth авторизацию
-     * @param bool|string $state
+     * @param bool|string|null $state
      * @return string
      */
-    final public static function url(bool|string $state = false) : string
+    final public static function url(bool|string|null $state = false) : string
     {
         return SocialConfiguration::link(static::socialName(), $state);
     }
@@ -322,7 +322,7 @@ abstract class Social extends Model
     /**
      * Ссылка на социальную сеть [html::a]
      * @param string|null $text - Текст на ссылку
-     * @param bool|string $state - oauth state (true - register)
+     * @param bool|string|null $state - oauth state (true - register)
      * @param array $data
      * @return string
      * @throws Exception
@@ -375,7 +375,7 @@ abstract class Social extends Model
 
     /**
      * Ссылка с иконкой
-     * @param bool|string $state
+     * @param bool|string|null $state
      * @param array $data
      * @return string
      * @throws NotFoundHttpException
