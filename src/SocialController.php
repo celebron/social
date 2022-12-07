@@ -30,9 +30,10 @@ class SocialController extends \yii\web\Controller
         if(\Yii::$app->user->isGuest) {
             throw new UnauthorizedHttpException();
         }
-        try {
-            $socialObject = $this->config->getSocial($social);
 
+        $socialObject = $this->config->getSocial($social);
+
+        try {
             if ($socialObject->delete()) {
                 return $socialObject->deleteSuccess($this);
             }
@@ -58,12 +59,12 @@ class SocialController extends \yii\web\Controller
         $register = ($state !== null) && str_contains($this->config->register, $state);
 
         \Yii::beginProfile("Social profiling", static::class);
-        try {
-            $socialObject = $this->config->getSocial($social, Social::SCENARIO_LOGONED);
-            $socialObject->state = $state;
-            $socialObject->code = $code;
-            $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
 
+        $socialObject = $this->config->getSocial($social, Social::SCENARIO_LOGONED);
+        $socialObject->state = $state;
+        $socialObject->code = $code;
+        $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
+        try {
             if ($register && $socialObject->register()) {
                 return $socialObject->registerSuccess($this);
             }

@@ -128,7 +128,6 @@ abstract class Social extends Model
         if ($this->_id === null) {
             throw new NotFoundHttpException("User not found", code: 2);
         }
-
     }
 
     /**
