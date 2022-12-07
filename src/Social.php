@@ -356,10 +356,11 @@ abstract class Social extends Model
      * @param bool|string $state
      * @param array $data
      * @return string
+     * @throws NotFoundHttpException
      */
     final public static function icon(bool|string $state = false, array $data =[]): string
     {
-        $social = SocialConfiguration::getSocial(static::socialName());
+        $social = SocialConfiguration::socialStatic(static::socialName());
 
         $dataImg = [
             'class'=> [ 'icon-' . strtolower(static::socialName()) ],

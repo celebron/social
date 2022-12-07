@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\FindUserEventArgs;
+use Codeception\Scenario;
 use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -163,12 +164,12 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @return Social
      * @throws NotFoundHttpException
      */
-    public static function socialStatic(string $socialname) : Social
+    public static function socialStatic(string $socialname, string $scenario = Social::SCENARIO_DEFAULT) : Social
     {
         return  static::$config->getSocial($socialname);
     }
 
-    public function getSocial(string $socialname, string $scenario): Social
+    public function getSocial(string $socialname, string $scenario = Social::SCENARIO_DEFAULT): Social
     {
         /** @var Social $object */
         $object = ArrayHelper::getValue($this->getSocials(), strtolower($socialname));
