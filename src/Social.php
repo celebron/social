@@ -347,10 +347,17 @@ abstract class Social extends Model
 
             return Html::a($text ?? $social->name, static::url($state), $defaultData);
         } catch (NotFoundHttpException $ex) {
-            return $ex->getMessage();
+            $error = ArrayHelper::getValue($data, 'error');
+            if($error === null) {
+                return $text ?? $ex->getMessage();
+            }
+            if(is_string($error)) {
+                return sprintf($error, $ex->getMessage(), $ex->statusCode, $ex->getTraceAsString());
+            }
+            if(is_bool($error) && $error) {
+                return $ex->getMessage();
+            }
         }
-
-
     }
 
     /**
