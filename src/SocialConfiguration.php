@@ -155,10 +155,13 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @param string $socialname
      * @return Social
      */
-    public static function getSocial(string $socialname) : Social
+    public static function getSocial(string $socialname) : ?Social
     {
         $socials = static::$config->getSocials();
-        return $socials[strtolower($socialname)];
+        if(array_key_exists(strtolower($socialname), $socials)) {
+            return $socials[strtolower($socialname)];
+        }
+        return null;
     }
 
     /**
