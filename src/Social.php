@@ -321,10 +321,11 @@ abstract class Social extends Model
 
     /**
      * Ссылка на социальную сеть [html::a]
-     * @param string $text - Текст на ссылку
+     * @param string|null $text - Текст на ссылку
      * @param bool|string $state - oauth state (true - register)
      * @param array $data
      * @return string
+     * @throws Exception
      */
     final public static function a(?string $text = null, bool|string $state = false, array $data = []): string
     {
@@ -352,7 +353,7 @@ abstract class Social extends Model
                 return $text ?? $ex->getMessage();
             }
             if(is_string($error)) {
-                return sprintf($error, $ex->getMessage(), $ex->statusCode, $ex->getTraceAsString());
+                return sprintf($error, $ex->getMessage(), $text, $ex->statusCode, $ex->getTraceAsString());
             }
             if(is_bool($error) && $error) {
                 return $ex->getMessage();
