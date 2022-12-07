@@ -146,7 +146,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @param bool|string $state
      * @return string
      */
-    public static function link (string $socialname, bool|string $state = false): string
+    public static function link (string $socialname, bool|string|null $state = false): string
     {
         $url[0] = self::$config->route . '/' . strtolower($socialname);
         if (is_bool($state) && $state) {
@@ -154,6 +154,9 @@ class SocialConfiguration extends Component implements BootstrapInterface
         }
         if (is_string($state)) {
             $url['state'] = $state;
+        }
+        if($state === null) {
+            $url[0] .= '/delete';
         }
         return Url::to($url, true);
     }
