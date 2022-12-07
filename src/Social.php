@@ -336,7 +336,7 @@ abstract class Social extends Model
                 'class' => [ 'social-' . strtolower(static::socialName()) ],
                 'defaultValue' => [
                     'register' => 'Register',
-                    'login' => $social->name,
+                    'login' => $social->name ?? '',
                     'delete' => 'Delete',
                 ]
             ];
