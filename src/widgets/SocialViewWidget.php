@@ -14,7 +14,7 @@ class SocialViewWidget extends Widget
     public string $social;
     public string $type = self::TYPE_LOGIN;
 
-    private $_data;
+    private array $_data;
 
     public function init ()
     {

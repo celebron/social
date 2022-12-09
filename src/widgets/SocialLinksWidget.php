@@ -62,7 +62,7 @@ class SocialLinksWidget extends Widget
             }
 
             $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . ' social-' . $k ]) . PHP_EOL;
-            $html .= "\t\t" . Html::a($icon, $this->register ?$v['register']:$v['login'], $linkOption) . PHP_EOL;
+            $html .= "\t\t" . Html::a($icon, $this->register ?$v['urls']['register']:$v['urls']['login'], $linkOption) . PHP_EOL;
             $html .= "\t" . Html::endTag('div') . PHP_EOL;
         }
         $html .= Html::endTag('div') . PHP_EOL;
