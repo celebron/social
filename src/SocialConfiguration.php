@@ -2,8 +2,6 @@
 
 namespace Celebron\social;
 
-use Celebron\social\eventArgs\FindUserEventArgs;
-use Codeception\Scenario;
 use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -60,12 +58,10 @@ class SocialConfiguration extends Component implements BootstrapInterface
         return $this->_socials;
     }
 
-
     /**
      * Список ссылок на соц.сети
      * @return array
      */
-    #[\JetBrains\PhpStorm\ArrayShape(['name' => "string", 'login' => "string", 'register' => "string", 'icon' => "string"])]
     public function getLinks (): array
     {
         $links = [];
@@ -73,8 +69,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
         foreach ($this->getSocials() as $key => $social) {
             $links[$key] = [
                 'name' => empty($social->name) ? $key : $social->name,
-                'login' => $social::url(false),
-                'register' => $social::url(true),
+                'urls' =>[
+                    'login' => $social::url(false),
+                    'register' => $social::url(true),
+                    'delete' => $social::url(null),
+                ],
                 'icon' => empty($object->icon) ? null : \Yii::getAlias($object->icon),
             ];
         }
@@ -98,7 +97,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
                     continue;
                 }
 
-                //если ключ числовой, то пееводим его в socialName
+                //если ключ числовой, то переводим его в socialName
                 if (is_numeric($key)) {
                     $key = strtolower($object::socialName());
                 }
@@ -137,38 +136,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
-     * Получить ссылку на редеректа на соц.сеть
-     * @param string $socialname
-     * @param bool|string $state
-     * @return string
-     */
-    public static function link (string $socialname, bool|string|null $state = false): string
-    {
-        $url[0] = self::$config->route . '/' . strtolower($socialname);
-        if (is_bool($state) && $state) {
-            $url['state'] = self::$config->register;
-        }
-        if (is_string($state)) {
-            $url['state'] = $state;
-        }
-        if($state === null) {
-            $url[0] .= '/delete';
-        }
-        return Url::to($url, true);
-    }
-
-    /**
-     * Выводит Social класс по имени класса
-     * @param string $socialname
-     * @return Social
-     * @throws NotFoundHttpException
-     */
-    public static function socialStatic(string $socialname, string $scenario = Social::SCENARIO_DEFAULT) : Social
-    {
-        return  static::$config->getSocial($socialname);
-    }
-
-    /**
      * @param string $socialname
      * @param string $scenario
      * @return Social
@@ -202,5 +169,45 @@ class SocialConfiguration extends Component implements BootstrapInterface
             'class' => SocialController::class,
             'config' => $this,
         ];
+    }
+
+    /**
+     * Выводит Social класс по имени класса
+     * @param string $socialname
+     * @return Social
+     * @throws NotFoundHttpException
+     */
+    public static function socialStatic(string $socialname, string $scenario = Social::SCENARIO_DEFAULT) : Social
+    {
+        return  static::$config->getSocial($socialname, $scenario);
+    }
+
+    public static function linksStatic(): array
+    {
+        return static::$config->getLinks();
+    }
+
+    /**
+     * Получить ссылку на редеректа на соц.сеть
+     * @param string $socialname
+     * @param bool|string $state
+     * @return string
+     */
+    public static function url (string $socialname, bool|string|null $state = false): string
+    {
+        $url[0] = self::$config->route . '/' . strtolower($socialname);
+        //Для state - регистрация или авторизация
+        if (is_bool($state) && $state) {
+            $url['state'] = self::$config->register;
+        }
+        //Для нестандартных state
+        if (is_string($state)) {
+            $url['state'] = $state;
+        }
+        //Для удаления
+        if($state === null) {
+            $url[0] .= '/delete';
+        }
+        return Url::to($url, true);
     }
 }

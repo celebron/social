@@ -11,7 +11,7 @@ use yii\helpers\Html;
 /**
  * Виджет списка соцсетей
  */
-class SocialLinkWidget extends Widget
+class SocialLinksWidget extends Widget
 {
     public string $groupClass = 'social-auth';
 

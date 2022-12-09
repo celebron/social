@@ -23,6 +23,7 @@ class FindUserEventArgs extends Event
     public function __construct (public ActiveQuery $userQuery, array $config = [])
     {
         parent::__construct($config);
+        //Выполнение Query запроса $userQuery
         $this->user = $this->userQuery->one();
     }
 

@@ -273,6 +273,11 @@ abstract class Social extends Model
         return $eventArgs->result;
     }
 
+    /**
+     * Модификация данных пользователя
+     * @param mixed $data - Значение поля field в пользовательской модели
+     * @return bool
+     */
     protected function modifiedUser(mixed $data) : bool
     {
         /** @var ActiveRecord|IdentityInterface $user */
@@ -312,7 +317,7 @@ abstract class Social extends Model
      */
     final public static function url(bool|string|null $state = false) : string
     {
-        return SocialConfiguration::link(static::socialName(), $state);
+        return SocialConfiguration::url(static::socialName(), $state);
     }
 
     /**
