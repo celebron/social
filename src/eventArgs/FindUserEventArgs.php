@@ -13,7 +13,7 @@ use yii\db\ActiveRecord;
 class FindUserEventArgs extends Event
 {
     /** @var ActiveRecord|null - Пользователь User */
-    public ?ActiveRecord $user = null;
+    public ?ActiveRecord $user;
 
     /**
      * Конструктор
@@ -23,16 +23,8 @@ class FindUserEventArgs extends Event
     public function __construct (public ActiveQuery $userQuery, array $config = [])
     {
         parent::__construct($config);
+        //Выполнение Query запроса $userQuery
+        $this->user = $this->userQuery->one();
     }
 
-    /**
-     * Алгоритм поиска по-умолчанию
-     * @return void
-     */
-    public function defaultAlg(): void
-    {
-        if($this->sender->id !== null) {
-            $this->user = $this->userQuery->andWhere([$this->sender->field => $this->sender->id])->one();
-        }
-    }
 }

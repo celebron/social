@@ -35,6 +35,7 @@
         "yiisoft/yii2-httpclient": "^2.0",
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
+        "bower-asset/bootstrap": "^5.1.0",
         "php": "^8.0"
     },
     "extra": {

@@ -38,14 +38,16 @@ Configuration
 ```
 Необходимо подключить компонент <i>SocialConfiguration</i> в <i>bootstrap</i>, как приведено в примере
 ### [[SocialConfiguration::class]]
-    [optional] string       $route (Default: 'social')            - роут для OAuth redirect path   
-    [optional] string       $register (Default: 'register')       - state - регистрации
-    [optional] integer      $duration (Default: 0)                - время жизни сессии авторизации (0 - неограничено)
-    [optional] Closure|null $onAllError (Default: null)           - обработка всех ошибок socials
-    [optional] Closure|null $onAllRegisterSuccess (Default: null) - обработчик всех успешных регистраций
-    [optional] Closure|null $onAllLoginSuccess (Default: null)    - обработчик всех успешных логинов
-    [optional] Closure|null $findUserAlg  (Default: null)         - алгоритм проверки (null - внутренний алгоритм)
-    [required] array        $socials                              - список всех соц. сетей 
+    [optional] string       $route ('social')            - роут для OAuth redirect path   
+    [optional] string       $register ('register')       - state - регистрации
+    [optional] int          $duration (0)                - Срок действия авторизации
+    [optional] Closure|null $onAllError (null)           - обработка всех ошибок socials
+    [optional] Closure|null $onAllRegisterSuccess (null) - обработчик всех успешных регистраций
+    [optional] Closure|null $onAllLoginSuccess (null)    - обработчик всех успешных логинов
+    [optional] Closure|null $onAllDeleteSuccess (null)   - обработчик всех упешных удалений
+    [optional] Closure|null $findUserAlg (null)          - переопределение алгоритма поиска пользователя
+    [required] Social[]     $socials                     - список всех соц. сетей 
+
 
 ### [[SocialOAuth::class]]    (Google::class, Yandex::class, ...)
     [required] string $field               - поле в базе данных

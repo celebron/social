@@ -14,7 +14,7 @@ class Discord extends SocialOAuth2
     public string $clientUrl = 'https://discord.com/api';
     public array $scope = [ 'identify' ];
 
-    protected function requestCode ()
+    protected function requestCode () : void
     {
         $this->getCode('oauth2/authorize',['scope'=>implode(' ', $this->scope)]);
         exit();

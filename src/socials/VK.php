@@ -12,7 +12,8 @@ class VK extends SocialOAuth2
     public string $clientUrl = 'https://oauth.vk.com';
     public string $display = 'page';
 
-    protected function requestCode ()
+
+    protected function requestCode () : void
     {
         $this->getCode('authorize',[ 'display' => $this->display ]);
         exit;

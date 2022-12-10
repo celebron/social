@@ -8,6 +8,7 @@ use Celebron\social\eventArgs\SuccessEventArgs;
 use Exception;
 use ReflectionClass;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
@@ -25,7 +26,6 @@ use yii\web\Response;
 
 /**
  * Базовый класс авторизации соц.сетей.
- * @property-read mixed $id - (для чтения) Id из соцеальной сети (относительно field)
  * @property-read Client $client - (для чтения) Http Client
  */
 abstract class Social extends Model
@@ -33,7 +33,11 @@ abstract class Social extends Model
     public const EVENT_REGISTER_SUCCESS = "registerSuccess";
     public const EVENT_LOGIN_SUCCESS = 'loginSuccess';
     public const EVENT_ERROR = "error";
+    public const EVENT_DELETE_SUCCESS = 'deleteSuccess';
     public const EVENT_FIND_USER = "findUser";
+
+    public const SCENARIO_REQUEST = 'request';
+    public const SCENARIO_RESPONSE = 'response';
 
     ////В config
 
@@ -41,14 +45,16 @@ abstract class Social extends Model
     public string $field;
     /** @var bool - разрешить использование данной социальной сети  */
     public bool $active = false;
+    /** @var bool - использование сессии для сохранения data */
+    public bool $useSession = false;
 
     ////Визуал
 
     /** @var string - название для виджета */
-    public string $name;
+    public string $name = '';
 
     /** @var string - иконка для виджета */
-    public string $icon;
+    public string $icon = '';
 
 
     ///В Controllers
@@ -60,19 +66,19 @@ abstract class Social extends Model
     /** @var string - oAuth redirectUrl */
     public string $redirectUrl;
 
-
     /** @var array - Данные от социальных сетей */
     public array $data = [];
     /** @var mixed|null - Id от соцеальных сетей */
-    private mixed $_id = null;
+    public mixed $id = null;
 
-    /**
-     * Отображение Id из соц. сети
-     * @return mixed
-     */
-    public function getId(): mixed
+    public function init ()
     {
-        return $this->_id;
+        $name = static::socialName();
+        //Генерация констант под каждую соц.сеть
+        $contName = 'SOCIAL_' . strtoupper($name);
+        if(!defined($contName)) {
+            define($contName, strtolower($name));
+        }
     }
 
     /**
@@ -82,9 +88,9 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            ['redirectUrl', 'url' ],
-            ['field', 'fieldValidator'],
-            ['code', 'codeValidator', 'skipOnEmpty' => false ],
+            ['redirectUrl', 'url', 'on' => self::SCENARIO_REQUEST ],
+            ['field', 'fieldValidator','on' => [self::SCENARIO_RESPONSE, self::SCENARIO_REQUEST]],
+            ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_REQUEST ],
         ];
     }
 
@@ -93,7 +99,6 @@ abstract class Social extends Model
      * @param $a
      * @return void
      * @throws InvalidConfigException
-     * @throws NotSupportedException
      */
     final public function fieldValidator($a) : void
     {
@@ -118,20 +123,19 @@ abstract class Social extends Model
             return;
         }
 
-        $this->_id = $this->requestId();
-        static::debug("User id $this->_id");
+        $this->id = $this->requestId();
+        static::debug("User id $this->id");
 
-        if ($this->_id === null) {
+        if ($this->id === null) {
             throw new NotFoundHttpException("User not found", code: 2);
         }
-
     }
 
     /**
      * Запрос кода от соц.сети
-     * @return mixed
+     * @return void;
      */
-    abstract protected function requestCode ();
+    abstract protected function requestCode () : void;
 
     /**
      * Запрос id пользователя от соц.сети
@@ -159,10 +163,24 @@ abstract class Social extends Model
     protected function findUser(): ?IdentityInterface
     {
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
-        $findUserEventArgs = new FindUserEventArgs($class::find());
+        $query = $class::find()->andWhere([$this->field => $this->id]);
+        $findUserEventArgs = new FindUserEventArgs($query);
         $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
-        \Yii::info($findUserEventArgs->user?->toArray(), static::class);
+        \Yii::debug($findUserEventArgs->user?->toArray(), static::class);
         return $findUserEventArgs->user;
+    }
+
+    /**
+     * @return mixed
+     * @throws NotSupportedException
+     */
+    public function getSocialId(): mixed
+    {
+        $this->scenario = self::SCENARIO_RESPONSE;
+        if($this->validate()) {
+            return \Yii::$app->user->identity->{$this->field};
+        }
+        throw new NotSupportedException('Not validate Social class');
     }
 
     /**
@@ -171,18 +189,18 @@ abstract class Social extends Model
      */
     final public function register() : bool
     {
-        /** @var ActiveRecord $user */
-        $user = Yii::$app->user->identity;
-        if($this->active && $this->validate()) {
-            $field = $this->field;
-            $user->$field = $this->_id;
-            if($user->save()) {
-                self::debug("Registered user id $this->_id");
-                return true;
-            }
-            \Yii::warning($user->errors, static::class);
-        }
-        return false;
+        $this->scenario =  self::SCENARIO_REQUEST;
+        return $this->validate() && $this->modifiedUser($this->id);
+    }
+
+    /**
+     * Удаление записи соц УЗ.
+     * @return bool
+     */
+    final public function delete() : bool
+    {
+        $this->scenario = self::SCENARIO_RESPONSE;
+        return $this->validate() && $this->modifiedUser(null);
     }
 
     /**
@@ -193,12 +211,29 @@ abstract class Social extends Model
      */
     final public function login(int $duration = 0) : bool
     {
-        if($this->active && $this->validate() && ( ($user = $this->findUser()) !== null )) {
+        $this->scenario = self::SCENARIO_REQUEST;
+        if($this->validate() && ( ($user = $this->findUser()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
-            self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
+            self::debug("User login ($this->id) " . $login ? "succeeded": "failed");
             return $login;
         }
         return false;
+    }
+
+    public function deleteSuccess(SocialController $action)
+    {
+        $eventArgs = new SuccessEventArgs($action);
+        $eventArgs->useSession = $this->useSession;
+        $this->trigger(self::EVENT_DELETE_SUCCESS, $eventArgs);
+        if($eventArgs->useSession) {
+            if(!\Yii::$app->session->isActive) {
+                \Yii::$app->session->open();
+            }
+            $session = \Yii::$app->session;
+            \Yii::debug('Used session to save token', static::class);
+            $session[static::socialName() . '.token'] = null;
+        }
+        return $eventArgs->result ?? $action->goBack();
     }
 
     /**
@@ -209,7 +244,16 @@ abstract class Social extends Model
     public function loginSuccess(SocialController $action): mixed
     {
         $eventArgs = new SuccessEventArgs($action);
+        $eventArgs->useSession = $this->useSession;
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
+        if($eventArgs->useSession) {
+            if(!\Yii::$app->session->isActive) {
+                \Yii::$app->session->open();
+            }
+            $session = \Yii::$app->session;
+            \Yii::debug('Used session to save token', static::class);
+            $session[static::socialName() . '.token'] = $this->data['token'];
+        }
         return $eventArgs->result ?? $action->goBack();
     }
 
@@ -238,14 +282,7 @@ abstract class Social extends Model
         $eventArgs = new ErrorEventArgs($action, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
 
-        if(!$this->active) {
-            throw new ForbiddenHttpException('Social ' . static::socialName() . " not active.");
-        }
-
         if($eventArgs->result === null) {
-            if($ex === null) {
-                throw new NotFoundHttpException('['. static::socialName() .'] User ' . $this->_id .' not registered');
-            }
             throw $ex;
         }
 
@@ -253,44 +290,50 @@ abstract class Social extends Model
     }
 
     /**
+     * Модификация данных пользователя
+     * @param mixed $data - Значение поля field в пользовательской модели
+     * @return bool
+     */
+    protected function modifiedUser(mixed $data) : bool
+    {
+        /** @var ActiveRecord|IdentityInterface $user */
+        $user = Yii::$app->user->identity;
+        $field = $this->field;
+        $user->$field = $data;
+
+        if ($user->save()) {
+            self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
+            return true;
+        }
+        \Yii::warning($user->getErrorSummary(true), static::class);
+        return false;
+    }
+
+
+    /**
      * Название класса
      * @return string
      */
     final public static function socialName(): string
     {
-        return (new ReflectionClass(static::class))->getShortName();
+        $reflect = new ReflectionClass(static::class);
+        $attributes = $reflect->getAttributes(SocialName::class);
+        $socialName = $reflect->getShortName();
+        if(count($attributes) > 0) {
+            $socialName = $attributes[0]->getArguments()[0];
+        }
+
+        return $socialName;
     }
 
     /**
      * Ссылка на oauth авторизацию
-     * @param bool|string $state
+     * @param bool|string|null $state
      * @return string
-     * @throws InvalidConfigException
-     * @throws \yii\web\NotFoundHttpException
      */
-    final public static function url(bool|string $state = false) : string
+    final public static function url(bool|string|null $state = false) : string
     {
-        return SocialConfiguration::link(static::socialName(), $state);
-    }
-
-    /**
-     * Ссылка на социальную сеть [html::a]
-     * @param string $text - Текст на ссылку
-     * @param bool|string $state - oauth state (true - register)
-     * @param array $data
-     * @return string
-     * @throws InvalidConfigException
-     * @throws \yii\web\NotFoundHttpException
-     */
-    final public static function a(string $text, bool|string $state = false, array $data = []): string
-    {
-        if(isset($data['class'])) {
-            $data['class'] = [
-                'social-' .strtolower(self::socialName()),
-                $data['class']
-            ];
-        }
-        return Html::a($text, static::url($state), $data);
+        return SocialConfiguration::url(static::socialName(), $state);
     }
 
     /**

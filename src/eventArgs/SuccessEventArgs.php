@@ -13,14 +13,17 @@ class SuccessEventArgs extends Event
     /** @var mixed|null - вывод */
     public mixed $result = null;
 
+    public ?bool $useSession = null;
+
     /**
      * Конструктор
      * @param SocialController $action - Контроллер
-     * @param $config
+     * @param array $config
      */
-    public function __construct (public SocialController $action, $config = [])
+    public function __construct (public SocialController $action, array $config = [])
     {
         parent::__construct($config);
+
     }
 
 }

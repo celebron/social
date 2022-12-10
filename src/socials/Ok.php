@@ -17,7 +17,7 @@ class Ok extends SocialOAuth2
     public string $clientCodeUrl = 'https://connect.ok.ru/oauth/authorize';
     public string $clientApiUrl = 'https://api.ok.ru';
 
-    protected function requestCode ()
+    protected function requestCode () : void
     {
         $this->getCode($this->clientCodeUrl, ['scope'=> $this->scope]);
     }
