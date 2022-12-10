@@ -77,22 +77,22 @@ class SocialWidget extends Widget
      */
     public function runRegister(): string
     {
-        $regText = $this->_social->getSocialId();
-        $deleteText = Html::a('Delete', ($this->_social::class)::url(null));
-
-        if($regText === null) {
-            $regText = "Регистрация";
-            $deleteText = '';
+        $socialId = $this->_social->getSocialId();
+        $idText = "<i class='bi bi-play'></i>{$socialId}";
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", ($this->_social::class)::url(true));
+        if($socialId === null) {
+            $idText = "<i class='bi bi-stop'></i>";
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url(null));
         }
+
+
         $this->registerOptions['icon']['class'][] = 'social-icon-view';
         $this->registerOptions['id']['class'][] = 'social-id-view';
-        $this->registerOptions['delete']['class'][] = 'social-delete-view';
+        $this->registerOptions['tool']['class'][] = 'social-delete-view';
         $html = Html::tag('div', $this->getIcon(true) ?? $this->_social->name, $this->registerOptions['icon']);
-        $html .= Html::beginTag('div', $this->registerOptions['id']);
-        $html .= $this->runLogin($regText, true);
-        $html .= Html::a($regText, ($this->_social::class)::url(true), $this->loginOptions);
+        $html .= Html::tag('div', $idText ,$this->registerOptions['id']);
         $html .= Html::endTag('div');
-        $html .= Html::tag('div', $deleteText, $this->registerOptions['delete']);
+        $html .= Html::tag('div', $toolText, $this->registerOptions['tool']);
         return $html;
     }
 }
