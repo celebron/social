@@ -51,7 +51,7 @@ abstract class Social extends Model
     ////Визуал
 
     /** @var string - название для виджета */
-    public string $name;
+    public string $name = '';
 
     /** @var string - иконка для виджета */
     public string $icon = '';
