@@ -8,6 +8,7 @@ use Celebron\social\eventArgs\SuccessEventArgs;
 use Exception;
 use ReflectionClass;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
@@ -169,13 +170,17 @@ abstract class Social extends Model
         return $findUserEventArgs->user;
     }
 
-    public function socialId():  ?IdentityInterface
+    /**
+     * @return mixed
+     * @throws NotSupportedException
+     */
+    public function getSocialId(): mixed
     {
         $this->scenario = self::SCENARIO_RESPONSE;
         if($this->validate()) {
             return \Yii::$app->user->identity->{$this->field};
         }
-        return null;
+        throw new NotSupportedException('Not validate Social class');
     }
 
     /**

@@ -19,11 +19,18 @@ class SocialWidget extends Widget
 
     public string $groupClass = 'social';
 
-    public bool|string $loginIcon = false;
+    public bool|string $icon = false;
+
     public string $loginText = "%s";
     public array $loginOptions = [
         'icon'=> [],
         'link' =>[],
+    ];
+
+    public array $iconOptions = [];
+
+    public array $registerOptions = [
+
     ];
 
     private ?Social $_social = null;
@@ -55,36 +62,42 @@ class SocialWidget extends Widget
         return $html;
     }
 
-    public function runLogin()
+    public function runLogin(): string
     {
-        $icon = is_bool($this->loginIcon) ? ( $this->loginIcon ? $this->_social->icon : null ) : $this->loginIcon;
         $alt = sprintf($this->loginText, $this->_social->name);
-        $text = is_null($icon) ? $alt : Html::img(\Yii::getAlias($icon),['alt'=> $alt], $this->loginOptions['icon']);
+        $text = $this->getIcon(true) ?? $alt;
         return "\t" . Html::a($text, ($this->_social::class)::url(false), $this->loginOptions['link']) . PHP_EOL;
     }
 
-    /**
-    <div class="account-social-google">
-    <div class="social-name">Google</div>
-    <div class="social-id"><?= $user->id_google ?? Yii::t('app','Не заданно') ?></div>
-    <div class="links">
-    <?= Google::a("Изменить", true,['error'=> true]) ?>
-    <?php if($user->id_google !== null):?>
-    <a href="<?= Url::to(['account/social-delete','state'=>'google']) ?>" class="link-delete">Отсоединить</a>
-    <?php endif; ?>
-    </div>
-    </div>
-     */
-    /**
-     * @return void
-     */
-    public function runRegister()
+    public function getIcon(bool $html = false)
     {
-        $html = Html::tag('div', $this->_social->name, [ 'class' => "{$this->groupClass}-name" ]);
-        $html .= Html::beginTag('div', [ 'class' => "{$this->groupClass}-id" ]);
+        if (is_bool($this->icon)) {
+            $icon = $this->icon ? \Yii::getAlias($this->_social->icon) : null;
+        } else {
+            $icon = \Yii::getAlias($this->icon);
+        }
 
-            $html .= Html::a();
+        return ($html && !is_null($icon)) ? Html::img($icon, $this->iconOptions) : $icon;
+    }
+
+    /**
+     * @return string
+     */
+    public function runRegister(): string
+    {
+        $regText = $this->_social->getSocialId();
+        $deleteText = Html::a('Delete', ($this->_social::class)::url(null));
+
+        if($regText === null) {
+            $regText = "Регистрация";
+            $deleteText = '';
+        }
+
+        $html = Html::tag('div', $this->getIcon(true) ?? $this->_social->name, [ 'class' => "{$this->groupClass}-name" ]);
+        $html .= Html::beginTag('div', [ 'class' => "{$this->groupClass}-id" ]);
+        $html .= Html::a($regText, ($this->_social::class)::url(true));
         $html .= Html::endTag('div');
+        $html .= Html::tag('div', $deleteText);
         return $html;
     }
 }
