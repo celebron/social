@@ -78,11 +78,12 @@ class SocialWidget extends Widget
     public function runRegister(): string
     {
         $socialId = $this->_social->getSocialId();
-        $idText = "<i class='bi bi-play'></i>{$socialId}";
-        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", ($this->_social::class)::url(true));
+        $idText = Html::a("<i class='bi bi-play'></i>",($this->_social::class)::url(true));
+        $idText .= $socialId;
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", ($this->_social::class)::url(null));
         if($socialId === null) {
             $idText = "<i class='bi bi-stop'></i>";
-            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url(null));
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url(true));
         }
 
 
