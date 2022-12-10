@@ -68,7 +68,7 @@ abstract class Social extends Model
     /** @var array - Данные от социальных сетей */
     public array $data = [];
     /** @var mixed|null - Id от соцеальных сетей */
-    private mixed $_id = null;
+    public mixed $id = null;
 
     public function init ()
     {
@@ -122,10 +122,10 @@ abstract class Social extends Model
             return;
         }
 
-        $this->_id = $this->requestId();
-        static::debug("User id $this->_id");
+        $this->id = $this->requestId();
+        static::debug("User id $this->id");
 
-        if ($this->_id === null) {
+        if ($this->id === null) {
             throw new NotFoundHttpException("User not found", code: 2);
         }
     }
@@ -185,7 +185,7 @@ abstract class Social extends Model
     final public function register() : bool
     {
         $this->scenario =  self::SCENARIO_REQUEST;
-        return $this->validate() && $this->modifiedUser($this->_id);
+        return $this->validate() && $this->modifiedUser($this->id);
     }
 
     /**
@@ -209,7 +209,7 @@ abstract class Social extends Model
         $this->scenario = self::SCENARIO_REQUEST;
         if($this->validate() && ( ($user = $this->findUser()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
-            self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
+            self::debug("User login ($this->id) " . $login ? "succeeded": "failed");
             return $login;
         }
         return false;
