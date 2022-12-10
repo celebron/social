@@ -46,11 +46,6 @@ class SocialController extends \yii\web\Controller
         }
     }
 
-    public function actionAjax()
-    {
-
-    }
-
     /**
      * @param string $social
      * @param string|null $code

@@ -110,6 +110,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 if ($this->findUserAlg !== null) {
                     $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
                 }
+                //Триггер непосредственной регистрации Social
                 $registerEventArgs = new RegisterEventArgs($object);
                 $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
 
@@ -122,11 +123,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
-     * @param string $socialname
-     * @param string $scenario
+     * Получение данных по имени соц.сети
+     * @param string $socialname - имя соц.сети (зарегистрированное имя)
      * @return Social
-     * @throws NotFoundHttpException
-     * @throws \Exception
+     * @throws NotFoundHttpException - ошибка, если соц.сеть не зарегистроирована
+     * @throws \Exception - прочие ошибки
      */
     public function getSocial(string $socialname): Social
     {
@@ -158,7 +159,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
-     * Выводит Social класс по имени класса
+     * Выводит Social класс по имени класса (static)
      * @param string $socialname
      * @return Social
      * @throws NotFoundHttpException
@@ -169,7 +170,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
-     * Вывод Socials[]
+     * Вывод Socials[] (static)
      * @return Social[]
      */
     public static function socialsStatic(): array
