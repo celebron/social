@@ -169,6 +169,15 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
+     * Вывод Socials[]
+     * @return Social[]
+     */
+    public static function socialsStatic(): array
+    {
+        return static::$config->getSocials();
+    }
+
+    /**
      * Получить ссылку на редеректа на соц.сеть
      * @param string $socialname
      * @param bool|string $state

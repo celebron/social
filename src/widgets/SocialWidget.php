@@ -86,13 +86,11 @@ class SocialWidget extends Widget
             $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url(true));
         }
 
-
         $this->registerOptions['icon']['class'][] = 'social-icon-view';
         $this->registerOptions['id']['class'][] = 'social-id-view';
-        $this->registerOptions['tool']['class'][] = 'social-delete-view';
+        $this->registerOptions['tool']['class'][] = 'social-tool-view';
         $html = Html::tag('div', $this->getIcon(true) ?? $this->_social->name, $this->registerOptions['icon']);
         $html .= Html::tag('div', $idText ,$this->registerOptions['id']);
-        $html .= Html::endTag('div');
         $html .= Html::tag('div', $toolText, $this->registerOptions['tool']);
         return $html;
     }
