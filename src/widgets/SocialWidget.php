@@ -72,7 +72,7 @@ class SocialWidget extends Widget
     public function getIcon(bool $html = false)
     {
         if (is_bool($this->icon)) {
-            $icon = $this->icon ? \Yii::getAlias($this->_social->icon) : null;
+            $icon = $this->icon && !empty($this->_social->icon) ? \Yii::getAlias($this->_social->icon) : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }
