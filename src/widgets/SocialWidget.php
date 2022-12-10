@@ -17,21 +17,16 @@ class SocialWidget extends Widget
     public string $social;
     public string $type = self::TYPE_LOGIN;
 
-    public string $groupClass = 'social';
-
     public bool|string $icon = false;
 
     public string $loginText = "%s";
-    public array $loginOptions = [
-        'icon'=> [],
-        'link' =>[],
-    ];
+    public array $loginOptions = [];
 
     public array $iconOptions = [];
 
-    public array $registerOptions = [
+    public array $registerOptions = [];
 
-    ];
+    public array $options = [];
 
     private ?Social $_social = null;
 
@@ -46,13 +41,14 @@ class SocialWidget extends Widget
     {
         $html = '';
         if($this->_social !== null) {
-            $html .= Html::beginTag('div', [
-                    'class' => ["{$this->groupClass}-{$this->type}", "{$this->groupClass}-{$this->social}"]
-                ]) . PHP_EOL;
-
+            $this->options['class'] = [
+                "social-{$this->type}-block",
+                "social_{$this->social}"
+            ];
+            $html .= Html::beginTag('div', $this->options) . PHP_EOL;
 
             $html .= match ($this->type) {
-                self::TYPE_LOGIN => $this->runLogin(),
+                self::TYPE_LOGIN => $this->runLogin($this->loginText, false),
                 self::TYPE_REGISTER => $this->runRegister()
             };
 
@@ -62,11 +58,11 @@ class SocialWidget extends Widget
         return $html;
     }
 
-    public function runLogin(): string
+    public function runLogin(string $altText, null|string|bool $state): string
     {
-        $alt = sprintf($this->loginText, $this->_social->name);
+        $alt = sprintf($altText, $this->_social->name);
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, ($this->_social::class)::url(false), $this->loginOptions['link']) . PHP_EOL;
+        return "\t" . Html::a($text, ($this->_social::class)::url(false), $this->loginOptions) . PHP_EOL;
     }
 
     public function getIcon(bool $html = false)
@@ -76,7 +72,8 @@ class SocialWidget extends Widget
         } else {
             $icon = \Yii::getAlias($this->icon);
         }
-
+        $this->iconOptions['alt'] = $this->_social->name;
+        $this->iconOptions['class'][] = 'social-icon';
         return ($html && !is_null($icon)) ? Html::img($icon, $this->iconOptions) : $icon;
     }
 
@@ -92,12 +89,14 @@ class SocialWidget extends Widget
             $regText = "Регистрация";
             $deleteText = '';
         }
-
-        $html = Html::tag('div', $this->getIcon(true) ?? $this->_social->name, [ 'class' => "{$this->groupClass}-name" ]);
-        $html .= Html::beginTag('div', [ 'class' => "{$this->groupClass}-id" ]);
+        $this->registerOptions['icon']['class'][] = 'social-icon-view';
+        $this->registerOptions['id']['class'][] = 'social-id-view';
+        $this->registerOptions['delete']['class'][] = 'social-delete-view';
+        $html = Html::tag('div', $this->getIcon(true) ?? $this->_social->name, $this->registerOptions['icon']);
+        $html .= Html::beginTag('div', $this->registerOptions['id']);
         $html .= Html::a($regText, ($this->_social::class)::url(true));
         $html .= Html::endTag('div');
-        $html .= Html::tag('div', $deleteText);
+        $html .= Html::tag('div', $deleteText, $this->registerOptions['delete']);
         return $html;
     }
 }
