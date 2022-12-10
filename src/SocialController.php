@@ -65,7 +65,7 @@ class SocialController extends \yii\web\Controller
 
         \Yii::beginProfile("Social profiling", static::class);
 
-        $socialObject = $this->config->getSocial($social, Social::SCENARIO_LOGONED);
+        $socialObject = $this->config->getSocial($social);
         $socialObject->state = $state;
         $socialObject->code = $code;
         $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);

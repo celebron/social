@@ -25,7 +25,6 @@ use yii\web\Response;
 
 /**
  * Базовый класс авторизации соц.сетей.
- * @property-read mixed $id - (для чтения) Id из соцеальной сети (относительно field)
  * @property-read Client $client - (для чтения) Http Client
  */
 abstract class Social extends Model
@@ -36,7 +35,8 @@ abstract class Social extends Model
     public const EVENT_DELETE_SUCCESS = 'deleteSuccess';
     public const EVENT_FIND_USER = "findUser";
 
-    public const SCENARIO_LOGONED = 'logoned';
+    public const SCENARIO_REQUEST = 'request';
+    public const SCENARIO_RESPONSE = 'response';
 
     ////В config
 
@@ -65,19 +65,19 @@ abstract class Social extends Model
     /** @var string - oAuth redirectUrl */
     public string $redirectUrl;
 
-
     /** @var array - Данные от социальных сетей */
     public array $data = [];
     /** @var mixed|null - Id от соцеальных сетей */
     private mixed $_id = null;
 
-    /**
-     * Отображение Id из соц. сети
-     * @return mixed
-     */
-    public function getId(): mixed
+    public function init ()
     {
-        return $this->_id;
+        $name = static::socialName();
+        //Генерация констант под каждую соц.сеть
+        $contName = 'SOCIAL_' . strtoupper($name);
+        if(!defined($contName)) {
+            define($contName, strtolower($name));
+        }
     }
 
     /**
@@ -87,9 +87,9 @@ abstract class Social extends Model
     public function rules (): array
     {
         return [
-            ['redirectUrl', 'url', 'on' => self::SCENARIO_LOGONED ],
-            ['field', 'fieldValidator','on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LOGONED]],
-            ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_LOGONED ],
+            ['redirectUrl', 'url', 'on' => self::SCENARIO_REQUEST ],
+            ['field', 'fieldValidator','on' => [self::SCENARIO_RESPONSE, self::SCENARIO_REQUEST]],
+            ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_REQUEST ],
         ];
     }
 
@@ -169,12 +169,21 @@ abstract class Social extends Model
         return $findUserEventArgs->user;
     }
 
+    public function socialId()
+    {
+        $this->scenario = self::SCENARIO_RESPONSE;
+        if($this->validate()) {
+            return \Yii::$app->user->identity->{$this->field};
+        }
+    }
+
     /**
      * Регистрация пользователя из социальной сети
      * @return bool
      */
     final public function register() : bool
     {
+        $this->scenario =  self::SCENARIO_REQUEST;
         return $this->validate() && $this->modifiedUser($this->_id);
     }
 
@@ -184,9 +193,9 @@ abstract class Social extends Model
      */
     final public function delete() : bool
     {
+        $this->scenario = self::SCENARIO_RESPONSE;
         return $this->validate() && $this->modifiedUser(null);
     }
-
 
     /**
      * Авторизация в системе
@@ -196,6 +205,7 @@ abstract class Social extends Model
      */
     final public function login(int $duration = 0) : bool
     {
+        $this->scenario = self::SCENARIO_REQUEST;
         if($this->validate() && ( ($user = $this->findUser()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
             self::debug("User login ($this->_id) " . $login ? "succeeded": "failed");
@@ -291,8 +301,8 @@ abstract class Social extends Model
         }
         \Yii::warning($user->getErrorSummary(true), static::class);
         return false;
-
     }
+
 
     /**
      * Название класса
@@ -318,102 +328,6 @@ abstract class Social extends Model
     final public static function url(bool|string|null $state = false) : string
     {
         return SocialConfiguration::url(static::socialName(), $state);
-    }
-
-    /**
-     * Ссылка на социальную сеть [html::a]
-     * @param string|null $text - Текст на ссылку
-     * @param bool|string|null $state - oauth state (true - register)
-     * @param array $data
-     * @return string
-     * @throws Exception
-     */
-    final public static function a(?string $text = null, bool|string|null $state = false, array $data = []): string
-    {
-        try {
-            $social = SocialConfiguration::socialStatic(static::socialName());
-            $defaultData = [
-                'class' => [ 'social-' . strtolower(static::socialName()) ],
-                'defaultValue' => [
-                    'register' => 'Register',
-                    'login' => $social->name ?? '',
-                    'delete' => 'Delete',
-                ]
-            ];
-
-            if(isset($data['class'])) {
-                if(is_array($data['class'])) {
-                    $defaultData['class'] = ArrayHelper::merge($defaultData['class'], $data['class']);
-                } else {
-                    $defaultData['class'] = ArrayHelper::merge($defaultData['class'],[ $data['class'] ]);
-                }
-                unset($data['class']);
-            }
-
-            $defaultData = ArrayHelper::merge($defaultData, $data);
-            //Дефолтовые значения при $text = null
-            if($text === null ) {
-                if(is_bool($state)) {
-                    $text = $state ? $defaultData['defaultValue']['register'] : $defaultData['defaultValue']['login'];
-                }
-                if($state === null) {
-                    $text = $defaultData['defaultValue']['delete'];
-                }
-            }
-            return Html::a($text ?? $social->name, static::url($state), $defaultData);
-        } catch (NotFoundHttpException $ex) {
-            $error = ArrayHelper::getValue($data, 'error');
-            if($error === null) {
-                return $text ?? $ex->getMessage();
-            }
-            if(is_bool($error) && $error) {
-                return $ex->getMessage();
-            }
-
-            return sprintf($error, $ex->getMessage(), $text, $ex->statusCode, $ex->getTraceAsString());
-        }
-    }
-
-    /**
-     * Ссылка с иконкой
-     * @param bool|string|null $state
-     * @param array $data
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    final public static function icon(bool|string|null $state = false, array $data =[]): string
-    {
-        try {
-            $social = SocialConfiguration::socialStatic(static::socialName());
-
-            $dataImg = [
-                'class' => ['icon-' . strtolower(static::socialName())],
-                'alt' => $social->name,
-            ];
-            if (isset($data['img'])) {
-                if (isset($data['img']['class'])) {
-                    if (is_array($data['img']['class'])) {
-                        $dataImg['class'] = ArrayHelper::merge($dataImg['class'], $data['img']['class']);
-                    } else {
-                        $dataImg['class'] = ArrayHelper::merge($dataImg, [$data['img']['class']]);
-                    }
-                    unset($data['img']['class']);
-                }
-                $dataImg = ArrayHelper::merge($dataImg, $data['img']);
-            }
-
-            $dataA = isset($data['a']) ? $data['a'] : [];
-
-            $image = Html::img(Yii::getAlias($social->icon), $dataImg);
-            return static::a($image, $state, $dataA);
-        } catch (NotFoundHttpException $ex) {
-            $error = ArrayHelper::getValue($data, 'error');
-            if ($error === null) {
-                return $ex->getMessage();
-            }
-
-            return sprintf($error, $ex->getMessage(), $ex->statusCode, $ex->getTraceAsString());
-        }
     }
 
     /**

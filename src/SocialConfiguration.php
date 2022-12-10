@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\eventArgs\RegisterEventArgs;
 use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -18,6 +19,10 @@ use yii\web\NotFoundHttpException;
  */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
+    public const EVENT_BEFORE_REGISTER = 'beforeRegister';
+    public const EVENT_AFTER_REGISTER = 'afterRegister';
+    public const EVENT_REGISTER = 'register';
+
     /** @var self - конфигурация */
     public static self $config;
 
@@ -59,28 +64,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     }
 
     /**
-     * Список ссылок на соц.сети
-     * @return array
-     */
-    public function getLinks (): array
-    {
-        $links = [];
-
-        foreach ($this->getSocials() as $key => $social) {
-            $links[$key] = [
-                'name' => empty($social->name) ? $key : $social->name,
-                'urls' =>[
-                    'login' => $social::url(false),
-                    'register' => $social::url(true),
-                    'delete' => $social::url(null),
-                ],
-                'icon' => empty($object->icon) ? null : \Yii::getAlias($object->icon),
-            ];
-        }
-        return $links;
-    }
-
-    /**
      * Регистрация соцсетей
      * @param array $value
      * @throws InvalidConfigException
@@ -88,6 +71,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public function setSocials (array $value): void
     {
+        $this->trigger(self::EVENT_BEFORE_REGISTER);
         foreach ($value as $key => $class) {
             /** @var Social $object */
             $object = \Yii::createObject($class);
@@ -126,13 +110,15 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 if ($this->findUserAlg !== null) {
                     $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
                 }
+                $registerEventArgs = new RegisterEventArgs($object);
+                $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
 
                 $this->_socials[$key] = $object;
             } else {
                 throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
             }
         }
-
+        $this->trigger(self::EVENT_AFTER_REGISTER);
     }
 
     /**
@@ -142,7 +128,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @throws NotFoundHttpException
      * @throws \Exception
      */
-    public function getSocial(string $socialname, string $scenario = Social::SCENARIO_DEFAULT): Social
+    public function getSocial(string $socialname): Social
     {
         /** @var Social $object */
         $object = ArrayHelper::getValue($this->getSocials(), strtolower($socialname));
@@ -150,7 +136,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
         if($object === null) {
             throw new NotFoundHttpException("Social '{$socialname}' not registered");
         }
-        $object->scenario = $scenario;
+
         return $object;
     }
 
@@ -177,14 +163,9 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @return Social
      * @throws NotFoundHttpException
      */
-    public static function socialStatic(string $socialname, string $scenario = Social::SCENARIO_DEFAULT) : Social
+    public static function socialStatic(string $socialname) : Social
     {
-        return  static::$config->getSocial($socialname, $scenario);
-    }
-
-    public static function linksStatic(): array
-    {
-        return static::$config->getLinks();
+        return  static::$config->getSocial($socialname);
     }
 
     /**
