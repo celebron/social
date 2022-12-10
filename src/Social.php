@@ -169,12 +169,13 @@ abstract class Social extends Model
         return $findUserEventArgs->user;
     }
 
-    public function socialId()
+    public function socialId():  ?IdentityInterface
     {
         $this->scenario = self::SCENARIO_RESPONSE;
         if($this->validate()) {
             return \Yii::$app->user->identity->{$this->field};
         }
+        return null;
     }
 
     /**

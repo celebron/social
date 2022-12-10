@@ -43,31 +43,8 @@ class SocialLinksWidget extends Widget
      */
     public function run()
     {
-        $options = ArrayHelper::merge([
-            'class' => $this->groupClass . '-widget',
-        ], $this->options);
-        $html = Html::beginTag('div', $options) . PHP_EOL;
-        foreach (SocialConfiguration::$config->getLinks() as  $k => $v){
-            $linkOption = ArrayHelper::merge([
-                'class' => 'social-' . $k,
-            ], $this->linkOptions);
 
-            $iconOptions = ArrayHelper::merge([
-                'alt' => $v['name'],
-            ],$this->iconOptions);
-
-            $icon = $v['name'];
-            if(!is_null($v['icon']) && $this->iconEnable) {
-                $icon = Html::img($v['icon'], $iconOptions);
-            }
-
-            $html .= "\t" . Html::beginTag('div', [ 'class'=> $this->groupClass . ' social-' . $k ]) . PHP_EOL;
-            $html .= "\t\t" . Html::a($icon, $this->register ?$v['urls']['register']:$v['urls']['login'], $linkOption) . PHP_EOL;
-            $html .= "\t" . Html::endTag('div') . PHP_EOL;
-        }
-        $html .= Html::endTag('div') . PHP_EOL;
-
-        return $html;
+        return '';
     }
 
 }
