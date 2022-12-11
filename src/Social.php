@@ -51,11 +51,11 @@ abstract class Social extends Model
     ////Визуал
 
     /** @var string - название для виджета */
-    public string $name = '';
+    public ?string $name;
     /** @var string - иконка для виджета */
     public string $icon = '';
     /** @var bool - видимость */
-    public bool $visible = true;
+    public bool $registerVisible = true;
 
 
     ///В Controllers

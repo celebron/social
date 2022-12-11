@@ -5,6 +5,7 @@ namespace Celebron\social\widgets;
 use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
 use Celebron\social\Social;
+use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -40,40 +41,52 @@ class SocialWidget extends Widget
         $html = '';
         if($this->_social !== null) {
             $this->options['class'][] = "social-{$this->type}-block";
-            $this->options['class'][] =  "social_{$this->social}";
+            $this->options['class'][]  = "social_{$this->social}";
             $html .= Html::beginTag('div', $this->options) . PHP_EOL;
-
             $html .= match ($this->type) {
                 self::TYPE_LOGIN => $this->runLogin(),
-                self::TYPE_REGISTER => $this->runRegister()
+                self::TYPE_REGISTER => $this->_social->registerVisible ? $this->runRegister() : $this->options['error'] ?? '',
             };
-
-            $html .= Html::endTag('div');
+            $html .= Html::endTag('div') . PHP_EOL;
         }
         return $html;
     }
 
+    /**
+     * @return string
+     */
     public function runLogin(): string
     {
-        $alt = sprintf($this->loginText, $this->_social->name);
+        $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
         return "\t" . Html::a($text, ($this->_social::class)::url(false), $this->loginOptions) . PHP_EOL;
     }
 
-    public function getIcon(bool $html = false)
+    public function getName() : string
+    {
+        return $this->_social->name ?? ($this->_social::class)::socialName();
+    }
+
+    /**
+     * Иконка (ссылка или html)
+     * @param bool $html - в виде html (true)
+     * @return bool|string|null
+     */
+    public function getIcon(bool $html = false): bool|string|null
     {
         if (is_bool($this->icon)) {
             $icon = $this->icon && !empty($this->_social->icon) ? \Yii::getAlias($this->_social->icon) : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }
-        $this->iconOptions['alt'] = $this->iconOptions['alt'] ?? $this->_social->name;
+        $this->iconOptions['alt'] = $this->iconOptions['alt'] ?? $this->getName();
         $this->iconOptions['class'][] = 'social-icon';
         return ($html && !is_null($icon)) ? Html::img($icon, $this->iconOptions) : $icon;
     }
 
     /**
      * @return string
+     * @throws NotSupportedException
      */
     public function runRegister(): string
     {
@@ -89,7 +102,7 @@ class SocialWidget extends Widget
         $this->registerOptions['icon']['class'][] = 'social-icon-view';
         $this->registerOptions['id']['class'][] = 'social-id-view';
         $this->registerOptions['tool']['class'][] = 'social-tool-view';
-        $html = Html::tag('div', $this->getIcon(true) ?? $this->_social->name, $this->registerOptions['icon']);
+        $html = Html::tag('div', $this->getIcon(true) ?? $this->getName(), $this->registerOptions['icon']);
         $html .= Html::tag('div', $idText ,$this->registerOptions['id']);
         $html .= Html::tag('div', $toolText, $this->registerOptions['tool']);
         return $html;

@@ -42,7 +42,7 @@ class SocialsWidget extends Widget
     {
         $html = Html::beginTag('div',['class'=> 'socials-block']);
         foreach ($this->_socials as $social) {
-            if(!$social->visible) {
+            if(!$social->registerVisible && $this->type === SocialWidget::TYPE_REGISTER) {
                 continue;
             }
             $html .= SocialWidget::widget([
