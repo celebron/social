@@ -26,6 +26,7 @@ class SocialsWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
+    /** @var Social[]  */
     private array $_socials = [];
 
     public function init ()
@@ -41,6 +42,9 @@ class SocialsWidget extends Widget
     {
         $html = Html::beginTag('div',['class'=> 'socials-block']);
         foreach ($this->_socials as $social) {
+            if(!$social->visible) {
+                continue;
+            }
             $html .= SocialWidget::widget([
                 'options' => $this->options,
                 'iconOptions' => $this->iconOptions,
