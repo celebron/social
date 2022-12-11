@@ -15,7 +15,7 @@ Installation
 
 Configuration
 -------------
-Edit the file `config/web.php` with real data, for example:
+Редактируем файл `config/web.php`, пример:
 ```php
     ...,
      'bootstrap' => [..., 'social' ],
@@ -36,7 +36,7 @@ Edit the file `config/web.php` with real data, for example:
     ],
 ...
 ```
-
+Необходимо подключить компонент <i>SocialConfiguration</i> в <i>bootstrap</i>, как приведено в примере
 ### [[SocialConfiguration::class]]
     [optional] string       $route ('social')            - роут для OAuth redirect path   
     [optional] string       $register ('register')       - state - регистрации
@@ -47,6 +47,7 @@ Edit the file `config/web.php` with real data, for example:
     [optional] Closure|null $onAllDeleteSuccess (null)   - обработчик всех упешных удалений
     [optional] Closure|null $findUserAlg (null)          - переопределение алгоритма поиска пользователя
     [required] Social[]     $socials                     - список всех соц. сетей 
+
 
 ### [[SocialOAuth::class]]    (Google::class, Yandex::class, ...)
     [required] string $field               - поле в базе данных
