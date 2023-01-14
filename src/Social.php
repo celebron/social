@@ -231,7 +231,7 @@ abstract class Social extends Model
         $this->scenario = self::SCENARIO_REQUEST;
         if($this->validate() && ( ($user = $this->findUser()) !== null )) {
             $login = Yii::$app->user->login($user, $duration);
-            self::debug("User login ($this->id) " . $login ? "succeeded": "failed");
+            \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);
             return $login;
         }
         return false;
