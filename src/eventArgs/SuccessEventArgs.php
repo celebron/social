@@ -13,8 +13,6 @@ class SuccessEventArgs extends Event
     /** @var mixed|null - вывод */
     public mixed $result = null;
 
-    public ?bool $useSession = null;
-
     /**
      * Конструктор
      * @param SocialController $action - Контроллер
