@@ -24,6 +24,7 @@ use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
 use yii\httpclient\Request;
 use yii\httpclient\Response;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
@@ -337,7 +338,7 @@ abstract class Social extends Model
     protected function send(Request|RequestToken $sender, string $theme = 'info') : Response
     {
         if($sender instanceof  RequestToken) {
-            $sender = $sender->toRequest($this->getClient());
+            $sender = $sender->toRequest($this->client);
         }
 
         $response = $this->client->send($sender);
@@ -349,6 +350,22 @@ abstract class Social extends Model
         }
 
         $this->getException($response);
+    }
+
+    /**
+     * Отслеживание ошибки
+     * @param Response $response
+     * @throws BadRequestHttpException
+     * @throws \yii\httpclient\Exception
+     */
+    protected function getException (Response $response): void
+    {
+        $data = $response->getData();
+        \Yii::warning($this->data, static::class);
+        if (isset($data['error'], $data['error_description'])) {
+            throw new BadRequestHttpException('[' . static::socialName() . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
+        }
+        throw new BadRequestHttpException('[' . static::socialName() . "]Response not correct. Code E{$response->getStatusCode()}");
     }
 
     /**

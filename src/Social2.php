@@ -279,15 +279,15 @@
 //     * @throws Exception
 //     */
 //    public function error(SocialController $action, ?Exception $ex): mixed
-//    {
-//        $eventArgs = new ErrorEventArgs($action, $ex);
-//        $this->trigger(self::EVENT_ERROR, $eventArgs);
-//
-//        if($eventArgs->result === null) {
-//            throw $ex;
-//        }
-//
-//        return $eventArgs->result;
+////    {
+////        $eventArgs = new ErrorEventArgs($action, $ex);
+////        $this->trigger(self::EVENT_ERROR, $eventArgs);
+////
+////        if($eventArgs->result === null) {
+////            throw $ex;
+////        }
+////
+////        return $eventArgs->result;
 //    }
 //
 //    /**
