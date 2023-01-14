@@ -2,13 +2,16 @@
 
 namespace Celebron\social;
 
+use Celebron\social\interfaces\RequestIdInterface;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestToken;
 use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
+use Celebron\social\interfaces\GetUrlsInterface;
 use Exception;
 use ReflectionClass;
 use Yii;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\NotSupportedException;
@@ -18,11 +21,12 @@ use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\httpclient\Client;
+use yii\httpclient\CurlTransport;
 use yii\httpclient\Request;
+use yii\httpclient\Response;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 /**
  * Базовый класс авторизации соц.сетей.
@@ -44,18 +48,14 @@ abstract class Social extends Model
     /** @var string - поле в базе данных для идентификации  */
     public string $field;
     /** @var bool - разрешить использование данной социальной сети  */
-    public bool $active = false;
+    public bool $active = true;
     /** @var bool - использование сессии для сохранения data */
     public bool $useSession = false;
+    /** @var string - ид от соц.сети */
+    public string $clientId;
+    /** @var string - секрет от соц.сети  */
+    public string $clientSecret;
 
-    ////Визуал
-
-    /** @var string - название для виджета */
-    public ?string $name;
-    /** @var string - иконка для виджета */
-    public string $icon = '';
-    /** @var bool - видимость */
-    public bool $registerVisible = true;
 
 
     ///В Controllers
@@ -72,8 +72,18 @@ abstract class Social extends Model
     /** @var mixed|null - Id от соцеальных сетей */
     public mixed $id = null;
 
-    public function init ()
+
+    protected readonly Client $client;
+
+    public function __construct ($config = [])
     {
+        parent::__construct($config);
+        $this->client = new Client();
+        $this->client->transport = CurlTransport::class;
+        if($this instanceof GetUrlsInterface) {
+            $this->client->baseUrl = $this->getBaseUrl();
+        }
+
         $name = static::socialName();
         //Генерация констант под каждую соц.сеть
         $contName = 'SOCIAL_' . strtoupper($name);
@@ -81,6 +91,7 @@ abstract class Social extends Model
             define($contName, strtolower($name));
         }
     }
+
 
     /**
      * Правила проверки данных
@@ -90,6 +101,8 @@ abstract class Social extends Model
     {
         return [
             ['redirectUrl', 'url', 'on' => self::SCENARIO_REQUEST ],
+            [['clientId', 'clientSecret'], 'string', 'on' => self::SCENARIO_REQUEST],
+            [['clientId', 'clientSecret'], 'required', 'on' => self::SCENARIO_REQUEST],
             ['field', 'fieldValidator','on' => [self::SCENARIO_RESPONSE, self::SCENARIO_REQUEST]],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_REQUEST ],
         ];
@@ -120,41 +133,43 @@ abstract class Social extends Model
     final public function codeValidator($a): void
     {
         if ($this->$a === null) {
-            $this->requestCode();
-            return;
+            $request = new RequestCode();
+            $request->uri = ($this instanceof GetUrlsInterface) ? $this->getUriCode():'';
+            $request->client_id = $this->clientId;
+            $request->redirect_uri = $this->redirectUrl;
+            $request->state = $this->state;
+            $this->requestCode($request);
+            if($request->enable) {
+                $request->toClient($this->client);
+            } else { exit(0); }
         }
 
-        $this->id = $this->requestId();
-        static::debug("User id $this->id");
+        $request = new RequestToken($this->code);
+        $request->uri = ($this instanceof GetUrlsInterface) ? $this->getUriToken():'';
+        $request->client_id = $this->clientId;
+        $request->redirect_uri = $this->redirectUrl;
+        $request->client_secret = $this->clientSecret;
+        $this->requestToken($request);
+
+        if(($this instanceof RequestIdInterface) && $request->enable) {
+            $response = $this->send($request, 'token');
+            $requestId = new RequestId($response, $this->client);
+            $requestId->uri = $this->getUriInfo();
+            $this->id = $this->requestId($requestId);
+        }
+
+        \Yii::debug("User id: {$this->id}", static::class);
 
         if ($this->id === null) {
             throw new NotFoundHttpException("User not found", code: 2);
         }
     }
 
-    /**
-     * Запрос кода от соц.сети
-     * @return void;
-     */
-    abstract protected function requestCode () : void;
 
-    /**
-     * Запрос id пользователя от соц.сети
-     * @return mixed
-     */
-    abstract protected function requestId () : mixed;
 
-    /**
-     * Выполниет редирет
-     * @param $value
-     */
-    final public function redirect($value) : void
-    {
-        if($value instanceof Request) {
-            $value = $value->fullUrl;
-        }
-        Yii::$app->response->redirect($value)->send();
-    }
+    abstract protected function requestCode(RequestCode $request): void;
+    abstract protected function requestToken(RequestToken $request): void;
+
 
     /**
      * Поиск по полю в бд
@@ -240,7 +255,7 @@ abstract class Social extends Model
     /**
      * Событие положительной авторизации
      * @param SocialController $action
-     * @return Response
+     * @return \yii\web\Response
      */
     public function loginSuccess(SocialController $action): mixed
     {
@@ -303,13 +318,38 @@ abstract class Social extends Model
         $user->$field = $data;
 
         if ($user->save()) {
-            self::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}");
+            \Yii::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}", static::class);
             return true;
         }
         \Yii::warning($user->getErrorSummary(true), static::class);
         return false;
     }
 
+
+    /**
+     * Выполнение отправки сообщения
+     * @param Request|RequestToken $sender - Запрос
+     * @param string $theme - Тема
+     * @return Response
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    protected function send(Request|RequestToken $sender, string $theme = 'info') : Response
+    {
+        if($sender instanceof  RequestToken) {
+            $sender = $sender->toRequest($this->getClient());
+        }
+
+        $response = $this->client->send($sender);
+        if ($response->isOk && !isset($response->data['error'])) {
+
+            $this->data[$theme] = $response->getData();
+            \Yii::debug($this->data[$theme],static::class);
+            return $response;
+        }
+
+        $this->getException($response);
+    }
 
     /**
      * Название класса
@@ -336,15 +376,4 @@ abstract class Social extends Model
     {
         return SocialConfiguration::url(static::socialName(), $state);
     }
-
-    /**
-     * Дебаг
-     * @param $text
-     * @return void
-     */
-    protected static function debug($text): void
-    {
-        Yii::debug('[' . static::socialName() . ']' . $text, static::class);
-    }
-
 }

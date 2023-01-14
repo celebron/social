@@ -4,22 +4,39 @@
 namespace Celebron\social\socials;
 
 
-use Celebron\social\SocialOAuth2;
+use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\GetUrlsTrait;
+use Celebron\social\interfaces\RequestIdInterface;
+use Celebron\social\interfaces\ToWidgetLoginInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestId;
+use Celebron\social\RequestToken;
+use Celebron\social\Social;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
+
 /**
- * oauth2 Yandex
  *
- * @property-read string|mixed $baseUrl
+ * @property-read string $baseUrl
  */
-class Yandex extends SocialOAuth2
+class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
 {
+    use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = "https://oauth.yandex.ru";
+    public string $uriCode = 'authorize';
+    public string $uriToken = 'token';
+    public string $uriInfo = 'https://login.yandex.ru/info';
+
+
     public string $icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
+
 
     /**
      * @return mixed
@@ -27,35 +44,33 @@ class Yandex extends SocialOAuth2
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function requestId () : mixed
+    public function requestId (RequestId $request) : mixed
     {
-        $text = $this->clientId . ':' . $this->clientSecret;
-        $oauthData = $this->getToken('token', [], [Header::AUTHORIZATION => 'Basic ' . base64_encode($text)]);
-
-        $login = $this->getClient()->get(
-            'https://login.yandex.ru/info',
-            ['format' => 'json'],
-            [ Header::AUTHORIZATION => 'OAuth ' . $oauthData->data['access_token'] ]
+        $login = $request->get(
+            [ Header::AUTHORIZATION => 'OAuth ' . $request->getAccessToken() ],
+            ['format'=> 'json']
         );
 
         $loginData = $this->send($login);
         return $loginData->data['id'];
-
     }
 
-    /**
-     * @return void
-     * @throws BadRequestHttpException
-     */
-    public function requestCode () : void
+    protected function requestCode (RequestCode $request) : void
     {
         $get = Yii::$app->request->get();
         if (isset($get['error'])) {
             throw new BadRequestHttpException("[Yandex]Error: {$get['error']}. {$get['error_description']}");
         }
+    }
 
-        $this->getCode('authorize');
-        exit();
+    protected function requestToken (RequestToken $request): void
+    {
+        $request->setAuthorizationBasic($this->clientId . ':' . $this->clientSecret);
+    }
+
+    public function getUriInfo (): string
+    {
+        return $this->uriInfo;
     }
 
 }

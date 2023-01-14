@@ -2,12 +2,14 @@
 
 namespace Celebron\social\widgets;
 
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetLoginInterface;
+use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
 use Celebron\social\Social;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 class SocialWidget extends Widget
@@ -36,19 +38,24 @@ class SocialWidget extends Widget
         $this->_social = SocialConfiguration::socialStatic($this->social);
     }
 
+    /**
+     * @throws NotSupportedException
+     */
     public function run ()
     {
         $html = '';
-        if($this->_social !== null) {
+        if ($this->_social instanceof ToWidgetInterface) {
             $this->options['class'][] = "social-{$this->type}-block";
-            $this->options['class'][]  = "social_{$this->social}";
+            $this->options['class'][] = "social_{$this->social}";
             $html .= Html::beginTag('div', $this->options) . PHP_EOL;
-            $html .= match ($this->type) {
-                self::TYPE_LOGIN => $this->runLogin(),
-                self::TYPE_REGISTER => $this->_social->registerVisible ? $this->runRegister() : $this->options['error'] ?? '',
-            };
+            if(($this->type === self::TYPE_LOGIN) && ($this->_social instanceof ToWidgetLoginInterface)) {
+                $html .= $this->runLogin();
+            } elseif(($this->type === self::TYPE_REGISTER) && ($this->_social instanceof ToWidgetRegisterInterface)) {
+                $html .= $this->_social->getVisible() ? $this->runRegister() : $this->options['error'] ?? '';
+            }
             $html .= Html::endTag('div') . PHP_EOL;
         }
+
         return $html;
     }
 
@@ -64,7 +71,7 @@ class SocialWidget extends Widget
 
     public function getName() : string
     {
-        return $this->_social->name ?? ($this->_social::class)::socialName();
+        return $this->_social->getName() ?? ($this->_social::class)::socialName();
     }
 
     /**
@@ -75,7 +82,7 @@ class SocialWidget extends Widget
     public function getIcon(bool $html = false): bool|string|null
     {
         if (is_bool($this->icon)) {
-            $icon = $this->icon && !empty($this->_social->icon) ? \Yii::getAlias($this->_social->icon) : null;
+            $icon = $this->icon && !empty($this->_social->getIcon()) ? \Yii::getAlias($this->_social->getIcon()) : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }

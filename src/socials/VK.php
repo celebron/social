@@ -2,26 +2,36 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialOAuth2;
+use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\GetUrlsTrait;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetLoginInterface;
+use Celebron\social\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestToken;
+use Celebron\social\Social;
 
 /**
  * Oauth2 VK
  */
-class VK extends SocialOAuth2
+class VK extends Social implements GetUrlsInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
 {
+    use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = 'https://oauth.vk.com';
+    public string $uriCode = 'authorize';
+    public string $uriToken = 'access_token';
     public string $display = 'page';
 
 
-    protected function requestCode () : void
+    protected function requestCode (RequestCode $request) : void
     {
-        $this->getCode('authorize',[ 'display' => $this->display ]);
-        exit;
+        $request->data = [ 'display' => $this->display ];
     }
 
-    protected function requestId (): mixed
+    protected function requestToken (RequestToken $request): void
     {
-        $data = $this->getToken('access_token');
-        return $data->data['user_id'];
+        $response = $this->send($request);
+        $this->id = $response->data['user_id'];
     }
 }

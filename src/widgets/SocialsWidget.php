@@ -2,6 +2,7 @@
 
 namespace Celebron\social\widgets;
 
+use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\Social;
 use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
@@ -42,7 +43,8 @@ class SocialsWidget extends Widget
     {
         $html = Html::beginTag('div',['class'=> 'socials-block']);
         foreach ($this->_socials as $social) {
-            if(!$social->registerVisible && $this->type === SocialWidget::TYPE_REGISTER) {
+            /** @var ToWidgetInterface $social  */
+            if(!$social->getVisible() && $this->type === SocialWidget::TYPE_REGISTER) {
                 continue;
             }
             $html .= SocialWidget::widget([

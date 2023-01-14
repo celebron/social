@@ -2,6 +2,17 @@
 
 namespace Celebron\social\socials;
 
+use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\GetUrlsTrait;
+use Celebron\social\interfaces\RequestIdInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetLoginInterface;
+use Celebron\social\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestId;
+use Celebron\social\RequestToken;
+use Celebron\social\Social;
 use Celebron\social\SocialOAuth2;
 use yii\httpclient\Request;
 use Yiisoft\Http\Header;
@@ -9,37 +20,43 @@ use Yiisoft\Http\Header;
 /**
  * oauth2 Discord
  */
-class Discord extends SocialOAuth2
+class Discord extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
 {
+    use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = 'https://discord.com/api';
+    public string $uriToken = 'oauth2/token';
+    public string $uriCode = 'oauth2/authorize';
+    public string $uriInfo = 'oauth2/@me';
     public array $scope = [ 'identify' ];
 
-    protected function requestCode () : void
+    protected function requestCode (RequestCode $request) : void
     {
-        $this->getCode('oauth2/authorize',['scope'=>implode(' ', $this->scope)]);
-        exit();
+        $request->enable = false;
+        $request->data = ['scope'=>implode(' ', $this->scope)];
+
+        $response = $this->client->get($request->generateUri());
+        $response->setFullUrl($this->createFullUrl($response));
+        \Yii::$app->response->redirect($response->getFullUrl(), checkAjax: false)->send();
+    }
+
+    protected function requestToken (RequestToken $request): void
+    {
+
     }
 
     /**
      * @return mixed
      */
-    protected function requestId (): mixed
+    public function requestId (RequestId $request): mixed
     {
-        $response = $this->getToken('oauth2/token');
 
-        $url = $this->client->get('oauth2/@me',
+        $url = $request->get(
+            [ Header::AUTHORIZATION => $request->getTokenTypeToken()],
             [ 'format'=>'json' ],
-            [ Header::AUTHORIZATION => $response->data['token_type'] . ' ' . $response->data['access_token'] ]);
+        );
 
         $data = $this->send($url);
         return $data->data['user']['id'];
-    }
-
-    public function getCodeUrl(string $url, array $data=[]) : Request
-    {
-        $request = parent::getCodeUrl($url, $data);
-        $request->setFullUrl($this->createFullUrl($request));
-        return $request;
     }
 
     private function createFullUrl(Request $request)
@@ -72,4 +89,11 @@ class Discord extends SocialOAuth2
 
         return $url;
     }
+
+    public function getUriInfo (): string
+    {
+        return $this->uriInfo;
+    }
+
+
 }

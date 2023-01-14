@@ -13,7 +13,6 @@ use yii\web\NotFoundHttpException;
 
 /**
  * Конфигуратор социальной авторизации
- * @property-read array $links - список линков зарегистрированных соцсетей
  * @property-read Social[] $socials - зарегистрированые соцсети
  //* @property-write array $socials - регистрация классов
  */

@@ -2,24 +2,43 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialOAuth2;
+use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\RequestIdInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetLoginInterface;
+use Celebron\social\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestId;
+use Celebron\social\RequestToken;
+use Celebron\social\Social;
+use yii\base\InvalidConfigException;
+use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
 
 /**
  * Oauth2 Ok
  */
-class Ok extends SocialOAuth2
+class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
 {
+    use ToWidgetTrait;
     public string $scope = 'VALUABLE_ACCESS';
 
     public string $clientPublic;
 
     public string $clientCodeUrl = 'https://connect.ok.ru/oauth/authorize';
     public string $clientApiUrl = 'https://api.ok.ru';
+    public string $uriToken = 'oauth/token.do';
+    public string $uriInfo = 'api/users/getCurrentUser';
 
-    protected function requestCode () : void
+    protected function requestCode (RequestCode $request) : void
     {
-        $this->getCode($this->clientCodeUrl, ['scope'=> $this->scope]);
+        $request->data['scope'] = $this->scope;
+    }
+
+    protected function requestToken (RequestToken $request): void
+    {
+
     }
 
     protected function sig(array $params, $token)
@@ -28,11 +47,13 @@ class Ok extends SocialOAuth2
         return md5(http_build_query($params,arg_separator: '') . $secret);
     }
 
-    protected function requestId (): mixed
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     */
+    public function requestId (RequestId $request): mixed
     {
-
-        $this->clientUrl = $this->clientApiUrl;
-        $data = $this->getToken('oauth/token.do');
 
         $params = [
             'application_key' => $this->clientPublic,
@@ -40,11 +61,12 @@ class Ok extends SocialOAuth2
             'fields' => 'uid',
         ];
 
+        $token = $request->getAccessToken();
         ksort($params);
-        $params['sig'] = $this->sig($params, $data->data['access_token']);
-        $params['access_token'] = $data->data['access_token'];
+        $params['sig'] = $this->sig($params, $token);
+        $params['access_token'] = $token;
 
-        $postInfo = $this->client->post('api/users/getCurrentUser', $params);
+        $postInfo = $request->post($params);
         $dataInfo = $this->send($postInfo);
         if(isset($dataInfo->data['error_code'])) {
             $error = $dataInfo->getData();
@@ -52,5 +74,25 @@ class Ok extends SocialOAuth2
         }
 
         return $dataInfo->data['uid'];
+    }
+
+    public function getBaseUrl (): string
+    {
+        return $this->clientApiUrl;
+    }
+
+    public function getUriCode (): string
+    {
+        return $this->clientCodeUrl;
+    }
+
+    public function getUriToken (): string
+    {
+        return $this->uriToken;
+    }
+
+    public function getUriInfo (): string
+    {
+        return $this->uriInfo;
     }
 }
