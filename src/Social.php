@@ -261,16 +261,7 @@ abstract class Social extends Model
     public function loginSuccess(SocialController $action): mixed
     {
         $eventArgs = new SuccessEventArgs($action);
-        $eventArgs->useSession = $this->useSession;
         $this->trigger(self::EVENT_LOGIN_SUCCESS, $eventArgs);
-        if($eventArgs->useSession) {
-            if(!\Yii::$app->session->isActive) {
-                \Yii::$app->session->open();
-            }
-            $session = \Yii::$app->session;
-            \Yii::debug('Used session to save token', static::class);
-            $session[static::socialName() . '.token'] = $this->data['token'];
-        }
         return $eventArgs->result ?? $action->goBack();
     }
 
