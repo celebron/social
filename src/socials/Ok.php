@@ -31,6 +31,10 @@ class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidge
     public string $uriToken = 'oauth/token.do';
     public string $uriInfo = 'api/users/getCurrentUser';
 
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
+
     protected function requestCode (RequestCode $request) : void
     {
         $request->data['scope'] = $this->scope;

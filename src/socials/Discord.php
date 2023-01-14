@@ -13,7 +13,6 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
-use Celebron\social\SocialOAuth2;
 use yii\httpclient\Request;
 use Yiisoft\Http\Header;
 
@@ -28,6 +27,10 @@ class Discord extends Social implements GetUrlsInterface, RequestIdInterface, To
     public string $uriCode = 'oauth2/authorize';
     public string $uriInfo = 'oauth2/@me';
     public array $scope = [ 'identify' ];
+
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
 
     protected function requestCode (RequestCode $request) : void
     {

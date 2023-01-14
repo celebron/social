@@ -4,9 +4,6 @@ namespace Celebron\social\interfaces;
 
 trait ToWidgetTrait
 {
-    public ?string $name;
-    public string $icon = '';
-    public bool $visible = true;
 
     public function getName (): string
     {

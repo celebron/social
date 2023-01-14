@@ -29,6 +29,10 @@ class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToW
     public string $apiUrl = 'https://www.googleapis.com';
     public string $uriInfo = 'oauth2/v2/userinfo?alt=json';
 
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
+
     /**
      * Получения конфигурации из файла json
      * @param string $file

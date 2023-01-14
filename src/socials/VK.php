@@ -23,6 +23,9 @@ class VK extends Social implements GetUrlsInterface, ToWidgetInterface, ToWidget
     public string $uriToken = 'access_token';
     public string $display = 'page';
 
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
 
     protected function requestCode (RequestCode $request) : void
     {

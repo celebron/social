@@ -36,7 +36,8 @@ class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToW
 
 
     public string $icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
-
+    public ?string $name;
+    public bool $visible = true;
 
     /**
      * @return mixed

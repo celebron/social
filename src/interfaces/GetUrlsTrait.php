@@ -4,9 +4,6 @@ namespace Celebron\social\interfaces;
 
 trait GetUrlsTrait
 {
-    public string $clientUrl;
-    public string $uriCode;
-    public string $uriToken;
 
     public function getBaseUrl() : string
     {
