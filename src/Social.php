@@ -3,8 +3,6 @@
 namespace Celebron\social;
 
 use Celebron\social\interfaces\RequestIdInterface;
-use Celebron\social\RequestCode;
-use Celebron\social\RequestToken;
 use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
@@ -19,7 +17,6 @@ use yii\db\ActiveRecord;
 use yii\di\Instance;
 use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
@@ -32,6 +29,8 @@ use yii\web\NotFoundHttpException;
 
 /**
  * Базовый класс авторизации соц.сетей.
+ * @property-read null|array $stateDecode
+ * @property-read mixed $socialId
  * @property-read Client $client - (для чтения) Http Client
  */
 abstract class Social extends Model
@@ -109,7 +108,7 @@ abstract class Social extends Model
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_REQUEST ],
             ['state', 'stateValidator', 'when' => function() {
                 return !empty($this->code);
-            }],
+            },'on' => [self::SCENARIO_REQUEST]],
         ];
     }
 
@@ -119,7 +118,7 @@ abstract class Social extends Model
     final public function stateValidator($a):void
     {
         $session = \Yii::$app->session;
-        $data = Json::decode(base64_decode($this->$a));
+        $data = $this->getStateDecode();
         if($session['social_random'] !== $data['random']) {
             throw new BadRequestHttpException('State random does not match');
         }
@@ -159,6 +158,7 @@ abstract class Social extends Model
             $request->redirect_uri = $this->redirectUrl;
             $request->state = $this->state;
             $this->requestCode($request);
+
             if($request->enable) {
                 $request->toClient($this->client);
             } else { exit(0); }
@@ -216,23 +216,39 @@ abstract class Social extends Model
         if($this->validate()) {
             return \Yii::$app->user->identity->{$this->field};
         }
-        throw new NotSupportedException('Not validate Social class');
-    }
-
-    public function getStateDecode() : array
-    {
-        return Json::decode(base64_decode($this->state));
+        throw new NotSupportedException('Property field not support');
     }
 
     /**
-     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
      */
-    final public function run($controller, $duration)
+    public function getStateDecode() : ?array
+    {
+        if($this->state !== null ) {
+            return Json::decode(base64_decode($this->state));
+        }
+        throw new BadRequestHttpException('Empty $state');
+    }
+
+    /**
+     * @param SocialController $controller
+     * @return mixed|\yii\web\Response
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
+     * @throws InvalidConfigException
+     * @throws NotFoundHttpException
+     */
+    final public function run(SocialController $controller) : mixed
     {
         $data = $this->getStateDecode();
-        if($this->validate()) {
+        if($data['method'] !== 'delete') {
+            $this->scenario = self::SCENARIO_REQUEST;
+        } else {
+            $this->scenario = self::SCENARIO_RESPONSE;
+        }
+        if( $this->validate()) {
             \Yii::$app->session->remove('social_random');
-            if(($data['method'] === 'login') && $this->login($duration)) {
+            if(($data['method'] === 'login') && $this->login($controller->config->duration)) {
                 return $this->loginSuccess($controller);
             }
             if(($data['method'] === 'register') && $this->register()) {
@@ -258,7 +274,7 @@ abstract class Social extends Model
      */
     final public function register() : bool
     {
-        $this->scenario =  self::SCENARIO_REQUEST;
+        \Yii::debug("Register social '" . static::socialName() ."' to user");
         return $this->modifiedUser($this->id);
     }
 
@@ -268,7 +284,7 @@ abstract class Social extends Model
      */
     final public function delete() : bool
     {
-        $this->scenario = self::SCENARIO_RESPONSE;
+        \Yii::debug("Delete social '" . static::socialName() . "' to user");
         return $this->modifiedUser(null);
     }
 
@@ -280,7 +296,6 @@ abstract class Social extends Model
      */
     final public function login(int $duration = 0) : bool
     {
-        $this->scenario = self::SCENARIO_REQUEST;
         if(($user = $this->findUser()) !== null) {
             $login = Yii::$app->user->login($user, $duration);
             \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);

@@ -27,8 +27,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /** @var self - конфигурация */
     public static self $config;
 
-    /** @var string - state для регистрации */
-    public string $register = 'register';
     /** @var string - роут */
     public string $route = "social";
     /** @var int - на сколько сохранять участника */

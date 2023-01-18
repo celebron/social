@@ -37,9 +37,8 @@ class SocialController extends Controller
         $socialObject->code = $code;
         $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
         try {
-            $socialObject->run($this, $this->config->duration);
-
-           } catch (HttpException $ex) {
+            return $socialObject->run($this);
+        } catch (HttpException $ex) {
             \Yii::error($ex->getMessage(), static::class);
             return $socialObject->error($this, $ex);
         } finally {
