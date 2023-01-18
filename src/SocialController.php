@@ -3,7 +3,9 @@
 namespace Celebron\social;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\web\Cookie;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -49,15 +51,14 @@ class SocialController extends \yii\web\Controller
     /**
      * @param string $social
      * @param string|null $code
-     * @param string|null $state
+     * @param string $state
      * @return mixed|Response
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      */
-    public function actionHandler(string $social, ?string $code = null, ?string $state = null)
+    public function actionHandler(string $social, ?string $code = null, string $state = null)
     {
-        $register = ($state !== null) && str_contains($this->config->register, $state);
-
+        $register = false;
         \Yii::beginProfile("Social profiling", static::class);
 
         $socialObject = $this->config->getSocial($social);
@@ -65,6 +66,10 @@ class SocialController extends \yii\web\Controller
         $socialObject->code = $code;
         $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
         try {
+            if($socialObject->validate()) {
+
+            }
+
             if ($register && $socialObject->register()) {
                 return $socialObject->registerSuccess($this);
             }

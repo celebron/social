@@ -3,6 +3,8 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\RegisterEventArgs;
+use yii\base\Exception;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -148,8 +150,8 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function bootstrap ($app): void
     {
         $app->urlManager->addRules([
-            "{$this->route}/<social>" => "{$this->route}/handler",
             "{$this->route}/<social>/delete" => "{$this->route}/delete",
+            "{$this->route}/<social>" => "{$this->route}/handler",
         ]);
         $app->controllerMap[$this->route] = [
             'class' => SocialController::class,
@@ -179,25 +181,26 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     /**
      * Получить ссылку на редеректа на соц.сеть
-     * @param string $socialname
-     * @param bool|string $state
+     * @param string $socialname - социальная сеть (ключ из конфига0
+     * @param string $method - (login|register|delete)
+     * @param string|null $state - дополнительные данные
      * @return string
+     * @throws Exception
      */
-    public static function url (string $socialname, bool|string|null $state = false): string
+    public static function url (string $socialname, string $method = 'login', ?string $state=null): string
     {
         $url[0] = self::$config->route . '/' . strtolower($socialname);
-        //Для state - регистрация или авторизация
-        if (is_bool($state) && $state) {
-            $url['state'] = self::$config->register;
-        }
-        //Для нестандартных state
-        if (is_string($state)) {
-            $url['state'] = $state;
-        }
-        //Для удаления
-        if($state === null) {
-            $url[0] .= '/delete';
-        }
+
+        $random = \Yii::$app->security->generateRandomString();
+        $data = [
+          'method' => $method,
+          'state' => $state,
+          'random' => $random,
+        ];
+
+        $url['state'] = base64_encode(Json::encode($data));
+
+
         return Url::to($url, true);
     }
 }

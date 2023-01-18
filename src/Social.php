@@ -106,7 +106,13 @@ abstract class Social extends Model
             [['clientId', 'clientSecret'], 'required', 'on' => self::SCENARIO_REQUEST],
             ['field', 'fieldValidator','on' => [self::SCENARIO_RESPONSE, self::SCENARIO_REQUEST]],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_REQUEST ],
+            ['state', 'stateValidator'],
         ];
+    }
+
+    final public function stateValidator($a)
+    {
+
     }
 
     /**
@@ -129,7 +135,9 @@ abstract class Social extends Model
     /**
      * Валидация кода
      * @param $a
+     * @throws InvalidConfigException
      * @throws NotFoundHttpException
+     * @throws \yii\httpclient\Exception
      */
     final public function codeValidator($a): void
     {
@@ -240,16 +248,7 @@ abstract class Social extends Model
     public function deleteSuccess(SocialController $action)
     {
         $eventArgs = new SuccessEventArgs($action);
-        $eventArgs->useSession = $this->useSession;
         $this->trigger(self::EVENT_DELETE_SUCCESS, $eventArgs);
-        if($eventArgs->useSession) {
-            if(!\Yii::$app->session->isActive) {
-                \Yii::$app->session->open();
-            }
-            $session = \Yii::$app->session;
-            \Yii::debug('Used session to save token', static::class);
-            $session[static::socialName() . '.token'] = null;
-        }
         return $eventArgs->result ?? $action->goBack();
     }
 
@@ -323,6 +322,7 @@ abstract class Social extends Model
      * @param Request|RequestToken $sender - Запрос
      * @param string $theme - Тема
      * @return Response
+     * @throws BadRequestHttpException
      * @throws InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
@@ -377,11 +377,13 @@ abstract class Social extends Model
 
     /**
      * Ссылка на oauth авторизацию
-     * @param bool|string|null $state
+     * @param string $method
+     * @param string|null $state
      * @return string
+     * @throws \yii\base\Exception
      */
-    final public static function url(bool|string|null $state = false) : string
+    final public static function url(string $method = 'login', ?string $state = null) : string
     {
-        return SocialConfiguration::url(static::socialName(), $state);
+        return SocialConfiguration::url(static::socialName(), $method, $state);
     }
 }
