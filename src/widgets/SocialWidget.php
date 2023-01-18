@@ -66,7 +66,7 @@ class SocialWidget extends Widget
     {
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, ($this->_social::class)::url(false), $this->loginOptions) . PHP_EOL;
+        return "\t" . Html::a($text, ($this->_social::class)::url('login'), $this->loginOptions) . PHP_EOL;
     }
 
     public function getName() : string
@@ -100,10 +100,10 @@ class SocialWidget extends Widget
         $socialId = $this->_social->getSocialId();
         $idText = Html::a("<i class='bi bi-play'></i>",($this->_social::class)::url(true));
         $idText .= $socialId;
-        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", ($this->_social::class)::url(null));
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", ($this->_social::class)::url('delete'));
         if($socialId === null) {
             $idText = "<i class='bi bi-stop'></i>";
-            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url(true));
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url('register'));
         }
 
         $this->registerOptions['icon']['class'][] = 'social-icon-view';
