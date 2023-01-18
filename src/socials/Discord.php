@@ -17,9 +17,7 @@ use Celebron\social\Social;
 use yii\httpclient\Request;
 use Yiisoft\Http\Header;
 
-/**
- * oauth2 Discord
- */
+
 class Discord extends Social
     implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface, SetFullUrlInterface
 {
@@ -36,12 +34,7 @@ class Discord extends Social
 
     protected function requestCode (RequestCode $request) : void
     {
-        //$request->enable = false;
-        $request->data = ['scope'=>implode(' ', $this->scope)];
-
-//        $response = $this->client->get($request->generateUri());
-//        $response->setFullUrl($this->createFullUrl($response));
-//        \Yii::$app->response->redirect($response->getFullUrl(), checkAjax: false)->send();
+        $request->data = ['scope' => implode(' ', $this->scope)];
     }
 
     protected function requestToken (RequestToken $request): void

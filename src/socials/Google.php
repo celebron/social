@@ -13,7 +13,10 @@ use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\helpers\Json;
+use yii\httpclient\Exception;
+use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
 
@@ -70,6 +73,11 @@ class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToW
 
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     */
     public function requestId (RequestId $request): mixed
     {
         $url = $request->get(
