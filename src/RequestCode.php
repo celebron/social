@@ -25,16 +25,6 @@ class RequestCode extends BaseObject
 
     public bool $enable = true;
 
-    /**
-     * @throws BadRequestHttpException
-     */
-    public function getStateDecode() : ?array
-    {
-        if($this->state !== null ) {
-            return Json::decode(base64_decode($this->state));
-        }
-        throw new BadRequestHttpException('Empty $state');
-    }
 
     public function generateUri() : array
     {
@@ -47,21 +37,4 @@ class RequestCode extends BaseObject
         ];
         return ArrayHelper::merge($default, $this->data);
     }
-
-    /**
-     * @throws BadRequestHttpException
-     */
-    public function toClient(Client $client) : Never
-    {
-        $url = $client->get($this->generateUri());
-        $session = \Yii::$app->session;
-        $data = $this->getStateDecode();
-        if(!$session->isActive) { $session->open(); }
-        $session['social_random'] = $data['random'];
-        \Yii::$app->response->redirect($url->getFullUrl(), checkAjax: false)->send();
-        exit(0);
-    }
-
-
-
 }

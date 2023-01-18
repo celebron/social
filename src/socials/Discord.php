@@ -5,6 +5,7 @@ namespace Celebron\social\socials;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\GetUrlsTrait;
 use Celebron\social\interfaces\RequestIdInterface;
+use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetLoginInterface;
 use Celebron\social\interfaces\ToWidgetRegisterInterface;
@@ -19,7 +20,8 @@ use Yiisoft\Http\Header;
 /**
  * oauth2 Discord
  */
-class Discord extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
+class Discord extends Social
+    implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface, SetFullUrlInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = 'https://discord.com/api';
@@ -34,12 +36,12 @@ class Discord extends Social implements GetUrlsInterface, RequestIdInterface, To
 
     protected function requestCode (RequestCode $request) : void
     {
-        $request->enable = false;
+        //$request->enable = false;
         $request->data = ['scope'=>implode(' ', $this->scope)];
 
-        $response = $this->client->get($request->generateUri());
-        $response->setFullUrl($this->createFullUrl($response));
-        \Yii::$app->response->redirect($response->getFullUrl(), checkAjax: false)->send();
+//        $response = $this->client->get($request->generateUri());
+//        $response->setFullUrl($this->createFullUrl($response));
+//        \Yii::$app->response->redirect($response->getFullUrl(), checkAjax: false)->send();
     }
 
     protected function requestToken (RequestToken $request): void
@@ -47,9 +49,6 @@ class Discord extends Social implements GetUrlsInterface, RequestIdInterface, To
 
     }
 
-    /**
-     * @return mixed
-     */
     public function requestId (RequestId $request): mixed
     {
 
@@ -62,7 +61,7 @@ class Discord extends Social implements GetUrlsInterface, RequestIdInterface, To
         return $data->data['user']['id'];
     }
 
-    private function createFullUrl(Request $request)
+    public function setFullUrl(Request $request)
     {
         $url = $request->getUrl();
         if (is_array($url)) {
@@ -97,6 +96,5 @@ class Discord extends Social implements GetUrlsInterface, RequestIdInterface, To
     {
         return $this->uriInfo;
     }
-
 
 }

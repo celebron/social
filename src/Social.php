@@ -7,6 +7,7 @@ use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\SuccessEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\SetFullUrlInterface;
 use Exception;
 use ReflectionClass;
 use Yii;
@@ -162,9 +163,19 @@ abstract class Social extends Model
             $request->state = $this->state;
             $this->requestCode($request);
 
+            $session = \Yii::$app->session;
+            $data = $this->getStateDecode();
+            if(!$session->isActive) { $session->open(); }
+            $session['social_random'] = $data['random'];
+
             if($request->enable) {
-                $request->toClient($this->client);
-            } else { exit(0); }
+                $url = $this->client->get($request->generateUri());
+                if($this instanceof SetFullUrlInterface) {
+                    $url->setFullUrl($this->setFullUrl($url));
+                }
+                \Yii::$app->response->redirect($url->getFullUrl(), checkAjax: false)->send();
+            }
+            exit(0);
         }
 
         $request = new RequestToken($this->code);
