@@ -40,13 +40,10 @@ class RequestCode extends BaseObject
     public function toClient(Client $client) : Never
     {
         $url = $client->get($this->generateUri());
-        //Записать cookie и отправить на сервер данные
-        $cookie = \Yii::$app->response->cookies;
+        $session = \Yii::$app->session;
         $data = $this->getStateDecode();
-        $cookie->add(new Cookie([
-            'name'=>'social.random',
-            'value'=> $data['random']
-        ]));
+        if(!$session->isActive) { $session->open(); }
+        $session['social_random'] = $data['random'];
         \Yii::$app->response->redirect($url->getFullUrl(), checkAjax: false)->send();
         exit(0);
     }

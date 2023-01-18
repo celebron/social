@@ -20,6 +20,7 @@ use yii\di\Instance;
 use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
 use yii\httpclient\Request;
@@ -106,13 +107,22 @@ abstract class Social extends Model
             [['clientId', 'clientSecret'], 'required', 'on' => self::SCENARIO_REQUEST],
             ['field', 'fieldValidator','on' => [self::SCENARIO_RESPONSE, self::SCENARIO_REQUEST]],
             ['code', 'codeValidator', 'skipOnEmpty' => false, 'on' => self::SCENARIO_REQUEST ],
-            ['state', 'stateValidator'],
+            ['state', 'stateValidator', 'when' => function() {
+                return !empty($this->code);
+            }],
         ];
     }
 
-    final public function stateValidator($a)
+    /**
+     * @throws BadRequestHttpException
+     */
+    final public function stateValidator($a):void
     {
-
+        $session = \Yii::$app->session;
+        $data = Json::decode(base64_decode($this->$a));
+        if($session['social_random'] !== $data['random']) {
+            throw new BadRequestHttpException('State random does not match');
+        }
     }
 
     /**
@@ -135,6 +145,7 @@ abstract class Social extends Model
     /**
      * Валидация кода
      * @param $a
+     * @throws BadRequestHttpException
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      * @throws \yii\httpclient\Exception
@@ -208,6 +219,39 @@ abstract class Social extends Model
         throw new NotSupportedException('Not validate Social class');
     }
 
+    public function getStateDecode() : array
+    {
+        return Json::decode(base64_decode($this->state));
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    final public function run($controller, $duration)
+    {
+        $data = $this->getStateDecode();
+        if($this->validate()) {
+            \Yii::$app->session->remove('social_random');
+            if(($data['method'] === 'login') && $this->login($duration)) {
+                return $this->loginSuccess($controller);
+            }
+            if(($data['method'] === 'register') && $this->register()) {
+                return $this->registerSuccess($controller);
+            }
+            if(($data['method'] === 'delete') && !\Yii::$app->user->isGuest && $this->delete()) {
+                return $this->deleteSuccess($controller);
+            }
+
+            return $this->error($controller,
+                new NotSupportedException('['. self::socialName() ."] Method {$data['method']} not support!")
+            );
+        }
+
+        return $this->error($controller,
+            new NotFoundHttpException( '['. self::socialName() ."] User ' . {$this->id} .' not registered by site")
+        );
+    }
+
     /**
      * Регистрация пользователя из социальной сети
      * @return bool
@@ -215,7 +259,7 @@ abstract class Social extends Model
     final public function register() : bool
     {
         $this->scenario =  self::SCENARIO_REQUEST;
-        return $this->validate() && $this->modifiedUser($this->id);
+        return $this->modifiedUser($this->id);
     }
 
     /**
@@ -225,7 +269,7 @@ abstract class Social extends Model
     final public function delete() : bool
     {
         $this->scenario = self::SCENARIO_RESPONSE;
-        return $this->validate() && $this->modifiedUser(null);
+        return $this->modifiedUser(null);
     }
 
     /**
@@ -237,7 +281,7 @@ abstract class Social extends Model
     final public function login(int $duration = 0) : bool
     {
         $this->scenario = self::SCENARIO_REQUEST;
-        if($this->validate() && ( ($user = $this->findUser()) !== null )) {
+        if(($user = $this->findUser()) !== null) {
             $login = Yii::$app->user->login($user, $duration);
             \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);
             return $login;

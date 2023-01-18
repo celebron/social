@@ -150,7 +150,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function bootstrap ($app): void
     {
         $app->urlManager->addRules([
-            "{$this->route}/<social>/delete" => "{$this->route}/delete",
             "{$this->route}/<social>" => "{$this->route}/handler",
         ]);
         $app->controllerMap[$this->route] = [
@@ -197,7 +196,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
           'state' => $state,
           'random' => $random,
         ];
-
         $url['state'] = base64_encode(Json::encode($data));
 
 
