@@ -117,9 +117,10 @@ abstract class Social extends Model
     }
 
     /**
+     * Валидация State
      * @throws BadRequestHttpException
      */
-    final public function stateValidator($a):void
+    public function stateValidator($a):void
     {
         $session = \Yii::$app->session;
         $data = $this->getStateDecode();
@@ -200,8 +201,18 @@ abstract class Social extends Model
     }
 
 
-
+    /**
+     * [abstract] Запрос кода с сервера oauth2
+     * @param RequestCode $request
+     * @return void
+     */
     abstract protected function requestCode(RequestCode $request): void;
+
+    /**
+     * [abstract] Запрос токина с сервера oauth2
+     * @param RequestToken $request
+     * @return void
+     */
     abstract protected function requestToken(RequestToken $request): void;
 
 
@@ -255,11 +266,11 @@ abstract class Social extends Model
     final public function run(SocialController $controller) : mixed
     {
         $data = $this->getStateDecode();
-        if($data['method'] !== self::METHOD_DELETE) {
-            $this->scenario = self::SCENARIO_REQUEST;
-        } else {
-            $this->scenario = self::SCENARIO_RESPONSE;
-        }
+
+        $this->scenario = ($data['method'] === self::METHOD_DELETE)
+            ? self::SCENARIO_RESPONSE
+            : self::SCENARIO_REQUEST;
+
         if( $this->validate()) {
             \Yii::$app->session->remove('social_random');
             if(($data['method'] === self::METHOD_LOGIN) && $this->login($controller->config->duration)) {
@@ -271,7 +282,6 @@ abstract class Social extends Model
             if(($data['method'] === self::METHOD_DELETE) && !\Yii::$app->user->isGuest && $this->delete()) {
                 return $this->deleteSuccess($controller);
             }
-
             return $this->error($controller,
                 new NotSupportedException('['. self::socialName() ."] Method {$data['method']} not support!")
             );

@@ -28,7 +28,7 @@ class SocialController extends Controller
      * @throws NotFoundHttpException
      * @throws InvalidConfigException
      */
-    public function actionHandler(string $social, ?string $code = null, string $state = null)
+    public function actionHandler(string $social, ?string $code = null, string $state = null): mixed
     {
         \Yii::beginProfile("Social profiling", static::class);
 

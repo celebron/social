@@ -40,10 +40,11 @@ class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToW
     public bool $visible = true;
 
     /**
+     * @param RequestId $request
      * @return mixed
      * @throws BadRequestHttpException
-     * @throws InvalidConfigException
      * @throws Exception
+     * @throws InvalidConfigException
      */
     public function requestId (RequestId $request) : mixed
     {
@@ -56,6 +57,9 @@ class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToW
         return $loginData->data['id'];
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     protected function requestCode (RequestCode $request) : void
     {
         $get = Yii::$app->request->get();
