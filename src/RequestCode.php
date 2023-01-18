@@ -6,23 +6,34 @@ use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\httpclient\Client;
+use yii\web\BadRequestHttpException;
 use yii\web\Cookie;
 
+/**
+ *
+ * @property-read null|array $stateDecode
+ */
 class RequestCode extends BaseObject
 {
     public string $response_type = 'code';
     public string $client_id;
     public string $redirect_uri;
-    public string $state;
+    public ?string $state;
     public string $uri;
 
     public array $data = [];
 
     public bool $enable = true;
 
-    public function getStateDecode() : array
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function getStateDecode() : ?array
     {
-        return Json::decode(base64_decode($this->state));
+        if($this->state !== null ) {
+            return Json::decode(base64_decode($this->state));
+        }
+        throw new BadRequestHttpException('Empty $state');
     }
 
     public function generateUri() : array
@@ -37,6 +48,9 @@ class RequestCode extends BaseObject
         return ArrayHelper::merge($default, $this->data);
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function toClient(Client $client) : Never
     {
         $url = $client->get($this->generateUri());

@@ -44,6 +44,9 @@ abstract class Social extends Model
     public const SCENARIO_REQUEST = 'request';
     public const SCENARIO_RESPONSE = 'response';
 
+    public const METHOD_REGISTER = 'register';
+    public const METHOD_DELETE = 'delete';
+    public const METHOD_LOGIN = 'login';
     ////В config
 
     /** @var string - поле в базе данных для идентификации  */
@@ -241,20 +244,20 @@ abstract class Social extends Model
     final public function run(SocialController $controller) : mixed
     {
         $data = $this->getStateDecode();
-        if($data['method'] !== 'delete') {
+        if($data['method'] !== self::METHOD_DELETE) {
             $this->scenario = self::SCENARIO_REQUEST;
         } else {
             $this->scenario = self::SCENARIO_RESPONSE;
         }
         if( $this->validate()) {
             \Yii::$app->session->remove('social_random');
-            if(($data['method'] === 'login') && $this->login($controller->config->duration)) {
+            if(($data['method'] === self::METHOD_LOGIN) && $this->login($controller->config->duration)) {
                 return $this->loginSuccess($controller);
             }
-            if(($data['method'] === 'register') && $this->register()) {
+            if(($data['method'] === self::METHOD_REGISTER) && $this->register()) {
                 return $this->registerSuccess($controller);
             }
-            if(($data['method'] === 'delete') && !\Yii::$app->user->isGuest && $this->delete()) {
+            if(($data['method'] === self::METHOD_DELETE) && !\Yii::$app->user->isGuest && $this->delete()) {
                 return $this->deleteSuccess($controller);
             }
 

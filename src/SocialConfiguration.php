@@ -184,7 +184,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @return string
      * @throws Exception
      */
-    public static function url (string $socialname, string $method = 'login', ?string $state=null): string
+    public static function url (string $socialname, string $method = Social::METHOD_LOGIN, ?string $state=null): string
     {
         $url[0] = self::$config->route . '/' . strtolower($socialname);
 
