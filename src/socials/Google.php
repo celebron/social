@@ -84,8 +84,8 @@ class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToW
             [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
             [ 'format'=>'json' ],
         );
-        $d = $this->send($url);
-        return $d->data['id'];
+        return $this->sendReturnId($url, 'id');
+        //return $d->data['id'];
     }
 
     public function getBaseUrl (): string

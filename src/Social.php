@@ -417,13 +417,25 @@ abstract class Social extends Model
 
         $response = $this->client->send($sender);
         if ($response->isOk && !isset($response->data['error'])) {
-
             $this->data[$theme] = $response->getData();
             \Yii::debug($this->data[$theme],static::class);
             return $response;
         }
 
         $this->getException($response);
+    }
+
+    /**
+     * Выполнение отправки и получение Id
+     * @throws \yii\httpclient\Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     * @throws Exception
+     */
+    protected function sendReturnId(Request|RequestToken $sender, string|\Closure|array $field) : mixed
+    {
+        $response = $this->send($sender, 'info');
+        return ArrayHelper::getValue($response->getData(),$field);
     }
 
     /**

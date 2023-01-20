@@ -50,8 +50,8 @@ class Discord extends Social
             [ 'format'=>'json' ],
         );
 
-        $data = $this->send($url);
-        return $data->data['user']['id'];
+        return $this->sendReturnId($url, 'user.id');
+        //return $data->data['user']['id'];
     }
 
     public function setFullUrl(Request $request)

@@ -19,7 +19,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
-use Yiisoft\Http\Header;
 
 
 /**
@@ -48,13 +47,11 @@ class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToW
      */
     public function requestId (RequestId $request) : mixed
     {
-        $login = $request->get(
-            [ Header::AUTHORIZATION => 'OAuth ' . $request->getAccessToken() ],
-            ['format'=> 'json']
-        );
+        $login = $request->getHeaderOauth(['format'=> 'json']);
 
-        $loginData = $this->send($login);
-        return $loginData->data['id'];
+//        $loginData = $this->send($login);
+//        return $loginData->data['id'];
+        return $this->sendReturnId($login, 'id');
     }
 
     /**

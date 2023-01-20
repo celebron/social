@@ -7,6 +7,7 @@ use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\httpclient\Response;
 use yii\web\BadRequestHttpException;
+use Yiisoft\Http\Header;
 
 /**
  *
@@ -78,14 +79,46 @@ class RequestId extends \yii\base\BaseObject
         throw new BadRequestHttpException($this->response->data['error']);
     }
 
+    /**
+     * Гет запрос
+     * @param array $header
+     * @param array $data
+     * @return Request
+     */
     public function get(array $header = [], array $data = []): Request
     {
         return  $this->client->get($this->uri, $data, $header);
     }
 
+
+    /**
+     * @param array $data
+     * @return Request
+     * @throws BadRequestHttpException
+     */
+    public function getHeaderOauth(array $data = []): Request
+    {
+        return $this->get([ Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()], $data);
+    }
+
+    /**
+     * @param array $data
+     * @param array $header
+     * @return Request
+     */
     public function post(array $data = [], array $header = []): Request
     {
         return $this->client->post($this->uri, $data, $header);
+    }
+
+    /**
+     * @param array $data
+     * @return Request
+     * @throws BadRequestHttpException
+     */
+    public function postHeaderOauth(array $data = []): Request
+    {
+        return $this->post([ Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()], $data);
     }
 
     public function put(?array $data, array $header = []): Request

@@ -11,6 +11,9 @@ use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use yii\base\InvalidConfigException;
+use yii\httpclient\Exception;
+use yii\web\BadRequestHttpException;
 
 /**
  * Oauth2 VK
@@ -32,9 +35,14 @@ class VK extends Social implements GetUrlsInterface, ToWidgetInterface, ToWidget
         $request->data = [ 'display' => $this->display ];
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     */
     protected function requestToken (RequestToken $request): void
     {
-        $response = $this->send($request);
-        $this->id = $response->data['user_id'];
+        $this->id = $this->sendReturnId($request, 'user_id');
+        //$this->id = $response->data['user_id'];
     }
 }

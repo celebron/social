@@ -7,7 +7,6 @@ use Celebron\social\Social;
 use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
 use yii\base\Widget;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
