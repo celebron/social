@@ -3,15 +3,19 @@
 namespace Celebron\social\widgets;
 
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetLoginInterface;
-use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
 use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;
 
+/**
+ *
+ * @property-read string $name
+ * @property Social&ToWidgetInterface $_social
+ */
 class SocialWidget extends Widget
 {
     public const TYPE_LOGIN = 'login';
@@ -30,12 +34,22 @@ class SocialWidget extends Widget
     public array $options = [];
 
     private ?Social $_social = null;
+    private bool $_supportLogin = true;
+    private bool $_supportRegister = true;
 
     public function init ()
     {
         parent::init();
         SocialAsset::register($this->view);
         $this->_social = SocialConfiguration::socialStatic($this->social);
+        $classRef = new \ReflectionClass($this);
+        $attributes = $classRef->getAttributes(WidgetSupport::class);
+        if (isset($attributes[0])) {
+            /** @var WidgetSupport $supports */
+            $supports = $attributes[0]->newInstance();
+            $this->_supportLogin = $supports->login;
+            $this->_supportRegister = $supports->register;
+        }
     }
 
     /**
@@ -48,10 +62,10 @@ class SocialWidget extends Widget
             $this->options['class'][] = "social-{$this->type}-block";
             $this->options['class'][] = "social_{$this->social}";
             $html .= Html::beginTag('div', $this->options) . PHP_EOL;
-            if(($this->type === self::TYPE_LOGIN) && ($this->_social instanceof ToWidgetLoginInterface)) {
-                $html .= $this->runLogin();
-            } elseif(($this->type === self::TYPE_REGISTER) && ($this->_social instanceof ToWidgetRegisterInterface)) {
-                $html .= $this->_social->getVisible() ? $this->runRegister() : $this->options['error'] ?? '';
+            if(($this->type === self::TYPE_LOGIN) && $this->_supportLogin) {
+                $html .= $this->_social->getVisible() ? $this->runLogin() : $this->options['loginNoVisible'] ?? '';
+            } elseif(($this->type === self::TYPE_REGISTER) && $this->_supportRegister) {
+                $html .= $this->_social->getVisible() ? $this->runRegister() : $this->options['registerNoVisible'] ?? '';
             }
             $html .= Html::endTag('div') . PHP_EOL;
         }

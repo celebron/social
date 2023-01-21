@@ -12,6 +12,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -24,7 +25,8 @@ use Yiisoft\Http\Header;
  * oauth2 Google
  * @property-write string $configFile
  */
-class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
+#[WidgetSupport]
+class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     public string $authUrl = 'https://accounts.google.com/o/oauth2/auth';

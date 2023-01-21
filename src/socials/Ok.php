@@ -12,6 +12,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
@@ -19,7 +20,8 @@ use yii\web\BadRequestHttpException;
 /**
  * Oauth2 Ok
  */
-class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
+#[WidgetSupport]
+class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     public string $scope = 'VALUABLE_ACCESS';

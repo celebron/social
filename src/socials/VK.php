@@ -11,6 +11,7 @@ use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
@@ -18,7 +19,8 @@ use yii\web\BadRequestHttpException;
 /**
  * Oauth2 VK
  */
-class VK extends Social implements GetUrlsInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
+#[WidgetSupport]
+class VK extends Social implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = 'https://oauth.vk.com';

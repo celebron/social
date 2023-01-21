@@ -14,12 +14,20 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
+use yii\base\InvalidConfigException;
+use yii\httpclient\Exception;
 use yii\httpclient\Request;
+use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
-
+/**
+ *
+ *
+ */
+#[WidgetSupport]
 class Discord extends Social
-    implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface, SetFullUrlInterface
+    implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, SetFullUrlInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = 'https://discord.com/api';
@@ -42,6 +50,11 @@ class Discord extends Social
 
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     */
     public function requestId (RequestId $request): mixed
     {
 
@@ -54,7 +67,7 @@ class Discord extends Social
         //return $data->data['user']['id'];
     }
 
-    public function setFullUrl(Request $request)
+    public function setFullUrl(Request $request) : string
     {
         $url = $request->getUrl();
         if (is_array($url)) {
@@ -74,7 +87,7 @@ class Discord extends Social
         }
 
         if (!empty($params)) {
-            if (strpos($url, '?') === false) {
+            if (!str_contains($url, '?')) {
                 $url .= '?';
             } else {
                 $url .= '&';

@@ -401,7 +401,7 @@ abstract class Social extends Model
 
 
     /**
-     * Выполнение отправки сообщения
+     * Выполнение отправки
      * @param Request|RequestToken $sender - Запрос
      * @param string $theme - Тема
      * @return Response

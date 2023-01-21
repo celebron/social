@@ -2,6 +2,10 @@
 
 namespace Celebron\social\interfaces;
 
+use Celebron\social\SocialName;
+use Celebron\social\WidgetSupport;
+use yii\helpers\ArrayHelper;
+
 trait ToWidgetTrait
 {
 
@@ -17,6 +21,9 @@ trait ToWidgetTrait
 
     public function getVisible (): bool
     {
+
         return $this->visible;
     }
+
+
 }

@@ -15,6 +15,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
@@ -25,7 +26,8 @@ use yii\web\BadRequestHttpException;
  *
  * @property-read string $baseUrl
  */
-class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, ToWidgetLoginInterface, ToWidgetRegisterInterface
+#[WidgetSupport]
+class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = "https://oauth.yandex.ru";
