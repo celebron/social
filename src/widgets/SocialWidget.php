@@ -10,6 +10,7 @@ use Celebron\social\WidgetSupport;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;
+use yii\web\NotFoundHttpException;
 
 /**
  *
@@ -23,6 +24,7 @@ class SocialWidget extends Widget
 
     public string $social;
     public string $type = self::TYPE_LOGIN;
+    public ?bool $visible = null; //null -> $_social->visible
 
     public bool|string $icon = false;
 
@@ -34,15 +36,19 @@ class SocialWidget extends Widget
     public array $options = [];
 
     private ?Social $_social = null;
-    private bool $_supportLogin = true;
-    private bool $_supportRegister = true;
+    private bool $_supportLogin = false;
+    private bool $_supportRegister = false;
 
+    /**
+     * @throws \ReflectionException
+     * @throws NotFoundHttpException
+     */
     public function init ()
     {
         parent::init();
         SocialAsset::register($this->view);
         $this->_social = SocialConfiguration::socialStatic($this->social);
-        $classRef = new \ReflectionClass($this);
+        $classRef = new \ReflectionClass($this->_social);
         $attributes = $classRef->getAttributes(WidgetSupport::class);
         if (isset($attributes[0])) {
             /** @var WidgetSupport $supports */
@@ -63,14 +69,19 @@ class SocialWidget extends Widget
             $this->options['class'][] = "social_{$this->social}";
             $html .= Html::beginTag('div', $this->options) . PHP_EOL;
             if(($this->type === self::TYPE_LOGIN) && $this->_supportLogin) {
-                $html .= $this->_social->getVisible() ? $this->runLogin() : $this->options['loginNoVisible'] ?? '';
+                $html .= $this->getVisible() ? $this->runLogin() : $this->options['loginNoVisible'] ?? '';
             } elseif(($this->type === self::TYPE_REGISTER) && $this->_supportRegister) {
-                $html .= $this->_social->getVisible() ? $this->runRegister() : $this->options['registerNoVisible'] ?? '';
+                $html .= $this->getVisible() ? $this->runRegister() : $this->options['registerNoVisible'] ?? '';
             }
             $html .= Html::endTag('div') . PHP_EOL;
         }
 
         return $html;
+    }
+
+    public function getVisible():bool
+    {
+        return $this->visible ?? $this->_social->visible;
     }
 
     /**
