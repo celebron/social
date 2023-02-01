@@ -7,6 +7,7 @@ use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\httpclient\Response;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use Yiisoft\Http\Header;
 
 /**
@@ -25,12 +26,15 @@ class RequestId extends \yii\base\BaseObject
 
 
     public function __construct(
-        public Response $response,
+        public ?Token $token,
         public Client $client,
         array $config = []
     )
     {
         parent::__construct($config);
+        if(empty($this->token)) {
+            throw new NotFoundHttpException();
+        }
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
@@ -26,9 +27,15 @@ class RequestToken extends BaseObject
     public array $header = [];
     public array $params = [];
 
-    public function __construct (public readonly string  $code, array $config = [])
+    public readonly string  $code;
+    public function __construct (OAuth2 $social, array $config = [])
     {
         parent::__construct($config);
+        $this->code = $social->code;
+        $this->uri = ($social instanceof GetUrlsInterface) ? $social->getUriToken():'';
+        $this->client_id = $social->clientId;
+        $this->redirect_uri = $social->redirectUrl;
+        $this->client_secret = $social->clientSecret;
     }
 
     public function setAuthorization(string $value) : void

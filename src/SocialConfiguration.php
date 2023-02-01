@@ -187,14 +187,12 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public static function url (string $socialname, string $method = Social::METHOD_LOGIN, ?string $state=null): string
     {
         $url[0] = self::$config->route . '/' . strtolower($socialname);
-
-        $random = \Yii::$app->security->generateRandomString();
         $data = [
-          'method' => $method,
-          'state' => $state,
-          'random' => $random,
+          'm' => $method,
+          's' => $state,
+          'r' => \Yii::$app->security->generateRandomString(),
         ];
-        $url['state'] = base64_encode(Json::encode($data));
+        $url['state'] = RequestCode::stateEncode($data);
 
 
         return Url::to($url, true);

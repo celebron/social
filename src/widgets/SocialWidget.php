@@ -89,14 +89,18 @@ class SocialWidget extends Widget
      */
     public function runLogin(): string
     {
+        /** @var Social $social */
+        $social = $this->_social::class;
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, ($this->_social::class)::url('login'), $this->loginOptions) . PHP_EOL;
+        return "\t" . Html::a($text, $social::urlLogin(), $this->loginOptions) . PHP_EOL;
     }
 
     public function getName() : string
     {
-        return $this->_social->getName() ?? ($this->_social::class)::socialName();
+        /** @var ToWidgetInterface|Social $social */
+        $social = $this->_social::class;
+        return $social->getName() ?? $social::socialName();
     }
 
     /**
@@ -106,8 +110,11 @@ class SocialWidget extends Widget
      */
     public function getIcon(bool $html = false): bool|string|null
     {
+        /** @var ToWidgetInterface $social */
+        $social = $this->_social::class;
+
         if (is_bool($this->icon)) {
-            $icon = $this->icon && !empty($this->_social->getIcon()) ? \Yii::getAlias($this->_social->getIcon()) : null;
+            $icon = $this->icon && !empty( $social->getIcon()) ? \Yii::getAlias( $social->getIcon()) : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }
@@ -122,13 +129,16 @@ class SocialWidget extends Widget
      */
     public function runRegister(): string
     {
+        /** @var Social $social */
+        $social = $this->_social::class;
+
         $socialId = $this->_social->getSocialId();
-        $idText = Html::a("<i class='bi bi-play'></i>",($this->_social::class)::url(true));
+        $idText = Html::a("<i class='bi bi-play'></i>",$social::urlLogin());
         $idText .= $socialId;
-        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", ($this->_social::class)::url('delete'));
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $social::urlDelete());
         if($socialId === null) {
             $idText = "<i class='bi bi-stop'></i>";
-            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",($this->_social::class)::url('register'));
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$social::urlRegister());
         }
 
         $this->registerOptions['icon']['class'][] = 'social-icon-view';
