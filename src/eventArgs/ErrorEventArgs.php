@@ -15,12 +15,17 @@ class ErrorEventArgs extends ResultEventArgs
     /**
      * Конструктор
      * @param SocialController $acton - объект контролера SocialController
+     * @param string $method
      * @param \Exception|null $exception - объект исключения или null - (ошибка не связана с исключением)
      * @param array $config - Стандартный конфиг Yii2
      */
-    public function __construct (public SocialController $acton, public ?\Exception $exception, array $config = [])
-    {
-        parent::__construct($this->acton, $config);
+    public function __construct (
+        SocialController $acton,
+        string $method,
+        public ?\Exception $exception,
+        array $config = []
+    ){
+        parent::__construct($acton, $method, $config);
     }
 
     /**

@@ -50,7 +50,7 @@ class SocialController extends Controller
             return $socialObj->failed($methodRef->getShortName(), $this);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
-            return $socialObj->error($this, $ex);
+            return $socialObj->error($action->method, $this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
