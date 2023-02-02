@@ -35,7 +35,7 @@ class SocialWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
-    private ?Social $_social = null;
+    private null|Social|ToWidgetInterface $_social = null;
     private bool $_supportLogin = false;
     private bool $_supportRegister = false;
 
@@ -98,9 +98,7 @@ class SocialWidget extends Widget
 
     public function getName() : string
     {
-        /** @var ToWidgetInterface|Social $social */
-        $social = $this->_social::class;
-        return $social->getName() ?? $social::socialName();
+        return  $this->_social->getName() ?? ($this->_social::class)::socialName();
     }
 
     /**
