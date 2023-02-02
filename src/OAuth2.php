@@ -102,16 +102,16 @@ abstract class OAuth2 extends Model
     abstract public function requestToken(RequestToken $request): void;
 
 
-    public function success(SocialController $action): mixed
+    public function success(string $method, SocialController $action): mixed
     {
-        $eventArgs = new ResultEventArgs($action);
+        $eventArgs = new ResultEventArgs($action, $method);
         $this->trigger(self::EVENT_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
 
-    public function failed(SocialController $action): mixed
+    public function failed(string $method, SocialController $action): mixed
     {
-        $eventArgs = new ResultEventArgs($action);
+        $eventArgs = new ResultEventArgs($action, $method);
         $this->trigger(self::EVENT_FAILED, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }

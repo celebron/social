@@ -18,7 +18,10 @@ class ResultEventArgs extends Event
      * @param SocialController $action - Контроллер
      * @param array $config
      */
-    public function __construct (public SocialController $action, array $config = [])
+    public function __construct (
+        public SocialController $action
+        , public string $method
+        , array $config = [])
     {
         parent::__construct($config);
 

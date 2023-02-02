@@ -38,15 +38,16 @@ class SocialController extends Controller
 
             $methodRef = new \ReflectionMethod($socialObj, $action->method);
             $attributes = $methodRef->getAttributes(Request::class);
+
             if (isset($attributes[0])) {
                 $socialObj->request($code, $action);
             }
 
             if ($methodRef->invoke($socialObj, $this->config)) {
-                return $socialObj->success($this);
+                return $socialObj->success($methodRef->getShortName(), $this);
             }
 
-            return $socialObj->failed($this);
+            return $socialObj->failed($methodRef->getShortName(), $this);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
             return $socialObj->error($this, $ex);

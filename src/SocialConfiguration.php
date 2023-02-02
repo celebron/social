@@ -115,12 +115,12 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 $registerEventArgs->support = true;
             }
 
-//            if ($object instanceof Social) {
-//                //Настройка алгоритма поиска пользователя
-//                if ($this->findUserAlg !== null) {
-//                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
-//                }
-//            }
+            if ($object instanceof Social) {
+                //Настройка алгоритма поиска пользователя
+                if ($this->findUserAlg !== null) {
+                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
+                }
+            }
 
             //Триггер непосрественной регистрации
             $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
