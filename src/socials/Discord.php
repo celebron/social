@@ -40,12 +40,12 @@ class Discord extends Social
     public ?string $name;
     public bool $visible = true;
 
-    protected function requestCode (RequestCode $request) : void
+    public function requestCode (RequestCode $request) : void
     {
         $request->data = ['scope' => implode(' ', $this->scope)];
     }
 
-    protected function requestToken (RequestToken $request): void
+    public function requestToken (RequestToken $request): void
     {
 
     }

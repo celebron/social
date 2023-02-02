@@ -23,15 +23,14 @@ class RequestToken extends BaseObject
     public string $client_secret;
     public string $uri;
 
-    public bool $enable = true;
     public array $header = [];
     public array $params = [];
 
     public readonly string  $code;
-    public function __construct (OAuth2 $social, array $config = [])
+    public function __construct (string $code, OAuth2 $social, array $config = [])
     {
         parent::__construct($config);
-        $this->code = $social->code;
+        $this->code = $code;
         $this->uri = ($social instanceof GetUrlsInterface) ? $social->getUriToken():'';
         $this->client_id = $social->clientId;
         $this->redirect_uri = $social->redirectUrl;

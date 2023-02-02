@@ -23,10 +23,13 @@ use Yiisoft\Http\Header;
 
 /**
  * oauth2 Google
+ * @property-read string $uriToken
+ * @property-read string $baseUrl
+ * @property-read string $uriCode
  * @property-write string $configFile
  */
 #[WidgetSupport]
-class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
+class Google extends Social implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     public string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
@@ -65,12 +68,12 @@ class Google extends Social implements GetUrlsInterface, RequestIdInterface, ToW
 
     }
 
-    protected function requestCode (RequestCode $request) : void
+    public function requestCode (RequestCode $request) : void
     {
         $request->data = ['access_type' => 'online', 'scope'=>'profile'];
     }
 
-    protected function requestToken (RequestToken $request): void
+    public function requestToken (RequestToken $request): void
     {
 
     }

@@ -8,7 +8,7 @@ use yii\base\Event;
 /**
  * Параметры для события registerSuccess и loginSuccess
  */
-class SuccessEventArgs extends Event
+class ResultEventArgs extends Event
 {
     /** @var mixed|null - вывод */
     public mixed $result = null;

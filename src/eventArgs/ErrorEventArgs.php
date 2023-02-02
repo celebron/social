@@ -10,7 +10,7 @@ use Celebron\social\SocialController;
  * @property SocialController $action - Контролер SocialController
  * @property  \Exception|null $exception - Исключение или null - (ошибка не связана с исключением)
  */
-class ErrorEventArgs extends SuccessEventArgs
+class ErrorEventArgs extends ResultEventArgs
 {
     /**
      * Конструктор

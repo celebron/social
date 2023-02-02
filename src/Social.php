@@ -24,7 +24,7 @@ use yii\web\NotFoundHttpException;
  * @property-read mixed $socialId
  * @property-read Client $client - (для чтения) Http Client
  */
-abstract class Social extends OAuth2 implements RequestIdInterface
+abstract class Social extends OAuth2
 {
     public const EVENT_FIND_USER = "findUser";
 
@@ -35,56 +35,35 @@ abstract class Social extends OAuth2 implements RequestIdInterface
 
     /** @var string - поле в базе данных для идентификации  */
     public string $field;
-    /** @var bool - разрешить использование данной социальной сети  */
-    public bool $active = true;
+
 
 
     /** @var mixed|null - Id от соцеальных сетей */
     public mixed $id = null;
 
-
-
-    /**
-     * Правила проверки данных
-     * @return array
-     */
-    public function rules (): array
-    {
-        return [
-            ['redirectUrl', 'url' ],
-            [['clientId', 'clientSecret'], 'string'],
-            ['field', 'fieldValidator'],
-        ];
-    }
-
-
-
     /**
      * Валидация поля аврторизации
-     * @param $a
      * @return void
      * @throws InvalidConfigException
      */
-    final public function fieldValidator($a) : void
+    final public function fieldValidator() : void
     {
         $class = Yii::createObject(Yii::$app->user->identityClass);
         if(!($class instanceof ActiveRecord)) {
             throw new NotInstantiableException(ActiveRecord::class, code: 0);
         }
-        if(!ArrayHelper::isIn($this->$a, $class->attributes())) {
-            throw new InvalidConfigException('Field ' . $this->$a . ' not supported to class ' .$class::class, code: 1);
+        if(!ArrayHelper::isIn($this->field, $class->attributes())) {
+            throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' .$class::class, code: 1);
         }
     }
 
-
-    /**
-     * @throws NotFoundHttpException
-     */
     protected function requestSocialId() : void
     {
-        $requestId = new RequestId($this->token, $this->client);
-        $requestId->uri = $this->getUriInfo();
-        $this->id = $this->requestId($requestId);
+        if($this instanceof RequestIdInterface) {
+            $requestId = new RequestId($this);
+            $requestId->uri = $this->getUriInfo();
+            $this->id = $this->requestId($requestId);
+        }
         \Yii::debug("User id: {$this->id}", static::class);
 
         if ($this->id === null) {
@@ -99,6 +78,7 @@ abstract class Social extends OAuth2 implements RequestIdInterface
      */
     protected function findUser(): ?IdentityInterface
     {
+        $this->fieldValidator();
         $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
         $query = $class::find()->andWhere([$this->field => $this->id]);
         $findUserEventArgs = new FindUserEventArgs($query);
@@ -107,16 +87,14 @@ abstract class Social extends OAuth2 implements RequestIdInterface
         return $findUserEventArgs->user;
     }
 
+
     /**
-     * @return mixed
-     * @throws NotSupportedException
+     * @throws InvalidConfigException
      */
     public function getSocialId(): mixed
     {
-        if($this->validate()) {
-            return \Yii::$app->user->identity->{$this->field};
-        }
-        throw new NotSupportedException('Property field not support');
+        $this->fieldValidator();
+        return \Yii::$app->user->identity->{$this->field};
     }
 
 
@@ -124,6 +102,7 @@ abstract class Social extends OAuth2 implements RequestIdInterface
      * Регистрация пользователя из социальной сети
      * @return bool
      * @throws NotFoundHttpException
+     * @throws InvalidConfigException
      */
     #[\Celebron\social\Request]
     final public function register() : bool
@@ -136,6 +115,7 @@ abstract class Social extends OAuth2 implements RequestIdInterface
     /**
      * Удаление записи соц УЗ.
      * @return bool
+     * @throws InvalidConfigException
      */
     final public function delete() : bool
     {
@@ -167,9 +147,11 @@ abstract class Social extends OAuth2 implements RequestIdInterface
      * Модификация данных пользователя
      * @param mixed $data - Значение поля field в пользовательской модели
      * @return bool
+     * @throws InvalidConfigException
      */
     protected function modifiedUser(mixed $data) : bool
     {
+        $this->fieldValidator();
         /** @var ActiveRecord|IdentityInterface $user */
         $user = Yii::$app->user->identity;
         $field = $this->field;
@@ -196,7 +178,7 @@ abstract class Social extends OAuth2 implements RequestIdInterface
             $sender = $sender->toRequest($this->client);
         }
         $response = $this->send($sender, 'info');
-        return ArrayHelper::getValue($response->getData(),$field);
+        return ArrayHelper::getValue($response->getData(), $field);
     }
 
     public static function urlLogin(?string $state = null): string

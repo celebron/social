@@ -4,6 +4,7 @@
 namespace Celebron\social\socials;
 
 
+use Celebron\social\interfaces\RequestIdInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\GetUrlsTrait;
 use Celebron\social\interfaces\ToWidgetInterface;
@@ -24,7 +25,7 @@ use yii\web\BadRequestHttpException;
  * @property-read string $baseUrl
  */
 #[WidgetSupport]
-class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface
+class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, RequestIdInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = "https://oauth.yandex.ru";

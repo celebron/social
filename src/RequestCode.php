@@ -25,18 +25,15 @@ class RequestCode extends BaseObject
     public array $data = [];
 
 
-    public ?array $state;
-
     /**
      * @throws Exception
      */
-    public function __construct (OAuth2 $social, array $config = [])
+    public function __construct (OAuth2 $social, public State $state, array $config = [])
     {
         parent::__construct($config);
         $this->uri = ($social instanceof  GetUrlsInterface) ? $social->getUriCode() : '';
         $this->client_id = $social->clientId;
         $this->redirect_uri = $social->redirectUrl;
-        $this->state =  self::stateDecode($social->state);
     }
 
     public function generateUri() : array
@@ -46,41 +43,10 @@ class RequestCode extends BaseObject
             'response_type' => $this->response_type,
             'client_id' => $this->client_id,
             'redirect_uri' => $this->redirect_uri,
-            'state' => self::stateEncode($this->state),
+            'state' => (string)$this->state,
         ];
         return ArrayHelper::merge($default, $this->data);
     }
 
-    /**
-     * @param string|null $state
-     * @return array
-     */
-    public static function stateDecode(?string $state) : array
-    {
-        $data = [
-            'm' => null,
-            's' => null,
-            'r' => null,
-        ];
 
-        if($state !== null) {
-            $data = Json::decode(base64_decode($state));
-        }
-
-        return $data;
-    }
-
-    public static function stateEncode(array $state) : string
-    {
-        $data = [
-            'm' => null,
-            's' => null,
-            'r' => null
-        ];
-        $data = ArrayHelper::merge($data, $state);
-        if($data['r'] === null) {
-            $data['r'] = \Yii::$app->security->generateRandomString();
-        }
-        return  base64_encode(Json::encode($data));
-    }
 }

@@ -6,6 +6,8 @@ use Celebron\social\RequestId;
 
 interface RequestIdInterface
 {
-    public function requestId(RequestId $request): mixed;
+
     public function getUriInfo(): string;
+
+    public function requestId(RequestId $request): mixed;
 }

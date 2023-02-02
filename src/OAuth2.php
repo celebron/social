@@ -3,36 +3,36 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\ErrorEventArgs;
-use Celebron\social\eventArgs\SuccessEventArgs;
+use Celebron\social\eventArgs\ResultEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\RequestIdInterface;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\base\NotSupportedException;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
 use yii\httpclient\Response;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 
 
 abstract class OAuth2 extends Model
 {
     public const EVENT_ERROR = "error";
+    public const EVENT_SUCCESS = 'success';
+    public const EVENT_FAILED = 'failed';
 
     public string $clientId;
     public string $clientSecret;
-
-    public ?string $state;
-    public ?string $code;
     public string $redirectUrl;
-    protected readonly Client $client;
+    public bool $active = true;
+
+    public readonly Client $client;
 
 
     protected array $data = [];
-    protected ?Token $token = null;
+    public ?Token $token = null;
 
     public function __construct ($config = [])
     {
@@ -57,16 +57,15 @@ abstract class OAuth2 extends Model
      * @throws \yii\base\Exception
      * @throws BadRequestHttpException
      */
-    final public function request(): void
+    final public function request(?string $code, State $state): void
     {
         $session = \Yii::$app->session;
         if(!$session->isActive) { $session->open(); }
 
-        if($this->code === null) {
-            $request = new RequestCode($this);
+        if($code === null) {
+            $request = new RequestCode($this, $state);
             $this->requestCode($request);
-            $session['social_random'] = $request->state['random'];
-
+            $session['social_random'] = $request->state->random;
             $url = $this->client->get($request->generateUri());
             if($this instanceof SetFullUrlInterface) {
                 $url->setFullUrl($this->setFullUrl($url));
@@ -76,23 +75,14 @@ abstract class OAuth2 extends Model
             exit(0);
         }
 
-        if($this->stateValidator()) {
-            $request = new RequestToken($this);
-            $this->requestToken($request);
-            $this->token = $this->sendToken($request, 'token');
-        }
-    }
-
-    /**
-     * @throws \yii\base\Exception
-     */
-    protected function stateValidator(): bool
-    {
-        $session = \Yii::$app->session;
-        $data = RequestCode::stateDecode($this->state);
-        $result = $session['social_random'] === $data['random'];
+        $equalRandom = $state->equalRandom($session['social_random']);
         \Yii::$app->session->remove('social_random');
-        return $result;
+
+        if($equalRandom) {
+            $request = new RequestToken($code, $this);
+            $this->requestToken($request);
+            $this->token = $this->sendToken($request);
+        }
     }
 
     /**
@@ -107,50 +97,31 @@ abstract class OAuth2 extends Model
      */
     abstract public function requestToken(RequestToken $request): void;
 
-    /**
-     * @throws \yii\base\Exception
-     * @throws \ReflectionException
-     */
-    public function run(SocialController $controller)
+
+    public function success(SocialController $action): mixed
     {
-       $data = RequestCode::stateDecode($this->state);
-       if($data['m'] !== null) {
-           try {
-               $methodName = strtolower(trim($data['m']));
-               $methodRef = new \ReflectionMethod($this, $methodName);
-               $attributes = $methodRef->getAttributes(\Celebron\social\Request::class);
-               if(isset($attributes[0])) {
-                    $this->request();
-               }
-               if($methodRef->invoke($this, $controller->config)) {
-                    return $this->success($methodName . 'Success', $controller);
-               }
-               return $this->error($controller, null);
-           } catch (\Exception $ex) {
-               return $this->error($controller, $ex);
-           }
-       }
+        $eventArgs = new ResultEventArgs($action);
+        $this->trigger(self::EVENT_SUCCESS, $eventArgs);
+        return $eventArgs->result ?? $action->goBack();
     }
 
-    protected function success($method, SocialController $action): mixed
+    public function failed(SocialController $action): mixed
     {
-        $eventArgs = new SuccessEventArgs($action);
-        $this->trigger($method, $eventArgs);
+        $eventArgs = new ResultEventArgs($action);
+        $this->trigger(self::EVENT_FAILED, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function error(SocialController $action, ?Exception $ex): mixed
+    public function error(SocialController $action, \Exception $ex): mixed
     {
         $eventArgs = new ErrorEventArgs($action, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
-
         if($eventArgs->result === null) {
-            throw $ex;
+            throw $eventArgs->exception;
         }
-
         return $eventArgs->result;
     }
 
@@ -159,7 +130,7 @@ abstract class OAuth2 extends Model
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    protected function send(Request $sender, string $theme = 'info') : Response
+    final protected function send(Request $sender, string $theme = 'info') : Response
     {
         $response = $this->client->send($sender);
         if ($response->isOk && !isset($response->data['error'])) {
@@ -176,7 +147,7 @@ abstract class OAuth2 extends Model
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    protected function sendToken(RequestToken $sender) : Token
+    final protected function sendToken(RequestToken $sender) : Token
     {
         //Получаем данные
         $data = $this
@@ -200,13 +171,12 @@ abstract class OAuth2 extends Model
 
     final public static function socialName(): string
     {
-        $reflect = new ReflectionClass(static::class);
+        $reflect = new \ReflectionClass(static::class);
         $attributes = $reflect->getAttributes(SocialName::class);
         $socialName = $reflect->getShortName();
         if(count($attributes) > 0) {
             $socialName = $attributes[0]->getArguments()[0];
         }
-
         return $socialName;
     }
 
@@ -215,7 +185,6 @@ abstract class OAuth2 extends Model
      * @param string $method
      * @param string|null $state
      * @return string
-     * @throws \yii\base\Exception
      */
     final public static function url(string $method, ?string $state = null) : string
     {

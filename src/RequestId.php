@@ -2,12 +2,8 @@
 
 namespace Celebron\social;
 
-use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
-use yii\httpclient\Response;
-use yii\web\BadRequestHttpException;
-use yii\web\NotFoundHttpException;
 use Yiisoft\Http\Header;
 
 /**
@@ -24,43 +20,34 @@ class RequestId extends \yii\base\BaseObject
 
     public string $uri;
 
+    public readonly Token $token;
+    private readonly Client $client;
 
-    public function __construct(
-        public ?Token $token,
-        public Client $client,
-        array $config = []
-    )
+    public function __construct(Social $social, array $config = [])
     {
         parent::__construct($config);
-        if(empty($this->token)) {
-            throw new NotFoundHttpException();
-        }
+        $this->token = $social->token;
+        $this->client = $social->client;
     }
 
-    /**
-     * @throws BadRequestHttpException
-     */
     public function getAccessToken() : ?string
     {
-        return $this->getValue('access_token');
+        return $this->token->accessToken;
     }
 
-    /**
-     * @throws BadRequestHttpException
-     */
     public function getExpiresIn(): ?int
     {
-        return $this->getValue('expires_in');
+        return $this->token->expiresIn;
     }
 
     public function getRefreshToken():?string
     {
-        return $this->getValue('refresh_token');
+        return $this->token->expiresIn;
     }
 
     public function getTokenType():?string
     {
-        return $this->getValue('token_type');
+        return $this->token->tokenType;
     }
 
     public function getTokenTypeToken():string
@@ -68,19 +55,9 @@ class RequestId extends \yii\base\BaseObject
         return $this->getTokenType() . ' ' . $this->getAccessToken();
     }
 
-    public function getData():array
+    public function getData(): array
     {
-        if($this->response->isOk && empty($this->response->data['error'])) {
-            return $this->response->data;
-        }
-
-        if(isset($this->response->data['error_description'],$this->response->data['error'])) {
-            throw new BadRequestHttpException(
-                "[{$this->response->data['error']}] {$this->response->data['error_description']}"
-            );
-        }
-
-        throw new BadRequestHttpException($this->response->data['error']);
+        return $this->token->data;
     }
 
     /**
@@ -98,7 +75,6 @@ class RequestId extends \yii\base\BaseObject
     /**
      * @param array $data
      * @return Request
-     * @throws BadRequestHttpException
      */
     public function getHeaderOauth(array $data = []): Request
     {
@@ -118,7 +94,6 @@ class RequestId extends \yii\base\BaseObject
     /**
      * @param array $data
      * @return Request
-     * @throws BadRequestHttpException
      */
     public function postHeaderOauth(array $data = []): Request
     {
@@ -135,18 +110,4 @@ class RequestId extends \yii\base\BaseObject
         return $this->client->delete($this->uri, $data, $header);
     }
 
-    protected function getValue(string $key): mixed
-    {
-        if($this->response->isOk && empty($this->response->data['error'])) {
-            return ArrayHelper::getValue($this->response->data, $key);
-        }
-
-        if(isset($this->response->data['error_description'],$this->response->data['error'])) {
-            throw new BadRequestHttpException(
-                "[{$this->response->data['error']}] {$this->response->data['error_description']}"
-            );
-        }
-
-        throw new BadRequestHttpException($this->response->data['error']);
-    }
 }
