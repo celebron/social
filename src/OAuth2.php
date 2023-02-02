@@ -81,7 +81,9 @@ abstract class OAuth2 extends Model
         if($equalRandom) {
             $request = new RequestToken($code, $this);
             $this->requestToken($request);
-            $this->token = $this->sendToken($request);
+            if($request->send) {
+                $this->token = $this->sendToken($request);
+            }
         }
     }
 
@@ -151,7 +153,7 @@ abstract class OAuth2 extends Model
     {
         //Получаем данные
         $data = $this
-            ->send($sender->toRequest($this->client), 'token')
+            ->send($sender->sender(), 'token')
             ->getData();
         return new Token($data);
     }

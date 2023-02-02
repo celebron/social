@@ -45,6 +45,5 @@ class VK extends Social implements GetUrlsInterface, ToWidgetInterface
     public function requestToken (RequestToken $request): void
     {
         $this->id = $this->sendReturnId($request, 'user_id');
-        //$this->id = $response->data['user_id'];
     }
 }

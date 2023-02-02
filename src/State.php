@@ -39,7 +39,7 @@ class State implements \Stringable
         return base64_encode(Json::encode($data));
     }
 
-    public function equalRandom(string|self $random): bool
+    public function equalRandom(null|string|self $random): bool
     {
         if($random instanceof self) {
             $random = $random->random;

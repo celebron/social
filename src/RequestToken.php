@@ -23,10 +23,12 @@ class RequestToken extends BaseObject
     public string $client_secret;
     public string $uri;
 
+    public bool $send = true;
     public array $header = [];
     public array $params = [];
 
     public readonly string  $code;
+    private readonly Client $client;
     public function __construct (string $code, OAuth2 $social, array $config = [])
     {
         parent::__construct($config);
@@ -35,13 +37,13 @@ class RequestToken extends BaseObject
         $this->client_id = $social->clientId;
         $this->redirect_uri = $social->redirectUrl;
         $this->client_secret = $social->clientSecret;
+        $this->client = $social->client;
     }
 
     public function setAuthorization(string $value) : void
     {
         $this->header[Header::AUTHORIZATION] = $value;
     }
-
 
     public function setAuthorizationBasic(string $value, bool $base64 = true) : void
     {
@@ -59,8 +61,9 @@ class RequestToken extends BaseObject
         ], $this->data);
     }
 
-    public function toRequest(Client $client) : Request
+    public function sender() : Request
     {
-        return $client->post($this->uri, $this->generateData(), $this->header, $this->params);
+        return $this->client->post($this->uri, $this->generateData(), $this->header, $this->params);
     }
+
 }

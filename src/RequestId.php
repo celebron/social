@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use Yiisoft\Http\Header;
@@ -74,11 +75,15 @@ class RequestId extends \yii\base\BaseObject
 
     /**
      * @param array $data
+     * @param array $header
      * @return Request
      */
-    public function getHeaderOauth(array $data = []): Request
+    public function getHeaderOauth(array $data = [], array $header = []): Request
     {
-        return $this->get([ Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()], $data);
+        $header = ArrayHelper::merge([
+            Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()
+        ], $header);
+        return $this->get($header, $data);
     }
 
     /**
@@ -93,11 +98,15 @@ class RequestId extends \yii\base\BaseObject
 
     /**
      * @param array $data
+     * @param array $header
      * @return Request
      */
-    public function postHeaderOauth(array $data = []): Request
+    public function postHeaderOauth(array $data = [], array $header = []): Request
     {
-        return $this->post([ Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()], $data);
+        $header = ArrayHelper::merge([
+            Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()
+        ], $header);
+        return $this->post($header, $data);
     }
 
     public function put(?array $data, array $header = []): Request

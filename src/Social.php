@@ -175,7 +175,8 @@ abstract class Social extends OAuth2
     protected function sendReturnId(Request|RequestToken $sender, string|\Closure|array $field) : mixed
     {
         if($sender instanceof  RequestToken) {
-            $sender = $sender->toRequest($this->client);
+            $sender->send = false;
+            $sender = $sender->sender();
         }
         $response = $this->send($sender, 'info');
         return ArrayHelper::getValue($response->getData(), $field);
