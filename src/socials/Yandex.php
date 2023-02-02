@@ -6,10 +6,7 @@ namespace Celebron\social\socials;
 
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\GetUrlsTrait;
-use Celebron\social\interfaces\RequestIdInterface;
-use Celebron\social\interfaces\ToWidgetLoginInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
@@ -27,7 +24,7 @@ use yii\web\BadRequestHttpException;
  * @property-read string $baseUrl
  */
 #[WidgetSupport]
-class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
+class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = "https://oauth.yandex.ru";
@@ -41,25 +38,20 @@ class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToW
     public bool $visible = true;
 
     /**
-     * @param RequestId $request
-     * @return mixed
-     * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
+     * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request) : mixed
+    public function requestId (RequestId $request): mixed
     {
         $login = $request->getHeaderOauth(['format'=> 'json']);
-
-//        $loginData = $this->send($login);
-//        return $loginData->data['id'];
         return $this->sendReturnId($login, 'id');
     }
 
     /**
      * @throws BadRequestHttpException
      */
-    protected function requestCode (RequestCode $request) : void
+    public function requestCode (RequestCode $request) : void
     {
         $get = Yii::$app->request->get();
         if (isset($get['error'])) {
@@ -67,7 +59,7 @@ class Yandex extends Social implements GetUrlsInterface, RequestIdInterface, ToW
         }
     }
 
-    protected function requestToken (RequestToken $request): void
+    public function requestToken (RequestToken $request): void
     {
         $request->setAuthorizationBasic($this->clientId . ':' . $this->clientSecret);
     }

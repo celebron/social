@@ -183,9 +183,6 @@ abstract class Social extends OAuth2 implements RequestIdInterface
         return false;
     }
 
-
-
-
     /**
      * Выполнение отправки и получение Id
      * @throws \yii\httpclient\Exception
@@ -193,8 +190,11 @@ abstract class Social extends OAuth2 implements RequestIdInterface
      * @throws BadRequestHttpException
      * @throws Exception
      */
-    protected function sendReturnId(Request $sender, string|\Closure|array $field) : mixed
+    protected function sendReturnId(Request|RequestToken $sender, string|\Closure|array $field) : mixed
     {
+        if($sender instanceof  RequestToken) {
+            $sender = $sender->toRequest($this->client);
+        }
         $response = $this->send($sender, 'info');
         return ArrayHelper::getValue($response->getData(),$field);
     }

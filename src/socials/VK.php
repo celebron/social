@@ -32,7 +32,7 @@ class VK extends Social implements GetUrlsInterface, ToWidgetInterface
     public ?string $name;
     public bool $visible = true;
 
-    protected function requestCode (RequestCode $request) : void
+    public function requestCode (RequestCode $request) : void
     {
         $request->data = [ 'display' => $this->display ];
     }
@@ -42,7 +42,7 @@ class VK extends Social implements GetUrlsInterface, ToWidgetInterface
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    protected function requestToken (RequestToken $request): void
+    public function requestToken (RequestToken $request): void
     {
         $this->id = $this->sendReturnId($request, 'user_id');
         //$this->id = $response->data['user_id'];

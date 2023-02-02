@@ -117,7 +117,7 @@ abstract class OAuth2 extends Model
        if($data['m'] !== null) {
            try {
                $methodName = strtolower(trim($data['m']));
-               $methodRef = new \ReflectionMethod($this,$methodName);
+               $methodRef = new \ReflectionMethod($this, $methodName);
                $attributes = $methodRef->getAttributes(\Celebron\social\Request::class);
                if(isset($attributes[0])) {
                     $this->request();
