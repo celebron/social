@@ -84,6 +84,8 @@ abstract class OAuth2 extends Model
             if($request->send) {
                 $this->token = $this->sendToken($request);
             }
+        } else {
+            throw new BadRequestHttpException('Random not equal');
         }
     }
 
@@ -183,7 +185,7 @@ abstract class OAuth2 extends Model
     }
 
     /**
-     * Ссылка на oauth авторизацию
+     * Ссылка на oauth2 авторизацию
      * @param string $method
      * @param string|null $state
      * @return string

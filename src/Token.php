@@ -6,7 +6,6 @@ use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
-use yii\httpclient\Response;
 use yii\web\NotFoundHttpException;
 
 /**

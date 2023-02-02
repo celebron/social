@@ -13,6 +13,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Social;
+use Celebron\social\SocialConfiguration;
 use Celebron\social\WidgetSupport;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -28,6 +29,8 @@ use yii\web\BadRequestHttpException;
 class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, RequestIdInterface
 {
     use ToWidgetTrait, GetUrlsTrait;
+
+    const METHOD_MAILTOKEN = 'mailToken';
     public string $clientUrl = "https://oauth.yandex.ru";
     public string $uriCode = 'authorize';
     public string $uriToken = 'token';
@@ -37,6 +40,8 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
     public string $icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
     public ?string $name;
     public bool $visible = true;
+
+    public ?string $fileName = null;
 
     /**
      * @throws Exception
@@ -68,6 +73,19 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
     public function getUriInfo (): string
     {
         return $this->uriInfo;
+    }
+
+    public function mailToken()
+    {
+        if($this->token !== null && $this->fileName !== null) {
+            return $this->token->create($this->fileName) !== false;
+        }
+        return false;
+    }
+
+    public static function urlMailToken(?string $state= null): string
+    {
+        return static::url(self::METHOD_MAILTOKEN, $state);
     }
 
 }
