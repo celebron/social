@@ -125,17 +125,17 @@ abstract class Social extends OAuth2
 
     /**
      * Авторизация в системе
-     * @param int $duration
+     * @param SocialConfiguration $config
      * @return bool
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
     #[\Celebron\social\Request]
-    final public function login(int $duration = 0) : bool
+    final public function login(SocialConfiguration $config) : bool
     {
         $this->requestSocialId();
         if(($user = $this->findUser()) !== null) {
-            $login = Yii::$app->user->login($user, $duration);
+            $login = Yii::$app->user->login($user, $config->duration);
             \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);
             return $login;
         }
