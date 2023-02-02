@@ -131,7 +131,7 @@ class SocialWidget extends Widget
         $social = $this->_social::class;
 
         $socialId = $this->_social->getSocialId();
-        $idText = Html::a("<i class='bi bi-play'></i>",$social::urlLogin());
+        $idText = Html::a("<i class='bi bi-play'></i>",$social::urlRegister());
         $idText .= $socialId;
         $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $social::urlDelete());
         if($socialId === null) {
