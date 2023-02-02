@@ -3,6 +3,8 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\RegisterEventArgs;
+use yii\base\Exception;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -13,7 +15,6 @@ use yii\web\NotFoundHttpException;
 
 /**
  * Конфигуратор социальной авторизации
- * @property-read array $links - список линков зарегистрированных соцсетей
  * @property-read Social[] $socials - зарегистрированые соцсети
  //* @property-write array $socials - регистрация классов
  */
@@ -26,24 +27,27 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /** @var self - конфигурация */
     public static self $config;
 
-    /** @var string - state для регистрации */
-    public string $register = 'register';
     /** @var string - роут */
     public string $route = "social";
     /** @var int - на сколько сохранять участника */
     public int $duration = 0;
     /** @var \Closure|null - событие отображение ошибок на все */
-    public ?\Closure $onAllError = null;
-    /** @var \Closure|null - cобытие регистрации на все */
-    public ?\Closure $onAllRegisterSuccess = null;
+    public ?\Closure $onError = null;
+
+    /** @var \Closure|null - cобытие выполнено */
+    public ?\Closure $onSuccess = null;
+
+    /** @var \Closure|null - событие провал */
+    public ?\Closure $onFailed = null;
+
     /** @var \Closure|null - cобытие автризации на все */
-    public ?\Closure $onAllLoginSuccess = null;
-    /** @var \Closure|null - событие удаление на все */
-    public ?\Closure $onAllDeleteSuccess = null;
-    /** @var \Closure|null - событие поиск пользователя (алгоритм) */
     public ?\Closure $findUserAlg = null;
 
+
+
+    /** @var OAuth2[]|social[] array  */
     private array $_socials = [];
+
 
     /**
      * Инициализация класса (стандарт Yii2)
@@ -56,7 +60,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     /**
      * Получение списка активных соцсетей
-     * @return Social[]
+     * @return Social[]|OAuth2[]
      */
     public function getSocials (): array
     {
@@ -67,15 +71,18 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * Регистрация соцсетей
      * @param array $value
      * @throws InvalidConfigException
-     * @throws NotSupportedException
+
      */
     public function setSocials (array $value): void
     {
         $this->trigger(self::EVENT_BEFORE_REGISTER);
+        $i = 0;
         foreach ($value as $key => $class) {
             /** @var Social $object */
             $object = \Yii::createObject($class);
-            if ($object instanceof Social) {
+            $registerEventArgs = new RegisterEventArgs($object);
+
+            if($object instanceof OAuth2) {
                 //Регистрируем только активные классы
                 if (!$object->active) {
                     continue;
@@ -84,59 +91,71 @@ class SocialConfiguration extends Component implements BootstrapInterface
                 //если ключ числовой, то переводим его в socialName
                 if (is_numeric($key)) {
                     $key = strtolower($object::socialName());
+                    //Если ключ существует, то добавляем числовой суфикс 0,1 и тд
+                    if(ArrayHelper::keyExists($key, $this->_socials)) {
+                        $key .= $i++;
+                    }
                 }
 
-                //Установка обработчика всех успешных регистраций
-                if ($this->onAllRegisterSuccess !== null) {
-                    $object->on(Social::EVENT_REGISTER_SUCCESS, $this->onAllRegisterSuccess, ['config' => $this]);
+                //Установка обработчика удачных выполнений
+                if($this->onSuccess !== null) {
+                    $object->on(OAuth2::EVENT_SUCCESS, $this->onSuccess, [ 'config' => $this ]);
                 }
 
-                //Установлка обработчика всех успешных авторизаций
-                if ($this->onAllLoginSuccess !== null) {
-                    $object->on(Social::EVENT_LOGIN_SUCCESS, $this->onAllLoginSuccess, ['config' => $this]);
+                //Установка обработчика неудачных выполнений
+                if($this->onFailed !== null) {
+                    $object->on(OAuth2::EVENT_FAILED, $this->onFailed, [ 'config', $this ] );
                 }
 
-                //Установлка обработчика всех ошибок
-                if ($this->onAllError !== null) {
-                    $object->on(Social::EVENT_ERROR, $this->onAllError, ['config' => $this]);
+                //Установка обработчика всех ошибок
+                if ($this->onError !== null) {
+                    $object->on(OAuth2::EVENT_ERROR, $this->onError, ['config' => $this]);
                 }
 
-                //Установить обработчик на все успешные удаления (разных соцсетей)
-                if($this->onAllDeleteSuccess !== null) {
-                    $object->on(Social::EVENT_DELETE_SUCCESS, $this->onAllDeleteSuccess, ['config'=>$this]);
-                }
+                $registerEventArgs->support = true;
+            }
 
+            if ($object instanceof Social) {
                 //Настройка алгоритма поиска пользователя
                 if ($this->findUserAlg !== null) {
                     $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
                 }
-                //Триггер непосредственной регистрации Social
-                $registerEventArgs = new RegisterEventArgs($object);
-                $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
-
-                $this->_socials[$key] = $object;
-            } else {
-                throw new NotSupportedException($class::class . ' does not extend ' . Social::class);
             }
+
+            //Триггер непосрественной регистрации
+            $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
+
+            //Не регистрировать, если не поддерживается
+            if(!$registerEventArgs->support) {
+                \Yii::warning($object::class . ' not support',static::class);
+                continue;
+            }
+
+            $this->_socials[$key] = $object;
         }
         $this->trigger(self::EVENT_AFTER_REGISTER);
     }
 
     /**
      * Получение данных по имени соц.сети
-     * @param string $socialname - имя соц.сети (зарегистрированное имя)
-     * @return Social
-     * @throws NotFoundHttpException - ошибка, если соц.сеть не зарегистроирована
+     * @param string $social - имя соц.сети (зарегистрированное имя)
+     * @return OAuth2|null
      * @throws \Exception - прочие ошибки
      */
-    public function getSocial(string $socialname): Social
+    public function getSocial(string $social): ?OAuth2
     {
-        /** @var Social $object */
-        $object = ArrayHelper::getValue($this->getSocials(), strtolower($socialname));
+        $social = strtolower(trim($social));
+        /** @var OAuth2 $object */
+        $object = ArrayHelper::getValue($this->getSocials(), $social);
 
         if($object === null) {
-            throw new NotFoundHttpException("Social '{$socialname}' not registered");
+                return null;
         }
+
+        $object->redirectUrl = Url::toRoute([
+            "{$this->route}/handler",
+            'social' => $social,
+        ], true);
 
         return $object;
     }
@@ -150,7 +169,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     {
         $app->urlManager->addRules([
             "{$this->route}/<social>" => "{$this->route}/handler",
-            "{$this->route}/<social>/delete" => "{$this->route}/delete",
         ]);
         $app->controllerMap[$this->route] = [
             'class' => SocialController::class,
@@ -180,25 +198,17 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     /**
      * Получить ссылку на редеректа на соц.сеть
-     * @param string $socialname
-     * @param bool|string $state
+     * @param string $socialname - социальная сеть (ключ из конфига0
+     * @param string $method - (login|register|delete)
+     * @param string|null $state - дополнительные данные
      * @return string
      */
-    public static function url (string $socialname, bool|string|null $state = false): string
+    public static function url (string $socialname, string $method, ?string $state=null): string
     {
-        $url[0] = self::$config->route . '/' . strtolower($socialname);
-        //Для state - регистрация или авторизация
-        if (is_bool($state) && $state) {
-            $url['state'] = self::$config->register;
-        }
-        //Для нестандартных state
-        if (is_string($state)) {
-            $url['state'] = $state;
-        }
-        //Для удаления
-        if($state === null) {
-            $url[0] .= '/delete';
-        }
-        return Url::to($url, true);
+        $url[0] = self::$config->route . '/handler';
+        $url['social'] = strtolower(trim($socialname));
+        $url['state'] = (string)State::create($method, $state);
+        return Url::toRoute($url, true);
     }
+
 }

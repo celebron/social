@@ -2,11 +2,11 @@
 
 namespace Celebron\social\widgets;
 
+use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\Social;
 use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
 use yii\base\Widget;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -26,6 +26,7 @@ class SocialsWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
+    /** @var Social[]  */
     private array $_socials = [];
 
     public function init ()
@@ -41,6 +42,10 @@ class SocialsWidget extends Widget
     {
         $html = Html::beginTag('div',['class'=> 'socials-block']);
         foreach ($this->_socials as $social) {
+            /** @var ToWidgetInterface $social  */
+            if(!$social->getVisible() && $this->type === SocialWidget::TYPE_REGISTER) {
+                continue;
+            }
             $html .= SocialWidget::widget([
                 'options' => $this->options,
                 'iconOptions' => $this->iconOptions,

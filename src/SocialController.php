@@ -2,80 +2,55 @@
 
 namespace Celebron\social;
 
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-use yii\web\ForbiddenHttpException;
-use yii\web\HttpException;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\UnauthorizedHttpException;
 
 /**
  * Контролер
  */
-class SocialController extends \yii\web\Controller
+class SocialController extends Controller
 {
     /** @var SocialConfiguration - Конфигурация */
     public SocialConfiguration $config;
 
 
     /**
-     * @throws UnauthorizedHttpException
-     * @throws NotFoundHttpException
-     * @throws ForbiddenHttpException
-     */
-    public function actionDelete(string $social)
-    {
-        \Yii::beginProfile("Social profiling | delete", static::class);
-        if(\Yii::$app->user->isGuest) {
-            throw new UnauthorizedHttpException();
-        }
-
-        $socialObject = $this->config->getSocial($social);
-
-        try {
-            if ($socialObject->delete()) {
-                return $socialObject->deleteSuccess($this);
-            }
-
-            return $socialObject->error($this, new HttpException(400,"[$social]Not delete from userid " . \Yii::$app->user->id));
-        } catch (\Exception $ex) {
-            return $socialObject->error($this, $ex);
-        } finally {
-            \Yii::endProfile('Social profiling | delete', static::class);
-        }
-    }
-
-    /**
      * @param string $social
+     * @param string $state
      * @param string|null $code
-     * @param string|null $state
      * @return mixed|Response
-     * @throws ForbiddenHttpException
-     * @throws NotFoundHttpException
+     * @throws \Exception
      */
-    public function actionHandler(string $social, ?string $code = null, ?string $state = null)
+    public function actionHandler(string $social, string $state, ?string $code = null)
     {
-        $register = ($state !== null) && str_contains($this->config->register, $state);
-
         \Yii::beginProfile("Social profiling", static::class);
 
-        $socialObject = $this->config->getSocial($social);
-        $socialObject->state = $state;
-        $socialObject->code = $code;
-        $socialObject->redirectUrl = Url::toRoute("{$this->config->route}/{$social}", true);
+        $action = State::open($state);
+        $socialObj = $this->config->getSocial($social);
         try {
-            if ($register && $socialObject->register()) {
-                return $socialObject->registerSuccess($this);
+            if($socialObj === null) {
+                throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
 
-            if (!$register && $socialObject->login($this->config->duration)) {
-                return $socialObject->loginSuccess($this);
+            $methodRef = new \ReflectionMethod($socialObj, $action->method);
+            $attributes = $methodRef->getAttributes(Request::class);
+
+            if (isset($attributes[0])) {
+                $socialObj->request($code, $action);
             }
 
-            return $socialObject->error($this, new NotFoundHttpException("[$social]User ' . {$socialObject->id} .' not registered by site"));
+            if ($methodRef->invoke($socialObj, $this->config)) {
+                return $socialObj->success($methodRef->getShortName(), $this);
+            }
+
+            return $socialObj->failed($methodRef->getShortName(), $this);
         } catch (\Exception $ex) {
-            return $socialObject->error($this, $ex);
+            \Yii::error($ex->getMessage(), static::class);
+            return $socialObj->error($action->method, $this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }

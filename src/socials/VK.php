@@ -2,26 +2,48 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\SocialOAuth2;
+use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\GetUrlsTrait;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetLoginInterface;
+use Celebron\social\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestToken;
+use Celebron\social\Social;
+use Celebron\social\WidgetSupport;
+use yii\base\InvalidConfigException;
+use yii\httpclient\Exception;
+use yii\web\BadRequestHttpException;
 
 /**
  * Oauth2 VK
  */
-class VK extends SocialOAuth2
+#[WidgetSupport]
+class VK extends Social implements GetUrlsInterface, ToWidgetInterface
 {
+    use ToWidgetTrait, GetUrlsTrait;
     public string $clientUrl = 'https://oauth.vk.com';
+    public string $uriCode = 'authorize';
+    public string $uriToken = 'access_token';
     public string $display = 'page';
 
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
 
-    protected function requestCode () : void
+    public function requestCode (RequestCode $request) : void
     {
-        $this->getCode('authorize',[ 'display' => $this->display ]);
-        exit;
+        $request->data = [ 'display' => $this->display ];
     }
 
-    protected function requestId (): mixed
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     */
+    public function requestToken (RequestToken $request): void
     {
-        $data = $this->getToken('access_token');
-        return $data->data['user_id'];
+        $this->id = $this->sendToField($request, 'user_id');
     }
 }
