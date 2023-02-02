@@ -165,20 +165,23 @@ abstract class Social extends OAuth2
         return false;
     }
 
+
     /**
-     * Выполнение отправки и получение Id
-     * @throws \yii\httpclient\Exception
-     * @throws InvalidConfigException
+     * @param Request|RequestToken $sender
+     * @param string|\Closure|array $field
+     * @return mixed
      * @throws BadRequestHttpException
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
      * @throws Exception
      */
-    protected function sendReturnId(Request|RequestToken $sender, string|\Closure|array $field) : mixed
+    protected function sendToField(Request|RequestToken $sender, string|\Closure|array $field) : mixed
     {
         if($sender instanceof  RequestToken) {
             $sender->send = false;
             $sender = $sender->sender();
         }
-        $response = $this->send($sender, 'info');
+        $response = $this->send($sender);
         return ArrayHelper::getValue($response->getData(), $field);
     }
 

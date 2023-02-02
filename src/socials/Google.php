@@ -89,7 +89,7 @@ class Google extends Social implements GetUrlsInterface, ToWidgetInterface
             [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
             [ 'format'=>'json' ],
         );
-        return $this->sendReturnId($url, 'id');
+        return $this->sendToField($url, 'id');
         //return $d->data['id'];
     }
 

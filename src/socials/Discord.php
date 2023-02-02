@@ -63,7 +63,7 @@ class Discord extends Social
             [ 'format'=>'json' ],
         );
 
-        return $this->sendReturnId($url, 'user.id');
+        return $this->sendToField($url, 'user.id');
         //return $data->data['user']['id'];
     }
 

@@ -46,7 +46,7 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
     public function requestId (RequestId $request): mixed
     {
         $login = $request->getHeaderOauth(['format'=> 'json']);
-        return $this->sendReturnId($login, 'id');
+        return $this->sendToField($login, 'id');
     }
 
     /**
