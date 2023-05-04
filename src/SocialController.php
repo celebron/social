@@ -37,15 +37,14 @@ class SocialController extends Controller
 
     /**
      * @param string $social
-     * @param string $state
-     * @param string|null $code
      * @return mixed|Response
+     * @throws NotFoundHttpException
      * @throws \Exception
      */
     public function actionHandler(string $social)
     {
         \Yii::beginProfile("Social profiling", static::class);
-        $socialObj = $this->config->getSocial($social);
+        $socialObj = $this->config->getSocial(strip_tags($social));
         try {
             if($socialObj === null) {
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");

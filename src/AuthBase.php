@@ -3,19 +3,25 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\ErrorEventArgs;
+use Celebron\social\eventArgs\FindUserEventArgs;
 use Celebron\social\eventArgs\ResultEventArgs;
 use Celebron\social\interfaces\RequestInterface;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
+use yii\db\ActiveRecord;
+use yii\di\Instance;
+use yii\di\NotInstantiableException;
+use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
 
 abstract class AuthBase extends Model
 {
     public const EVENT_ERROR = "error";
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
-
+    public const EVENT_FIND_USER = "findUser";
     public bool $active = true;
+    public string $field;
 
     public function __construct ($config = [])
     {
@@ -38,8 +44,7 @@ abstract class AuthBase extends Model
         try {
             $methodRef = new \ReflectionMethod($this, $method);
 
-            if($this instanceof RequestInterface)
-            {
+            if($this instanceof RequestInterface) {
                 $this->request($methodRef, $controller);
             }
 
@@ -90,5 +95,70 @@ abstract class AuthBase extends Model
             $socialName = $attributes[0]->getArguments()[0];
         }
         return $socialName;
+    }
+
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getSocialId(): mixed
+    {
+        $this->fieldValidator();
+        return \Yii::$app->user->identity->{$this->field};
+    }
+
+    /**
+     * Валидация поля аврторизации
+     * @return void
+     * @throws InvalidConfigException
+     */
+    final public function fieldValidator() : void
+    {
+        $class = \Yii::createObject(\Yii::$app->user->identityClass);
+        if(!($class instanceof ActiveRecord)) {
+            throw new NotInstantiableException(ActiveRecord::class, code: 0);
+        }
+        if(!ArrayHelper::isIn($this->field, $class->attributes())) {
+            throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' .$class::class, code: 1);
+        }
+    }
+
+
+    /**
+     * Модификация данных пользователя
+     * @param mixed $data - Значение поля field в пользовательской модели
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    protected function modifiedUser(mixed $data) : bool
+    {
+        $this->fieldValidator();
+        /** @var ActiveRecord|IdentityInterface $user */
+        $user = \Yii::$app->user->identity;
+        $field = $this->field;
+        $user->$field = $data;
+
+        if ($user->save()) {
+            \Yii::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}", static::class);
+            return true;
+        }
+        \Yii::warning($user->getErrorSummary(true), static::class);
+        return false;
+    }
+
+    /**
+     * Поиск по полю в бд
+     * @return IdentityInterface|ActiveRecord
+     * @throws InvalidConfigException
+     */
+    protected function findUser(mixed $id): ?IdentityInterface
+    {
+        $this->fieldValidator();
+        $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
+        $query = $class::find()->andWhere([$this->field => $id]);
+        $findUserEventArgs = new FindUserEventArgs($query);
+        $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
+        \Yii::debug($findUserEventArgs->user?->toArray(), static::class);
+        return $findUserEventArgs->user;
     }
 }

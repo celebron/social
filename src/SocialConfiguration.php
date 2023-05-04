@@ -139,23 +139,25 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * Получение данных по имени соц.сети
      * @param string $social - имя соц.сети (зарегистрированное имя)
-     * @return OAuth2|null
+     * @return AuthBase|null
      * @throws \Exception - прочие ошибки
      */
-    public function getSocial(string $social): ?OAuth2
+    public function getSocial(string $social): ?AuthBase
     {
-        $social = strtolower(trim($social));
-        /** @var OAuth2 $object */
+        $social =  strtolower(trim($social));
+        /** @var AuthBase $object */
         $object = ArrayHelper::getValue($this->getSocials(), $social);
 
         if($object === null) {
                 return null;
         }
 
-        $object->redirectUrl = Url::toRoute([
-            "{$this->route}/handler",
-            'social' => $social,
-        ], true);
+        if($object instanceof OAuth2) {
+            $object->redirectUrl = Url::toRoute([
+                "{$this->route}/handler",
+                'social' => $social,
+            ], true);
+        }
 
         return $object;
     }
@@ -183,7 +185,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * @throws NotFoundHttpException
      * @throws \Exception
      */
-    public static function socialStatic(string $socialname) : OAuth2
+    public static function socialStatic(string $socialname) : AuthBase
     {
         return  static::$config->getSocial($socialname);
     }

@@ -52,11 +52,11 @@ class State implements \Stringable
         return $this->encode();
     }
 
-    public static function create($method, string $state = null):self
+    public static function create(string $method, string $state = null):self
     {
         $obj = new self();
-        $obj->method = $method;
-        $obj->state = $state;
+        $obj->method = strip_tags($method);
+        $obj->state = strip_tags($state);
         return $obj;
     }
 
