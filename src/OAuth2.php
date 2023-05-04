@@ -51,13 +51,6 @@ abstract class OAuth2 extends AuthBase implements RequestInterface
         if($this instanceof GetUrlsInterface) {
             $this->client->baseUrl = $this->getBaseUrl();
         }
-
-        $name = static::socialName();
-        //Генерация констант под каждую соц.сеть
-        $contName = 'SOCIAL_' . strtoupper($name);
-        if(!defined($contName)) {
-            define($contName, strtolower($name));
-        }
     }
 
     /**

@@ -17,6 +17,17 @@ abstract class AuthBase extends Model
 
     public bool $active = true;
 
+    public function __construct ($config = [])
+    {
+        parent::__construct($config);
+        $name = static::socialName();
+        //Генерация констант под каждую соц.сеть
+        $contName = 'SOCIAL_' . strtoupper($name);
+        if(!defined($contName)) {
+            define($contName, strtolower($name));
+        }
+    }
+
     /**
      * @throws \Exception
      */

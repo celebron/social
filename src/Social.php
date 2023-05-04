@@ -107,7 +107,6 @@ abstract class Social extends OAuth2
     #[\Celebron\social\OAuth2Request]
     final public function register() : bool
     {
-        $this->requestSocialId();
         \Yii::debug("Register social '" . static::socialName() ."' to user");
         return $this->modifiedUser($this->id);
     }
@@ -128,12 +127,10 @@ abstract class Social extends OAuth2
      * @param SocialConfiguration $config
      * @return bool
      * @throws InvalidConfigException
-     * @throws NotFoundHttpException
      */
     #[\Celebron\social\OAuth2Request]
     final public function login(SocialConfiguration $config) : bool
     {
-        $this->requestSocialId();
         if(($user = $this->findUser()) !== null) {
             $login = Yii::$app->user->login($user, $config->duration);
             \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);
