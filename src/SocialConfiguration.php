@@ -60,16 +60,16 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     /**
      * Получение списка активных соцсетей
-     * @return Social[]|OAuth2[]
+     * @param mixed ...$
+     * @return Social|OAuth2
      */
-    public function getSocials (): array
+    public function getSocials (...$interfaces): array
     {
-        $args = func_get_args();
-        if(func_num_args() > 0) {
+        if(count($interfaces) > 0) {
             $result = [];
             foreach ($this->_socials as $social) {
                 $classRef = new \ReflectionClass($social);
-                if(count(array_intersect($classRef->getInterfaceNames(), $args)) > 0) {
+                if(count(array_intersect($classRef->getInterfaceNames(), $interfaces)) > 0) {
                     $result[] = $social;
                 }
             }
@@ -125,16 +125,14 @@ class SocialConfiguration extends Component implements BootstrapInterface
                     $object->on(AuthBase::EVENT_ERROR, $this->onError, ['config' => $this]);
                 }
 
+                //Установка механизма поиска пользователя
+                if ($this->findUserAlg !== null) {
+                    $object->on(AuthBase::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
+                }
+
                 $registerEventArgs->support = true;
             }
-
-            if ($object instanceof Social) {
-                //Настройка алгоритма поиска пользователя
-                if ($this->findUserAlg !== null) {
-                    $object->on(Social::EVENT_FIND_USER, $this->findUserAlg, ['config' => $this]);
-                }
-            }
-
+            
             //Триггер непосрественной регистрации
             $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
 
@@ -207,9 +205,9 @@ class SocialConfiguration extends Component implements BootstrapInterface
      * Вывод Socials[] (static)
      * @return AuthBase[]
      */
-    public static function socialsStatic(): array
+    public static function socialsStatic(...$interfaces): array
     {
-        return static::$config->getSocials();
+        return static::$config->getSocials(...$interfaces);
     }
 
     /**

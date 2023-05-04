@@ -32,7 +32,7 @@ class SocialsWidget extends Widget
     public function init ()
     {
         parent::init();
-        $this->_socials = SocialConfiguration::socialsStatic();
+        $this->_socials = SocialConfiguration::socialsStatic(ToWidgetInterface::class);
     }
 
     /**
