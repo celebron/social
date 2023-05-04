@@ -2,18 +2,10 @@
 
 namespace Celebron\social;
 
-use Celebron\social\eventArgs\ErrorEventArgs;
-use Celebron\social\eventArgs\ResultEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\RequestInterface;
-use Celebron\social\interfaces\SetFullUrlInterface;
 use yii\base\InvalidConfigException;
-use yii\base\Model;
-use yii\httpclient\Client;
-use yii\httpclient\CurlTransport;
-use yii\httpclient\Exception;
-use yii\httpclient\Request;
-use yii\httpclient\Response;
+use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\web\BadRequestHttpException;
 
 
@@ -69,7 +61,6 @@ abstract class OAuth2 extends AuthBase implements RequestInterface
         }
     }
 
-
     /**
      * @throws Exception
      * @throws InvalidConfigException
@@ -113,8 +104,6 @@ abstract class OAuth2 extends AuthBase implements RequestInterface
         }
         throw new BadRequestHttpException('[' . static::socialName() . "]Response not correct. Code E{$response->getStatusCode()}");
     }
-
-
 
     /**
      * Ссылка на oauth2 авторизацию

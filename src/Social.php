@@ -36,8 +36,6 @@ abstract class Social extends OAuth2
     /** @var string - поле в базе данных для идентификации  */
     public string $field;
 
-
-
     /** @var mixed|null - Id от соцеальных сетей */
     public mixed $id = null;
 
@@ -54,20 +52,6 @@ abstract class Social extends OAuth2
         }
         if(!ArrayHelper::isIn($this->field, $class->attributes())) {
             throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' .$class::class, code: 1);
-        }
-    }
-
-    protected function requestSocialId() : void
-    {
-        if($this instanceof RequestIdInterface) {
-            $requestId = new RequestId($this);
-            $requestId->uri = $this->getUriInfo();
-            $this->id = $this->requestId($requestId);
-        }
-        \Yii::debug("User id: {$this->id}", static::class);
-
-        if ($this->id === null) {
-            throw new NotFoundHttpException("User not found", code: 2);
         }
     }
 
@@ -101,11 +85,10 @@ abstract class Social extends OAuth2
     /**
      * Регистрация пользователя из социальной сети
      * @return bool
-     * @throws NotFoundHttpException
      * @throws InvalidConfigException
      */
-    #[\Celebron\social\OAuth2Request]
-    final public function register() : bool
+    #[OAuth2Request]
+    final public function actionRegister() : bool
     {
         \Yii::debug("Register social '" . static::socialName() ."' to user");
         return $this->modifiedUser($this->id);
@@ -116,7 +99,7 @@ abstract class Social extends OAuth2
      * @return bool
      * @throws InvalidConfigException
      */
-    final public function delete() : bool
+    final public function actionDelete() : bool
     {
         \Yii::debug("Delete social '" . static::socialName() . "' to user");
         return $this->modifiedUser(null);
@@ -128,8 +111,8 @@ abstract class Social extends OAuth2
      * @return bool
      * @throws InvalidConfigException
      */
-    #[\Celebron\social\OAuth2Request]
-    final public function login(SocialConfiguration $config) : bool
+    #[OAuth2Request]
+    final public function actionLogin(SocialConfiguration $config) : bool
     {
         if(($user = $this->findUser()) !== null) {
             $login = Yii::$app->user->login($user, $config->duration);
@@ -138,7 +121,6 @@ abstract class Social extends OAuth2
         }
         return false;
     }
-
 
     /**
      * Модификация данных пользователя

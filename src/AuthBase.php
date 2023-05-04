@@ -34,8 +34,9 @@ abstract class AuthBase extends Model
     public function run(SocialController $controller): mixed
     {
         $action = $controller->getState();
+        $method = 'action' . ucfirst($action->method);
         try {
-            $methodRef = new \ReflectionMethod($this, $action->method);
+            $methodRef = new \ReflectionMethod($this, $method);
 
             if($this instanceof RequestInterface)
             {
