@@ -24,7 +24,7 @@ class RequestId extends \yii\base\BaseObject
     public readonly Token $token;
     private readonly Client $client;
 
-    public function __construct(Social $social, array $config = [])
+    public function __construct(OAuth2 $social, array $config = [])
     {
         parent::__construct($config);
         $this->token = $social->token;

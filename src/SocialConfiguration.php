@@ -82,7 +82,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
             $object = \Yii::createObject($class);
             $registerEventArgs = new RegisterEventArgs($object);
 
-            if($object instanceof OAuth2) {
+            if($object instanceof AuthBase) {
                 //Регистрируем только активные классы
                 if (!$object->active) {
                     continue;
@@ -99,17 +99,17 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
                 //Установка обработчика удачных выполнений
                 if($this->onSuccess !== null) {
-                    $object->on(OAuth2::EVENT_SUCCESS, $this->onSuccess, [ 'config' => $this ]);
+                    $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess, [ 'config' => $this ]);
                 }
 
                 //Установка обработчика неудачных выполнений
                 if($this->onFailed !== null) {
-                    $object->on(OAuth2::EVENT_FAILED, $this->onFailed, [ 'config', $this ] );
+                    $object->on(AuthBase::EVENT_FAILED, $this->onFailed, [ 'config', $this ] );
                 }
 
                 //Установка обработчика всех ошибок
                 if ($this->onError !== null) {
-                    $object->on(OAuth2::EVENT_ERROR, $this->onError, ['config' => $this]);
+                    $object->on(AuthBase::EVENT_ERROR, $this->onError, ['config' => $this]);
                 }
 
                 $registerEventArgs->support = true;
@@ -179,10 +179,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * Выводит Social класс по имени класса (static)
      * @param string $socialname
-     * @return Social
+     * @return OAuth2
      * @throws NotFoundHttpException
+     * @throws \Exception
      */
-    public static function socialStatic(string $socialname) : Social
+    public static function socialStatic(string $socialname) : OAuth2
     {
         return  static::$config->getSocial($socialname);
     }

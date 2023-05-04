@@ -104,7 +104,7 @@ abstract class Social extends OAuth2
      * @throws NotFoundHttpException
      * @throws InvalidConfigException
      */
-    #[\Celebron\social\Request]
+    #[\Celebron\social\OAuth2Request]
     final public function register() : bool
     {
         $this->requestSocialId();
@@ -130,7 +130,7 @@ abstract class Social extends OAuth2
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
-    #[\Celebron\social\Request]
+    #[\Celebron\social\OAuth2Request]
     final public function login(SocialConfiguration $config) : bool
     {
         $this->requestSocialId();

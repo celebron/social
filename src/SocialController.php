@@ -18,6 +18,23 @@ class SocialController extends Controller
     public SocialConfiguration $config;
 
 
+    public function getCode() : ?string
+    {
+       return $this->request->get('code');
+    }
+
+    public function getState() : State
+    {
+        $state = $this->request->get('state');
+        if($state === null) {
+            throw new BadRequestHttpException(
+                \Yii::t('yii', 'Missing required parameters: {params}', ['params' => 'state'])
+            );
+        }
+
+        return State::open($state);
+    }
+
     /**
      * @param string $social
      * @param string $state
@@ -25,34 +42,20 @@ class SocialController extends Controller
      * @return mixed|Response
      * @throws \Exception
      */
-    public function actionHandler(string $social, string $state, ?string $code = null)
+    public function actionHandler(string $social)
     {
         \Yii::beginProfile("Social profiling", static::class);
-
-        $action = State::open($state);
         $socialObj = $this->config->getSocial($social);
         try {
             if($socialObj === null) {
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
 
-            $methodRef = new \ReflectionMethod($socialObj, $action->method);
-            $attributes = $methodRef->getAttributes(Request::class);
+            return $socialObj->run($this);
 
-            if (isset($attributes[0])) {
-                $socialObj->request($code, $action);
-            }
-
-            if ($methodRef->invoke($socialObj, $this->config)) {
-                return $socialObj->success($methodRef->getShortName(), $this);
-            }
-
-            return $socialObj->failed($methodRef->getShortName(), $this);
-        } catch (\Exception $ex) {
-            \Yii::error($ex->getMessage(), static::class);
-            return $socialObj->error($action->method, $this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
+
     }
 }
