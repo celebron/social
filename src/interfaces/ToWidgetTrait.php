@@ -14,7 +14,7 @@ trait ToWidgetTrait
 
     public function setName(?string $name):void
     {
-        $this->_name = $name
+        $this->_name = $name;
     }
 
     public function getIcon (): string
