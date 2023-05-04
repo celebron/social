@@ -64,8 +64,21 @@ class SocialConfiguration extends Component implements BootstrapInterface
      */
     public function getSocials (): array
     {
+        $args = func_get_args();
+        if(func_num_args() > 0) {
+            $result = [];
+            foreach ($this->_socials as $social) {
+                $classRef = new \ReflectionClass($social);
+                if(count(array_intersect($classRef->getInterfaceNames(), $args)) > 0) {
+                    $result[] = $social;
+                }
+            }
+
+            return $result;
+        }
         return $this->_socials;
     }
+
 
     /**
      * Регистрация соцсетей
@@ -181,18 +194,18 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * Выводит Social класс по имени класса (static)
      * @param string $socialname
-     * @return OAuth2
+     * @return null|AuthBase
      * @throws NotFoundHttpException
      * @throws \Exception
      */
-    public static function socialStatic(string $socialname) : AuthBase
+    public static function socialStatic(string $socialname) : ?AuthBase
     {
         return  static::$config->getSocial($socialname);
     }
 
     /**
      * Вывод Socials[] (static)
-     * @return Social[]
+     * @return AuthBase[]
      */
     public static function socialsStatic(): array
     {

@@ -34,16 +34,6 @@ abstract class Social extends OAuth2
 
 
     /**
-     * @throws InvalidConfigException
-     */
-    public function getSocialId(): mixed
-    {
-        $this->fieldValidator();
-        return \Yii::$app->user->identity->{$this->field};
-    }
-
-
-    /**
      * Регистрация пользователя из социальной сети
      * @return bool
      * @throws InvalidConfigException
@@ -75,7 +65,7 @@ abstract class Social extends OAuth2
     #[OAuth2Request]
     final public function actionLogin(SocialConfiguration $config) : bool
     {
-        if(($user = $this->$this->findUser($this->id)) !== null) {
+        if(($user = $this->findUser($this->id)) !== null) {
             $login = Yii::$app->user->login($user, $config->duration);
             \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);
             return $login;

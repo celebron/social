@@ -15,7 +15,7 @@ use yii\web\NotFoundHttpException;
 /**
  *
  * @property-read string $name
- * @property Social&ToWidgetInterface $_social
+ * @property ToWidgetInterface $_social
  */
 class SocialWidget extends Widget
 {
@@ -35,7 +35,7 @@ class SocialWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
-    private null|Social|ToWidgetInterface $_social = null;
+    private null|ToWidgetInterface $_social = null;
     private bool $_supportLogin = false;
     private bool $_supportRegister = false;
 
