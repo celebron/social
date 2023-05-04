@@ -36,14 +36,14 @@ class SocialsWidget extends Widget
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\base\InvalidConfigException|\Throwable
      */
     public function run()
     {
         $html = Html::beginTag('div',['class'=> 'socials-block']);
         foreach ($this->_socials as $social) {
             /** @var ToWidgetInterface $social  */
-            if(!$social->getVisible() && $this->type === SocialWidget::TYPE_REGISTER) {
+            if($this->type === SocialWidget::TYPE_REGISTER && !$social->getVisible()) {
                 continue;
             }
             $html .= SocialWidget::widget([
