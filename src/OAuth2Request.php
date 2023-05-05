@@ -54,11 +54,11 @@ class OAuth2Request
         if ($auth instanceof RequestIdInterface) {
             $requestId = new RequestId($auth);
             $requestId->uri = $auth->getUriInfo();
-            $auth->id = $auth->requestId($requestId);
+            $auth->setId($auth->requestId($requestId));
 
-            \Yii::debug("User id: {$auth->id}", static::class);
+            \Yii::debug("User id: {$auth->getId()}", static::class);
 
-            if ($auth->id === null) {
+            if ($auth->getId() === null) {
                 throw new NotFoundHttpException("User not found", code: 2);
             }
         }

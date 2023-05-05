@@ -6,6 +6,7 @@ use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\RequestInterface;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
+use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 
 
@@ -90,6 +91,24 @@ abstract class OAuth2 extends AuthBase implements RequestInterface
             ->send($sender->sender(), 'token')
             ->getData();
         return new Token($data);
+    }
+
+    /**
+     * @param Request|RequestToken $sender
+     * @param string|\Closure|array $field
+     * @return mixed
+     * @throws BadRequestHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    protected function sendToField(Request|RequestToken $sender, string|\Closure|array $field) : mixed
+    {
+        if($sender instanceof  RequestToken) {
+            $sender->send = false;
+            $sender = $sender->sender();
+        }
+        $response = $this->send($sender);
+        return ArrayHelper::getValue($response->getData(), $field);
     }
 
     /**

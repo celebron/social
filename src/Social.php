@@ -2,44 +2,46 @@
 
 namespace Celebron\social;
 
-use Exception;
+use Celebron\social\interfaces\AuthActionInterface;
 use Yii;
 use yii\base\InvalidConfigException;
-
-use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
-use yii\httpclient\Request;
-use yii\web\BadRequestHttpException;
 
 /**
  * Базовый класс авторизации соц.сетей.
  * @property-read null|array $stateDecode
  * @property-read mixed $socialId
+ * @property mixed $id
  * @property-read Client $client - (для чтения) Http Client
  */
-abstract class Social extends OAuth2
+abstract class Social extends OAuth2 implements AuthActionInterface
 {
 
 
     public const METHOD_REGISTER = 'register';
     public const METHOD_DELETE = 'delete';
     public const METHOD_LOGIN = 'login';
-    ////В config
 
-    /** @var string - поле в базе данных для идентификации  */
-    public string $field;
+    private mixed $_id;
 
-    /** @var mixed|null - Id от соцеальных сетей */
-    public mixed $id = null;
+    public function getId():mixed
+    {
+        return $this->_id;
+    }
 
+    public function setId(mixed $id):void
+    {
+        $this->_id = $id;
+    }
 
     /**
      * Регистрация пользователя из социальной сети
+     * @param SocialConfiguration $config
      * @return bool
      * @throws InvalidConfigException
      */
     #[OAuth2Request]
-    final public function actionRegister() : bool
+    final public function actionRegister(SocialConfiguration $config) : bool
     {
         \Yii::debug("Register social '" . static::socialName() ."' to user");
         return $this->modifiedUser($this->id);
@@ -47,10 +49,11 @@ abstract class Social extends OAuth2
 
     /**
      * Удаление записи соц УЗ.
+     * @param SocialConfiguration $config
      * @return bool
      * @throws InvalidConfigException
      */
-    final public function actionDelete() : bool
+    final public function actionDelete(SocialConfiguration $config) : bool
     {
         \Yii::debug("Delete social '" . static::socialName() . "' to user");
         return $this->modifiedUser(null);
@@ -73,24 +76,6 @@ abstract class Social extends OAuth2
         return false;
     }
 
-    /**
-     * @param Request|RequestToken $sender
-     * @param string|\Closure|array $field
-     * @return mixed
-     * @throws BadRequestHttpException
-     * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
-     * @throws Exception
-     */
-    protected function sendToField(Request|RequestToken $sender, string|\Closure|array $field) : mixed
-    {
-        if($sender instanceof  RequestToken) {
-            $sender->send = false;
-            $sender = $sender->sender();
-        }
-        $response = $this->send($sender);
-        return ArrayHelper::getValue($response->getData(), $field);
-    }
 
     public static function urlLogin(?string $state = null): string
     {

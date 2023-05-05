@@ -9,6 +9,7 @@ use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\GetUrlsTrait;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\OAuth2Request;
 use Celebron\social\Request;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
@@ -76,8 +77,8 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
         return $this->uriInfo;
     }
 
-    #[Request]
-    public function mailToken():bool
+    #[OAuth2Request]
+    public function actionMailtoken():bool
     {
         if($this->token !== null && $this->fileName !== null) {
             return $this->token->create($this->fileName) !== false;

@@ -3,11 +3,16 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\AuthBase;
+use Celebron\social\interfaces\AuthActionInterface;
 use Celebron\social\SocialConfiguration;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 
-class Telegram extends AuthBase
+/**
+ *
+ * @property-read mixed $data
+ */
+class Telegram extends AuthBase implements AuthActionInterface
 {
     public string $clientSecret;
     public int $id;
@@ -49,7 +54,7 @@ class Telegram extends AuthBase
         return $auth_data;
     }
 
-    final public function actionRegister() : bool
+    final public function actionRegister(SocialConfiguration $config) : bool
     {
         $data = $this->getData();
         \Yii::debug("Register social '" . static::socialName() ."' to user");
@@ -61,7 +66,7 @@ class Telegram extends AuthBase
      * @return bool
      * @throws InvalidConfigException
      */
-    final public function actionDelete() : bool
+    final public function actionDelete(SocialConfiguration $config) : bool
     {
         \Yii::debug("Delete social '" . static::socialName() . "' to user");
         return $this->modifiedUser(null);

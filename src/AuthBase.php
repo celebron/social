@@ -14,6 +14,10 @@ use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
+/**
+ *
+ * @property-read mixed $socialId
+ */
 abstract class AuthBase extends Model
 {
     public const EVENT_ERROR = "error";
@@ -40,14 +44,14 @@ abstract class AuthBase extends Model
     public function run(SocialController $controller): mixed
     {
         $action = $controller->getState();
-        $method = 'action' . ucfirst($action->method);
+        $method = "action{$action->method}";
         try {
             $methodRef = new \ReflectionMethod($this, $method);
-
+            //Выполнить запрос во внешию систему
             if($this instanceof RequestInterface) {
                 $this->request($methodRef, $controller);
             }
-
+            //Выполнить метод авторизации
             if ($methodRef->invoke($this, $controller->config)) {
                 return $this->success($methodRef->getShortName(), $controller);
             }
