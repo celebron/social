@@ -14,13 +14,17 @@ class ResultEventArgs extends Event
     /** @var mixed|null - вывод */
     public mixed $result = null;
 
+
     /**
      * Конструктор
      * @param SocialController $action - Контроллер
-     * @param string $method
      * @param array $config
      */
-    public function __construct (public SocialController $action, public ?string $method, array $config = [])
+    public function __construct (
+        public SocialController $action,
+        public readonly RequestArgs $args,
+        array $config = []
+    )
     {
         parent::__construct($config);
     }
@@ -30,27 +34,4 @@ class ResultEventArgs extends Event
         return $this->action->render($view, $params);
     }
 
-    /**
-     * @return bool
-     */
-    public function getMethodLogin():bool
-    {
-        return $this->method === Social::METHOD_LOGIN;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getMethodRegister():bool
-    {
-        return $this->method === Social::METHOD_REGISTER;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getMethodDelete():bool
-    {
-        return $this->method === Social::METHOD_DELETE;
-    }
 }

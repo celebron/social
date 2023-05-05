@@ -2,11 +2,11 @@
 
 namespace Celebron\social\interfaces;
 
-use Celebron\social\SocialConfiguration;
+use Celebron\social\eventArgs\RequestArgs;
 
 interface AuthActionInterface
 {
-    public function actionLogin(SocialConfiguration $config) : bool;
-    public function actionRegister(SocialConfiguration $config) : bool;
-    public function actionDelete(SocialConfiguration $config) : bool;
+    public function actionLogin(RequestArgs $args) : bool;
+    public function actionRegister(RequestArgs $args) : bool;
+    public function actionDelete(RequestArgs $args) : bool;
 }

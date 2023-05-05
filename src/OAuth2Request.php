@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\eventArgs\RequestArgs;
 use Celebron\social\interfaces\RequestIdInterface;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use yii\base\InvalidConfigException;
@@ -18,15 +19,15 @@ class OAuth2Request
      * @throws \yii\base\Exception
      * @throws BadRequestHttpException
      */
-    final public function request(OAuth2 $auth, ?string $code, State $state): void
+    final public function request(OAuth2 $auth, RequestArgs $args): void
     {
         $session = \Yii::$app->session;
         if (!$session->isActive) {
             $session->open();
         }
 
-        if ($code === null) {
-            $request = new RequestCode($auth, $state);
+        if ($args->code === null) {
+            $request = new RequestCode($auth, $args->state);
             $auth->requestCode($request);
             $session['social_random'] = $request->state->random;
             $url = $auth->client->get($request->generateUri());
@@ -38,29 +39,29 @@ class OAuth2Request
             exit(0);
         }
 
-        $equalRandom = $state->equalRandom($session['social_random']);
+        $equalRandom = $args->state->equalRandom($session['social_random']);
         \Yii::$app->session->remove('social_random');
 
         if ($equalRandom) {
-            $request = new RequestToken($code, $auth);
+            $request = new RequestToken($args->code, $auth);
             $auth->requestToken($request);
             if ($request->send) {
                 $auth->token = $auth->sendToken($request);
             }
         } else {
-            throw new BadRequestHttpException('Random not equal');
+            throw new BadRequestHttpException('Random not equal', code: 1);
         }
 
         if ($auth instanceof RequestIdInterface) {
             $requestId = new RequestId($auth);
             $requestId->uri = $auth->getUriInfo();
-            $auth->setId($auth->requestId($requestId));
+            $auth->id = $auth->requestId($requestId);
 
-            \Yii::debug("User id: {$auth->getId()}", static::class);
+            \Yii::debug("User id: {$auth->id}", static::class);
+        }
 
-            if ($auth->getId() === null) {
-                throw new NotFoundHttpException("User not found", code: 2);
-            }
+        if ($auth->id === null) {
+            throw new NotFoundHttpException("User not found", code: 2);
         }
     }
 

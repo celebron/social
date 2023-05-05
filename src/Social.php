@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\eventArgs\RequestArgs;
 use Celebron\social\interfaces\AuthActionInterface;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -16,8 +17,6 @@ use yii\httpclient\Client;
  */
 abstract class Social extends OAuth2 implements AuthActionInterface
 {
-
-
     public const METHOD_REGISTER = 'register';
     public const METHOD_DELETE = 'delete';
     public const METHOD_LOGIN = 'login';
@@ -36,24 +35,24 @@ abstract class Social extends OAuth2 implements AuthActionInterface
 
     /**
      * Регистрация пользователя из социальной сети
-     * @param SocialConfiguration $config
+     * @param RequestArgs $args
      * @return bool
      * @throws InvalidConfigException
      */
     #[OAuth2Request]
-    final public function actionRegister(SocialConfiguration $config) : bool
+    final public function actionRegister(RequestArgs $args) : bool
     {
         \Yii::debug("Register social '" . static::socialName() ."' to user");
-        return $this->modifiedUser($this->id);
+        return $this->modifiedUser($this->getId());
     }
 
     /**
      * Удаление записи соц УЗ.
-     * @param SocialConfiguration $config
+     * @param RequestArgs $args
      * @return bool
      * @throws InvalidConfigException
      */
-    final public function actionDelete(SocialConfiguration $config) : bool
+    final public function actionDelete(RequestArgs $args) : bool
     {
         \Yii::debug("Delete social '" . static::socialName() . "' to user");
         return $this->modifiedUser(null);
@@ -61,16 +60,16 @@ abstract class Social extends OAuth2 implements AuthActionInterface
 
     /**
      * Авторизация в системе
-     * @param SocialConfiguration $config
+     * @param RequestArgs $args
      * @return bool
      * @throws InvalidConfigException
      */
     #[OAuth2Request]
-    final public function actionLogin(SocialConfiguration $config) : bool
+    final public function actionLogin(RequestArgs $args) : bool
     {
-        if(($user = $this->findUser($this->id)) !== null) {
-            $login = Yii::$app->user->login($user, $config->duration);
-            \Yii::debug("User login ($this->id) " . $login ? "succeeded": "failed", static::class);
+        if(($user = $this->findUser($this->getId())) !== null) {
+            $login = Yii::$app->user->login($user, $args->config->duration);
+            \Yii::debug("User login ({$this->getId()}) " . $login ? "succeeded": "failed", static::class);
             return $login;
         }
         return false;

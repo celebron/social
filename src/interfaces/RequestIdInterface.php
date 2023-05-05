@@ -13,7 +13,4 @@ interface RequestIdInterface
     public function getUriInfo(): string;
 
     public function requestId(RequestId $request): mixed;
-
-    public function getId(): mixed;
-    public function setId(mixed $id);
 }

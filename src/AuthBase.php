@@ -4,8 +4,9 @@ namespace Celebron\social;
 
 use Celebron\social\eventArgs\ErrorEventArgs;
 use Celebron\social\eventArgs\FindUserEventArgs;
+use Celebron\social\eventArgs\RequestArgs;
 use Celebron\social\eventArgs\ResultEventArgs;
-use Celebron\social\interfaces\RequestInterface;
+use Celebron\social\interfaces\AuthRequestInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveRecord;
@@ -47,32 +48,41 @@ abstract class AuthBase extends Model
         $method = "action{$action->method}";
         try {
             $methodRef = new \ReflectionMethod($this, $method);
+
+            $requestArgs = new RequestArgs(
+                $controller->config,
+                $method,
+                $controller->getCode(),
+                $controller->getState()
+            );
+            $requestArgs->requested = false;
+
             //Выполнить запрос во внешию систему
-            if($this instanceof RequestInterface) {
-                $this->request($methodRef, $controller);
-            }
-            //Выполнить метод авторизации
-            if ($methodRef->invoke($this, $controller->config)) {
-                return $this->success($methodRef->getShortName(), $controller);
+            if($this instanceof AuthRequestInterface) {
+                $this->request($methodRef, $requestArgs);
+                $requestArgs->requested = true;
             }
 
-            return $this->failed($methodRef->getShortName(), $controller);
+            if($methodRef->invoke($this, $requestArgs)) {
+                return $this->success($controller, $requestArgs);
+            }
+            return $this->failed($controller, $requestArgs);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
-            return $this->error($action->method, $controller, $ex);
+            return $this->error($method, $controller, $ex);
         }
     }
 
-    protected function success(string $method, SocialController $action): mixed
+    protected function success(SocialController $action, RequestArgs $args): mixed
     {
-        $eventArgs = new ResultEventArgs($action, $method);
+        $eventArgs = new ResultEventArgs($action, $args);
         $this->trigger(self::EVENT_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
 
-    protected function failed(string $method, SocialController $action): mixed
+    protected function failed(SocialController $action, RequestArgs $args): mixed
     {
-        $eventArgs = new ResultEventArgs($action, $method);
+        $eventArgs = new ResultEventArgs($action, $args);
         $this->trigger(self::EVENT_FAILED, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
@@ -126,7 +136,6 @@ abstract class AuthBase extends Model
             throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' .$class::class, code: 1);
         }
     }
-
 
     /**
      * Модификация данных пользователя

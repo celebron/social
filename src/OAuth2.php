@@ -2,15 +2,17 @@
 
 namespace Celebron\social;
 
+use Celebron\social\eventArgs\RequestArgs;
+use Celebron\social\eventArgs\ResultEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\RequestInterface;
+use Celebron\social\interfaces\AuthRequestInterface;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 
 
-abstract class OAuth2 extends AuthBase implements RequestInterface
+abstract class OAuth2 extends AuthBase implements AuthRequestInterface
 {
     public string $clientId;
     public string $clientSecret;
@@ -18,10 +20,11 @@ abstract class OAuth2 extends AuthBase implements RequestInterface
 
 
     public readonly Client $client;
-
+    public ?Token $token = null;
 
     protected array $data = [];
-    public ?Token $token = null;
+    public mixed $id = null;
+
 
     /**
      * @param RequestCode $request
@@ -52,13 +55,13 @@ abstract class OAuth2 extends AuthBase implements RequestInterface
      * @throws \yii\base\Exception
      * @throws BadRequestHttpException
      */
-    public function Request(\ReflectionMethod $method, SocialController $controller):void
+    public function Request(\ReflectionMethod $method, RequestArgs $args):void
     {
         $attributes = $method->getAttributes(OAuth2Request::class);
         if (isset($attributes[0])) {
             /** @var OAuth2Request $attr */
             $attr = $attributes[0]->newInstance();
-            $attr->request($this, $controller->getCode(), $controller->getState());
+            $attr->request($this, $args);
         }
     }
 
