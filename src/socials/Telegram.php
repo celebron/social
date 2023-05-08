@@ -5,7 +5,10 @@ namespace Celebron\social\socials;
 use Celebron\social\AuthBase;
 use Celebron\social\eventArgs\RequestArgs;
 use Celebron\social\interfaces\AuthActionInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\SocialConfiguration;
+use Celebron\social\WidgetSupport;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 
@@ -13,8 +16,10 @@ use yii\web\BadRequestHttpException;
  *
  * @property-read mixed $data
  */
-class Telegram extends AuthBase implements AuthActionInterface
+#[WidgetSupport(true, false)]
+class Telegram extends AuthBase implements AuthActionInterface, ToWidgetInterface
 {
+    use ToWidgetTrait;
     public string $clientSecret;
     public int $id;
     public int $timeout = 86400;
