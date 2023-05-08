@@ -18,6 +18,7 @@ class ResultEventArgs extends Event
     /**
      * Конструктор
      * @param SocialController $action - Контроллер
+     * @param RequestArgs $args
      * @param array $config
      */
     public function __construct (

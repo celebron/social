@@ -44,17 +44,14 @@ abstract class AuthBase extends Model
      */
     public function run(SocialController $controller): mixed
     {
-        $action = $controller->getState();
-        $method = "action{$action->method}";
-        try {
-            $methodRef = new \ReflectionMethod($this, $method);
+        $requestArgs = new RequestArgs(
+            $controller->config,
+            $controller->getCode(),
+            $controller->getState()
+        );
 
-            $requestArgs = new RequestArgs(
-                $controller->config,
-                $method,
-                $controller->getCode(),
-                $controller->getState()
-            );
+        try {
+            $methodRef = new \ReflectionMethod($this, $requestArgs->method);
             $requestArgs->requested = false;
 
             //Выполнить запрос во внешию систему
@@ -69,7 +66,7 @@ abstract class AuthBase extends Model
             return $this->failed($controller, $requestArgs);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
-            return $this->error($method, $controller, $ex);
+            return $this->error($controller, $ex, $requestArgs);
         }
     }
 
@@ -90,9 +87,9 @@ abstract class AuthBase extends Model
     /**
      * @throws \Exception
      */
-    protected function error(string $method, SocialController $action, \Exception $ex): mixed
+    protected function error(SocialController $action, \Exception $ex, RequestArgs $args): mixed
     {
-        $eventArgs = new ErrorEventArgs($action, $method, $ex);
+        $eventArgs = new ErrorEventArgs($action, $args, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
         if($eventArgs->result === null) {
             throw $eventArgs->exception;
