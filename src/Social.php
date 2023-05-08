@@ -62,7 +62,6 @@ abstract class Social extends OAuth2 implements AuthActionInterface
         return false;
     }
 
-
     public static function urlLogin(?string $state = null): string
     {
         return static::url(self::METHOD_LOGIN, $state);

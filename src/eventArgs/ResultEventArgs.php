@@ -16,7 +16,6 @@ class ResultEventArgs extends Event
 
     public readonly string $method;
 
-
     /**
      * Конструктор
      * @param SocialController $action - Контроллер
@@ -30,7 +29,7 @@ class ResultEventArgs extends Event
     )
     {
         parent::__construct($config);
-        $this->method = $args->state->method;
+        $this->method = strtolower($args->state->method);
     }
 
     public function render(string $view, array $params=[]): string
