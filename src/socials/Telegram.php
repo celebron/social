@@ -17,8 +17,7 @@ use yii\web\BadRequestHttpException;
  *
  * @property-read mixed $data
  */
-#[WidgetSupport(true, false)]
-class Telegram extends AuthBase implements AuthActionInterface, ToWidgetInterface
+class Telegram extends AuthBase implements AuthActionInterface
 {
     use ToWidgetTrait;
     public string $clientSecret;
