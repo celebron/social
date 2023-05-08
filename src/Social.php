@@ -12,7 +12,6 @@ use yii\httpclient\Client;
  * Базовый класс авторизации соц.сетей.
  * @property-read null|array $stateDecode
  * @property-read mixed $socialId
- * @property mixed $id
  * @property-read Client $client - (для чтения) Http Client
  */
 abstract class Social extends OAuth2 implements AuthActionInterface
@@ -20,18 +19,6 @@ abstract class Social extends OAuth2 implements AuthActionInterface
     public const METHOD_REGISTER = 'register';
     public const METHOD_DELETE = 'delete';
     public const METHOD_LOGIN = 'login';
-
-    private mixed $_id;
-
-    public function getId():mixed
-    {
-        return $this->_id;
-    }
-
-    public function setId(mixed $id):void
-    {
-        $this->_id = $id;
-    }
 
     /**
      * Регистрация пользователя из социальной сети
@@ -43,7 +30,7 @@ abstract class Social extends OAuth2 implements AuthActionInterface
     final public function actionRegister(RequestArgs $args) : bool
     {
         \Yii::debug("Register social '" . static::socialName() ."' to user");
-        return $this->modifiedUser($this->getId());
+        return $this->modifiedUser($this->id);
     }
 
     /**
@@ -67,9 +54,9 @@ abstract class Social extends OAuth2 implements AuthActionInterface
     #[OAuth2Request]
     final public function actionLogin(RequestArgs $args) : bool
     {
-        if(($user = $this->findUser($this->getId())) !== null) {
+        if(($user = $this->findUser($this->id)) !== null) {
             $login = Yii::$app->user->login($user, $args->config->duration);
-            \Yii::debug("User login ({$this->getId()}) " . $login ? "succeeded": "failed", static::class);
+            \Yii::debug("User login ({$this->id}) " . $login ? "succeeded": "failed", static::class);
             return $login;
         }
         return false;
