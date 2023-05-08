@@ -51,18 +51,21 @@ abstract class AuthBase extends Model
         );
 
         try {
-            $methodRef = new \ReflectionMethod($this, $requestArgs->method);
+            $methodRef = new \ReflectionMethod($this, $requestArgs->actionMethod);
             $requestArgs->requested = false;
 
             //Выполнить запрос во внешию систему
             if($this instanceof AuthRequestInterface) {
+                \Yii::debug('Released interface ' . AuthRequestInterface::class, static::class);
                 $this->request($methodRef, $requestArgs);
                 $requestArgs->requested = true;
             }
 
             if($methodRef->invoke($this, $requestArgs)) {
+                \Yii::debug("Method '{$requestArgs->actionMethod}' successful!", static::class);
                 return $this->success($controller, $requestArgs);
             }
+            \Yii::debug("Method '{$requestArgs->actionMethod}' failed!", static::class);
             return $this->failed($controller, $requestArgs);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
@@ -130,7 +133,7 @@ abstract class AuthBase extends Model
             throw new NotInstantiableException(ActiveRecord::class, code: 0);
         }
         if(!ArrayHelper::isIn($this->field, $class->attributes())) {
-            throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' .$class::class, code: 1);
+            throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' . $class::class, code: 1);
         }
     }
 

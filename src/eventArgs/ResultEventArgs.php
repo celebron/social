@@ -14,6 +14,8 @@ class ResultEventArgs extends Event
     /** @var mixed|null - вывод */
     public mixed $result = null;
 
+    public readonly string $method;
+
 
     /**
      * Конструктор
@@ -28,6 +30,7 @@ class ResultEventArgs extends Event
     )
     {
         parent::__construct($config);
+        $this->method = $args->state->method;
     }
 
     public function render(string $view, array $params=[]): string

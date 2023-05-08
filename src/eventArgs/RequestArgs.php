@@ -8,7 +8,7 @@ use Celebron\social\State;
 class RequestArgs
 {
     public bool $requested = false;
-    public readonly string $method;
+    public readonly string $actionMethod;
 
     public function __construct (
         public readonly SocialConfiguration $config,
@@ -16,7 +16,7 @@ class RequestArgs
         public readonly State $state,
     )
     {
-        $this->method = 'action' . $this->state->method;
+        $this->actionMethod = 'action' . $this->state->normalizeMethod();
     }
 
 

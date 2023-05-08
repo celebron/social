@@ -29,16 +29,16 @@ class State implements \Stringable
         return $this;
     }
 
-    protected static function normalizeMethod(string $method):string
+    public function normalizeMethod():string
     {
-        if(str_contains($method, '-')) {
+        if(str_contains($this->method, '-')) {
             $split = [];
-            foreach (explode('-', $method) as $exp) {
+            foreach (explode('-', $this->method) as $exp) {
                 $split[] = ucfirst($exp);
             }
             $method = implode($split);
         } else {
-            $method = ucfirst($method);
+            $method = ucfirst($this->method);
         }
         return  $method;
     }
@@ -69,7 +69,7 @@ class State implements \Stringable
     public static function create(string $method, string $state = null):self
     {
         $obj = new self();
-        $obj->method = strip_tags(static::normalizeMethod($method));
+        $obj->method = strip_tags($method);
         $obj->state = strip_tags($state);
         return $obj;
     }

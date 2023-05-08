@@ -3,7 +3,6 @@
 namespace Celebron\social;
 
 use Celebron\social\eventArgs\RequestArgs;
-use Celebron\social\eventArgs\ResultEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\AuthRequestInterface;
 use yii\base\InvalidConfigException;
@@ -118,7 +117,7 @@ abstract class OAuth2 extends AuthBase implements AuthRequestInterface
      * @throws Exception
      * @throws BadRequestHttpException
      */
-    protected function getException (Response $response): void
+    protected function getException(Response $response): void
     {
         $data = $response->getData();
         if (isset($data['error'], $data['error_description'])) {
