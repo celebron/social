@@ -5,8 +5,6 @@ namespace Celebron\social\socials;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\GetUrlsTrait;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetLoginInterface;
-use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestToken;

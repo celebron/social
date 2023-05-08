@@ -174,4 +174,15 @@ abstract class AuthBase extends Model
         \Yii::debug($findUserEventArgs->user?->toArray(), static::class);
         return $findUserEventArgs->user;
     }
+
+    /**
+     * Ссылка на oauth2 авторизацию
+     * @param string $method
+     * @param string|null $state
+     * @return string
+     */
+    final public static function url(string $method, ?string $state = null) : string
+    {
+        return SocialConfiguration::url(static::socialName(), $method, $state);
+    }
 }

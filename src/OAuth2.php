@@ -126,14 +126,5 @@ abstract class OAuth2 extends AuthBase implements AuthRequestInterface
         throw new BadRequestHttpException('[' . static::socialName() . "]Response not correct. Code E{$response->getStatusCode()}");
     }
 
-    /**
-     * Ссылка на oauth2 авторизацию
-     * @param string $method
-     * @param string|null $state
-     * @return string
-     */
-    final public static function url(string $method, ?string $state = null) : string
-    {
-        return SocialConfiguration::url(static::socialName(), $method, $state);
-    }
+
 }

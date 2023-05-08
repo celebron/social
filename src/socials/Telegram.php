@@ -7,6 +7,7 @@ use Celebron\social\eventArgs\RequestArgs;
 use Celebron\social\interfaces\AuthActionInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\Social;
 use Celebron\social\SocialConfiguration;
 use Celebron\social\WidgetSupport;
 use yii\base\InvalidConfigException;
@@ -78,4 +79,5 @@ class Telegram extends AuthBase implements AuthActionInterface, ToWidgetInterfac
         \Yii::debug("Delete social '" . static::socialName() . "' to user");
         return $this->modifiedUser(null);
     }
+
 }

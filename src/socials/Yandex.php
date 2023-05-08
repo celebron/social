@@ -32,7 +32,7 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
 {
     use ToWidgetTrait, GetUrlsTrait;
 
-    const METHOD_MAILTOKEN = 'mailToken';
+    public const METHOD_MAILTOKEN = 'mailToken';
     public string $clientUrl = "https://oauth.yandex.ru";
     public string $uriCode = 'authorize';
     public string $uriToken = 'token';
