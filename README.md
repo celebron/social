@@ -37,16 +37,14 @@ Configuration
 ...
 ```
 Необходимо подключить компонент <i>SocialConfiguration</i> в <i>bootstrap</i>, как приведено в примере
+Если в массиве socials нет ключей, то они будут сгенерированы на основании Атрибута или имени класс и если класс повторяется, то будет сгенерирован ключ как класс0 и т.д.
 ### [[SocialConfiguration::class]]
-    [optional] string       $route ('social')            - роут для OAuth redirect path   
-    [optional] string       $register ('register')       - state - регистрации
-    [optional] int          $duration (0)                - Срок действия авторизации
-    [optional] Closure|null $onAllError (null)           - обработка всех ошибок socials
-    [optional] Closure|null $onAllRegisterSuccess (null) - обработчик всех успешных регистраций
-    [optional] Closure|null $onAllLoginSuccess (null)    - обработчик всех успешных логинов
-    [optional] Closure|null $onAllDeleteSuccess (null)   - обработчик всех упешных удалений
-    [optional] Closure|null $findUserAlg (null)          - переопределение алгоритма поиска пользователя
-    [required] Social[]     $socials                     - список всех соц. сетей 
+    [optional] string       $route ('social')      - роут для OAuth redirect path   
+    [optional] int          $duration (0)          - Срок действия авторизации
+    [optional] Closure|null $onError (null)        - обработка всех ошибок socials
+    [optional] Closure|null $onSuccess (null)      - обработчик всех упешных удалений
+    [optional] Closure|null $findUserAlg (null)    - переопределение алгоритма поиска пользователя
+    [required] Social[]     $socials               - список всех соц. сетей 
 
 
 ### [[SocialOAuth::class]]    (Google::class, Yandex::class, ...)
@@ -55,9 +53,7 @@ Configuration
     [optional] string $name                - название для Widget
     [optional] $icon                       - иконка для Widget 
     [required|optional] $clientId          - OAuth clientId
-    [required|optional] $clientSecret      - OAuth clientSecret
-    [optional] $clientUrl                  - OAuth api url
-    
+    [required|optional] $clientSecret      - OAuth clientSecret   
     
 Ссылка redirect в консолях соц.сетей (oauth2 и прочее)
 -------------
