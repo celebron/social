@@ -8,11 +8,9 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Client;
 
-/**
- * Базовый класс авторизации соц.сетей.
- * @property-read null|array $stateDecode
- * @property-read mixed $socialId
- * @property-read Client $client - (для чтения) Http Client
+/***
+ * Стандартный класс авторизации в социальных сетях.
+ * Реализация actionRegister, actionDelete, actionLogin
  */
 abstract class Social extends OAuth2 implements AuthActionInterface
 {
