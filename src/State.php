@@ -8,6 +8,10 @@ use yii\helpers\Json;
 class State implements \Stringable
 {
 
+    public const ACTION_LOGIN = 'login';
+    public const ACTION_REGISTER = 'register';
+    public const ACTION_DELETE = 'delete';
+
     public ?string $method = null;
     public string $random;
     public ?string $state = null;
@@ -66,17 +70,42 @@ class State implements \Stringable
         return $this->normalizeMethod() === $action;
     }
 
+    public function isLogin():bool
+    {
+        return $this->equalAction(self::ACTION_LOGIN);
+    }
+
+    public function isRegister():bool
+    {
+        return $this->equalAction(self::ACTION_REGISTER);
+    }
+
+    public function isDelete():bool
+    {
+        return $this->equalAction(self::ACTION_DELETE);
+    }
+
     public function __toString ()
     {
         return $this->encode();
     }
 
-    public static function create(string $method, string $state = null):self
+    public static function create(string $method, ?string $state = null):self
     {
         $obj = new self();
         $obj->method = strip_tags($method);
         $obj->state = strip_tags($state);
         return $obj;
+    }
+
+    public static function createLogin(?string $state = null):self
+    {
+        return static::create(self::ACTION_LOGIN, $state);
+    }
+
+    public static function createRegister(?string $state = null):self
+    {
+        return static::create(self::ACTION_REGISTER, $state);
     }
 
     public static function open(string|\Stringable $stateBase64):self

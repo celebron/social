@@ -2,7 +2,6 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\RequestArgs;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\InvalidConfigException;
@@ -50,7 +49,7 @@ abstract class OAuth2 extends AuthBase
      * @param string|null $code
      * @param State $state
      * @param SocialConfiguration $config
-     * @return Response
+     * @return \Celebron\social\Response
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException

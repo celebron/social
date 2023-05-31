@@ -4,6 +4,7 @@ namespace Celebron\social\widgets;
 
 use Celebron\social\AuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\OAuth2;
 use Celebron\social\SocialConfiguration;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
@@ -87,7 +88,7 @@ class SocialWidget extends Widget
      */
     public function runLogin(): string
     {
-        /** @var Social $social */
+        /** @var OAuth2 $social */
         $social = $this->_social::class;
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
