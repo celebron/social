@@ -7,6 +7,7 @@ use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
+use yii\base\InvalidRouteException;
 use yii\web\BadRequestHttpException;
 
 
@@ -46,18 +47,24 @@ abstract class OAuth2 extends AuthBase
     }
 
     /**
-     * @throws \yii\base\Exception
+     * @param string|null $code
+     * @param State $state
+     * @param SocialConfiguration $config
+     * @return Response
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws InvalidRouteException
      */
-    public function request(RequestArgs $args): \Celebron\social\Response
+    public function request(?string $code, State $state, SocialConfiguration $config): \Celebron\social\Response
     {
         $session = \Yii::$app->session;
         if (!$session->isActive) {
             $session->open();
         }
 
-        if ($args->code === null) {
-            $request = new RequestCode($this, $args->state);
+        if ($code === null) {
+            $request = new RequestCode($this, $state);
             $this->requestCode($request);
             $session['social_random'] = $request->state->random;
             $url = $this->client->get($request->generateUri());
@@ -70,11 +77,11 @@ abstract class OAuth2 extends AuthBase
             exit(0);
         }
 
-        $equalRandom = $args->state->equalRandom($session['social_random']);
+        $equalRandom = $state->equalRandom($session['social_random']);
         \Yii::$app->session->remove('social_random');
 
         if ($equalRandom) {
-            $request = new RequestToken($args->code, $this);
+            $request = new RequestToken($code, $this);
             $this->requestToken($request);
             if ($request->send) {
                 $this->token = $this->sendToken($request);
@@ -85,7 +92,7 @@ abstract class OAuth2 extends AuthBase
 
         $response = $this->requestId(new RequestId($this));
         \Yii::debug("Userid: {$response->id}.", static::class);
-        return $response;
+        return  $response;
     }
 
     /**

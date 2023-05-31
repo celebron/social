@@ -2,7 +2,7 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\{ErrorEventArgs, RequestArgs, ResultEventArgs};
+use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
 use yii\base\Model;
 
 
@@ -13,18 +13,18 @@ abstract class AuthBase extends Model
     public const EVENT_ERROR = 'error';
     public bool $active = false;
 
-    abstract public function request(RequestArgs $args):Response;
+    abstract public function request(?string $code, State $state, SocialConfiguration $config):Response;
 
-    public function success(SocialController $action, RequestArgs $args): mixed
+    public function success(SocialController $action, Response $response): mixed
     {
-        $eventArgs = new ResultEventArgs($action, $args);
+        $eventArgs = new ResultEventArgs($action, $response);
         $this->trigger(self::EVENT_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
 
-    public function failed(SocialController $action, RequestArgs $args): mixed
+    public function failed(SocialController $action, Response $response): mixed
     {
-        $eventArgs = new ResultEventArgs($action, $args);
+        $eventArgs = new ResultEventArgs($action, $response);
         $this->trigger(self::EVENT_FAILED, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
@@ -32,9 +32,9 @@ abstract class AuthBase extends Model
     /**
      * @throws \Exception
      */
-    public function error(SocialController $action, \Exception $ex, RequestArgs $args): mixed
+    public function error(SocialController $action, \Exception $ex): mixed
     {
-        $eventArgs = new ErrorEventArgs($action, $args, $ex);
+        $eventArgs = new ErrorEventArgs($action, $ex);
         $this->trigger(self::EVENT_ERROR, $eventArgs);
         if($eventArgs->result === null) {
             throw $eventArgs->exception;

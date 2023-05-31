@@ -3,8 +3,10 @@
 namespace Celebron\social\args;
 
 
+use Celebron\social\Response;
 use Celebron\social\SocialController;
 use yii\base\Event;
+use yii\helpers\ArrayHelper;
 
 /**
  * Параметры для события registerSuccess и loginSuccess
@@ -14,27 +16,34 @@ class ResultEventArgs extends Event
     /** @var mixed|null - вывод */
     public mixed $result = null;
 
-    public readonly string $method;
-
-    /**
-     * Конструктор
-     * @param SocialController $action - Контроллер
-     * @param RequestArgs $args
-     * @param array $config
-     */
     public function __construct (
         public SocialController $action,
-        public readonly RequestArgs $args,
+        public readonly ?Response $response,
         array $config = []
     )
     {
         parent::__construct($config);
-        $this->method = strtolower($args->state->method);
     }
 
-    public function render(string $view, array $params=[]): string
+    public function render(string $view, array $params=[]): void
     {
-        return $this->action->render($view, $params);
+        $params = ArrayHelper::merge([
+            'response' => $this->response,
+        ], $params);
+        $this->result = $this->action->render($view, $params);
+    }
+
+    public function renderAjax(string $view, array $params=[]): void
+    {
+        $params = ArrayHelper::merge([
+            'response' => $this->response,
+        ], $params);
+        $this->result = $this->action->renderAjax($view, $params);
+    }
+
+    public function content(string $content):void
+    {
+        $this->result = $this->action->renderContent($content);
     }
 
 }

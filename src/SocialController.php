@@ -43,11 +43,6 @@ class SocialController extends Controller
     public function actionHandler(string $social)
     {
         \Yii::beginProfile("Social profiling", static::class);
-        $requestArgs = new RequestArgs(
-            $this->config,
-            $this->getCode(),
-            $this->getState()
-        );
         $object = $this->config->get($social);
 
         try {
@@ -56,18 +51,18 @@ class SocialController extends Controller
             }
 
             $userClass = \Yii::$app->user->identityClass;
-            $response = $object->request($requestArgs);
+            $response = $object->request($this->code, $this->getState(), $this->config);
             $objectUser = \Yii::createObject($userClass);
 
             $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
             $methodRef = new \ReflectionMethod($userClass, $methodName);
             if($methodRef->invoke($objectUser, $response, $object)) {
-                return $object->success($this, $requestArgs);
+                return $object->success($this, $response);
             }
-            return $object->failed($this, $requestArgs);
+            return $object->failed($this, $response);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
-            return $object->error($this, $ex, $requestArgs);
+            return $object->error($this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
