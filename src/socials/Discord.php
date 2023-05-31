@@ -4,6 +4,7 @@ namespace Celebron\social\socials;
 
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\SetFullUrlInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
@@ -22,7 +23,7 @@ use Yiisoft\Http\Header;
  *
  * @property-write Request $fullUrl
  */
-class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface
+class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     public array $scope = [ 'identify' ];

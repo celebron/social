@@ -3,6 +3,8 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
@@ -15,8 +17,9 @@ use yii\web\BadRequestHttpException;
 /**
  * Oauth2 Ok
  */
-class Ok extends OAuth2 implements GetUrlsInterface
+class Ok extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
+    use ToWidgetTrait;
     public string $scope = 'VALUABLE_ACCESS';
 
     public string $clientPublic;

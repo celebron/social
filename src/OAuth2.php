@@ -12,7 +12,9 @@ use yii\web\BadRequestHttpException;
 
 abstract class OAuth2 extends AuthBase
 {
+    #[\SensitiveParameter]
     public string $clientId;
+    #[\SensitiveParameter]
     public string $clientSecret;
     public string $redirectUrl;
 

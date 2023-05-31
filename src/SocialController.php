@@ -37,6 +37,7 @@ class SocialController extends Controller
     }
 
     /**
+     * @throws BadRequestHttpException
      * @throws \Exception
      */
     public function actionHandler(string $social)
@@ -48,17 +49,19 @@ class SocialController extends Controller
             $this->getState()
         );
         $object = $this->config->get($social);
+
         try {
             if($object === null) {
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
 
-            $user = \Yii::$app->user->identity;
+            $userClass = \Yii::$app->user->identityClass;
             $response = $object->request($requestArgs);
+            $objectUser = \Yii::createObject($userClass);
 
             $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
-            $methodRef = new \ReflectionMethod($user, $methodName);
-            if($methodRef->invoke($user, $response, $object)) {
+            $methodRef = new \ReflectionMethod($userClass, $methodName);
+            if($methodRef->invoke($objectUser, $response, $object)) {
                 return $object->success($this, $requestArgs);
             }
             return $object->failed($this, $requestArgs);
