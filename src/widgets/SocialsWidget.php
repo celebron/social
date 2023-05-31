@@ -1,11 +1,11 @@
 <?php
 
-namespace Celebron\social\old\widgets;
+namespace Celebron\social\widgets;
 
-use Celebron\social\old\interfaces\ToWidgetInterface;
-use Celebron\social\old\Social;
-use Celebron\social\old\SocialAsset;
-use Celebron\social\old\SocialConfiguration;
+use Celebron\social\AuthBase;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\OAuth2;
+use Celebron\social\SocialConfiguration;
 use yii\base\Widget;
 use yii\helpers\Html;
 
@@ -26,13 +26,13 @@ class SocialsWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
-    /** @var Social[]  */
+    /** @var AuthBase[]  */
     private array $_socials = [];
 
     public function init ()
     {
         parent::init();
-        $this->_socials = SocialConfiguration::socialsStatic(ToWidgetInterface::class);
+        $this->_socials = SocialConfiguration::socials(ToWidgetInterface::class);
     }
 
     /**

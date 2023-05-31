@@ -9,6 +9,10 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
+/**
+ *
+ * @property-write array $socials
+ */
 class SocialConfiguration extends Component implements BootstrapInterface
 {
     public const EVENT_BEFORE_REGISTER = 'beforeRegister';

@@ -3,7 +3,6 @@
 namespace Celebron\social\interfaces;
 
 use Celebron\social\OAuth2;
-use Celebron\social\old\AuthBase;
 use Celebron\social\Response;
 
 interface SocialRequestInterface
