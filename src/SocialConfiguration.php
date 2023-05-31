@@ -9,7 +9,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
-class SocialConfig extends Component implements BootstrapInterface
+class SocialConfiguration extends Component implements BootstrapInterface
 {
     public const EVENT_BEFORE_REGISTER = 'beforeRegister';
     public const EVENT_AFTER_REGISTER = 'afterRegister';

@@ -67,6 +67,6 @@ abstract class AuthBase extends Model
      */
     final public static function url(string $method, ?string $state = null) : string
     {
-        return SocialConfig::url(static::socialName(), $method, $state);
+        return SocialConfiguration::url(static::socialName(), $method, $state);
     }
 }

@@ -14,7 +14,7 @@ use yii\web\NotFoundHttpException;
  */
 class SocialController extends Controller
 {
-    public SocialConfig $config;
+    public SocialConfiguration $config;
 
     public function getCode() : ?string
     {

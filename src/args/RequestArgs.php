@@ -2,21 +2,21 @@
 
 namespace Celebron\social\args;
 
-use Celebron\social\SocialConfig;
+use Celebron\social\SocialConfiguration;
 use Celebron\social\State;
 
 class RequestArgs
 {
 
     /**
-     * @param SocialConfig $config
+     * @param SocialConfiguration $config
      * @param string|null $code
      * @param State $state
      */
     public function __construct (
-        public SocialConfig $config,
-        public ?string      $code,
-        public State        $state)
+        public SocialConfiguration $config,
+        public ?string             $code,
+        public State               $state)
     {
     }
 }
