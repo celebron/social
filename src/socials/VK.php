@@ -3,6 +3,8 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
 use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
@@ -12,8 +14,11 @@ use Celebron\social\RequestToken;
 /**
  * Oauth2 VK
  */
-class VK extends OAuth2 implements GetUrlsInterface
+class VK extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
+    use ToWidgetTrait;
+
+
     public string $display = 'page';
 
     private string $_icon = '';
