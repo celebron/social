@@ -1,9 +1,9 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
-use Celebron\social\eventArgs\RequestArgs;
-use Celebron\social\interfaces\AuthActionInterface;
+use Celebron\social\old\eventArgs\RequestArgs;
+use Celebron\social\old\interfaces\AuthActionInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Client;

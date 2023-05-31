@@ -1,14 +1,18 @@
 <?php
 
-namespace Celebron\social\socials;
+namespace Celebron\social\old\socials;
 
-use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2;
-use Celebron\social\RequestCode;
-use Celebron\social\RequestId;
-use Celebron\social\RequestToken;
-use Celebron\social\Response;
+use Celebron\social\old\interfaces\GetUrlsInterface;
+use Celebron\social\old\interfaces\RequestIdInterface;
+use Celebron\social\old\interfaces\ToWidgetInterface;
+use Celebron\social\old\interfaces\ToWidgetLoginInterface;
+use Celebron\social\old\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\old\interfaces\ToWidgetTrait;
+use Celebron\social\old\RequestCode;
+use Celebron\social\old\RequestId;
+use Celebron\social\old\RequestToken;
+use Celebron\social\old\Social;
+use Celebron\social\old\WidgetSupport;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -24,17 +28,18 @@ use Yiisoft\Http\Header;
  * @property-read string $uriCode
  * @property-write string $configFile
  */
-class Google extends OAuth2 implements GetUrlsInterface
+#[WidgetSupport]
+class Google extends Social implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
-    private string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
-    private string $tokenUrl = 'https://oauth2.googleapis.com/token';
-    private string $apiUrl = 'https://www.googleapis.com';
-    private string $uriInfo = 'oauth2/v2/userinfo?alt=json';
+    public string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
+    public string $tokenUrl = 'https://oauth2.googleapis.com/token';
+    public string $apiUrl = 'https://www.googleapis.com';
+    public string $uriInfo = 'oauth2/v2/userinfo?alt=json';
 
-    public string $_icon = '';
-    public ?string $_name;
-    public bool $_visible = true;
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
 
     /**
      * Получения конфигурации из файла json
@@ -78,13 +83,14 @@ class Google extends OAuth2 implements GetUrlsInterface
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): Response
+    public function requestId (RequestId $request): mixed
     {
         $url = $request->get(
             [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
             [ 'format'=>'json' ],
         );
-        return $this->sendResponse($url, 'id');
+        return $this->sendToField($url, 'id');
+        //return $d->data['id'];
     }
 
     public function getBaseUrl (): string

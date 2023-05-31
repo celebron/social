@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social\interfaces;
+namespace Celebron\social\old\interfaces;
 
 use yii\httpclient\Request;
 
@@ -9,5 +9,5 @@ interface SetFullUrlInterface
     /**
      * @param Request $request
      */
-    public function setFullUrl(Request $request):string;
+    public function setFullUrl(Request $request):void;
 }

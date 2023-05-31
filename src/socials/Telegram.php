@@ -2,14 +2,9 @@
 
 namespace Celebron\social\socials;
 
+use Celebron\social\args\RequestArgs;
 use Celebron\social\AuthBase;
-use Celebron\social\eventArgs\RequestArgs;
-use Celebron\social\interfaces\AuthActionInterface;
-use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\Social;
-use Celebron\social\SocialConfiguration;
-use Celebron\social\WidgetSupport;
+use Celebron\social\Response;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 
@@ -17,26 +12,13 @@ use yii\web\BadRequestHttpException;
  *
  * @property-read mixed $data
  */
-class Telegram extends AuthBase implements AuthActionInterface
+class Telegram extends AuthBase
 {
-    use ToWidgetTrait;
     public string $clientSecret;
-    public int $id;
+
     public int $timeout = 86400;
 
-    final public function actionLogin(RequestArgs $args) : bool
-    {
-        $data = $this->getData();
-        $this->id = $data['id'];
-        if(($user = $this->findUser($data['id'])) !== null) {
-            $login = \Yii::$app->user->login($user, $args->config->duration);
-            \Yii::debug("User login ({$data['id']}) " . $login ? "succeeded": "failed", static::class);
-            return $login;
-        }
-        return false;
-    }
-
-    public function getData()
+    public function getData():array
     {
         $auth_data = \Yii::$app->request->get();
         $check_hash = $auth_data['hash'];
@@ -60,23 +42,11 @@ class Telegram extends AuthBase implements AuthActionInterface
         return $auth_data;
     }
 
-    final public function actionRegister(RequestArgs $args) : bool
-    {
-        $data = $this->getData();
-        \Yii::debug("Register social '" . static::socialName() ."' to user");
-        return $this->modifiedUser($data['id']);
-    }
-
     /**
-     * Удаление записи соц УЗ.
-     * @param RequestArgs $args
-     * @return bool
-     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
      */
-    final public function actionDelete(RequestArgs $args) : bool
+    public function request (RequestArgs $args): Response
     {
-        \Yii::debug("Delete social '" . static::socialName() . "' to user");
-        return $this->modifiedUser(null);
+        return $this->response('id', $this->getData());
     }
-
 }

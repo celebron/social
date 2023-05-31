@@ -1,9 +1,9 @@
 <?php
 
-namespace Celebron\social\eventArgs;
+namespace Celebron\social\old\eventArgs;
 
-use Celebron\social\SocialConfiguration;
-use Celebron\social\State;
+use Celebron\social\old\SocialConfiguration;
+use Celebron\social\old\State;
 
 class RequestArgs
 {

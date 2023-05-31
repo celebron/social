@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
 use yii\base\Exception;
 use yii\helpers\Json;
@@ -59,11 +59,6 @@ class State implements \Stringable
             $random = $random->random;
         }
         return $this->random === $random;
-    }
-
-    public function equalAction(string $action):bool
-    {
-        return $this->normalizeMethod() === $action;
     }
 
     public function __toString ()

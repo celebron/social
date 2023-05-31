@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social\eventArgs;
+namespace Celebron\social\old\eventArgs;
 
 use yii\base\Event;
 use yii\db\ActiveQuery;

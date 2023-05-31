@@ -1,13 +1,18 @@
 <?php
 
-namespace Celebron\social\socials;
+namespace Celebron\social\old\socials;
 
-use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\OAuth2;
-use Celebron\social\RequestCode;
-use Celebron\social\RequestId;
-use Celebron\social\RequestToken;
-use Celebron\social\Response;
+use Celebron\social\old\interfaces\GetUrlsInterface;
+use Celebron\social\old\interfaces\RequestIdInterface;
+use Celebron\social\old\interfaces\ToWidgetInterface;
+use Celebron\social\old\interfaces\ToWidgetLoginInterface;
+use Celebron\social\old\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\old\interfaces\ToWidgetTrait;
+use Celebron\social\old\RequestCode;
+use Celebron\social\old\RequestId;
+use Celebron\social\old\RequestToken;
+use Celebron\social\old\Social;
+use Celebron\social\old\WidgetSupport;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
@@ -15,15 +20,22 @@ use yii\web\BadRequestHttpException;
 /**
  * Oauth2 Ok
  */
-class Ok extends OAuth2 implements GetUrlsInterface
+#[WidgetSupport]
+class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
 {
+    use ToWidgetTrait;
     public string $scope = 'VALUABLE_ACCESS';
 
     public string $clientPublic;
 
-    private string $_icon = '';
-    private ?string $_name;
-    private bool $_visible = true;
+    public string $clientCodeUrl = 'https://connect.ok.ru/oauth/authorize';
+    public string $clientApiUrl = 'https://api.ok.ru';
+    public string $uriToken = 'oauth/token.do';
+    public string $uriInfo = 'api/users/getCurrentUser';
+
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
 
     public function requestCode (RequestCode $request) : void
     {
@@ -35,7 +47,7 @@ class Ok extends OAuth2 implements GetUrlsInterface
 
     }
 
-    protected function sig(array $params, $token):string
+    protected function sig(array $params, $token)
     {
         $secret = md5($token . $this->clientSecret);
         return md5(http_build_query($params,arg_separator: '') . $secret);
@@ -46,7 +58,7 @@ class Ok extends OAuth2 implements GetUrlsInterface
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): Response
+    public function requestId (RequestId $request): mixed
     {
 
         $params = [
@@ -67,26 +79,26 @@ class Ok extends OAuth2 implements GetUrlsInterface
             throw new BadRequestHttpException('[' . static::socialName() . "] E{$error['error_code']}.\n{$error['error_msg']}");
         }
 
-        return $this->response('uid', $dataInfo->data); // $dataInfo->data['uid'];
+        return $dataInfo->data['uid'];
     }
 
     public function getBaseUrl (): string
     {
-        return  'https://api.ok.ru';
+        return $this->clientApiUrl;
     }
 
     public function getUriCode (): string
     {
-        return 'https://connect.ok.ru/oauth/authorize';
+        return $this->clientCodeUrl;
     }
 
     public function getUriToken (): string
     {
-        return 'oauth/token.do';
+        return $this->uriToken;
     }
 
     public function getUriInfo (): string
     {
-        return 'api/users/getCurrentUser';
+        return $this->uriInfo;
     }
 }

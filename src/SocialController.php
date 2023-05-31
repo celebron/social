@@ -2,27 +2,28 @@
 
 namespace Celebron\social;
 
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
+use Celebron\social\args\RequestArgs;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 /**
- * Контролер
+ *
+ * @property-read null|string $code
+ * @property-read State $state
  */
 class SocialController extends Controller
 {
-    /** @var SocialConfiguration - Конфигурация */
-    public SocialConfiguration $config;
-
+    public SocialConfig $config;
 
     public function getCode() : ?string
     {
-       return $this->request->get('code');
+        return $this->request->get('code');
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function getState() : State
     {
         $state = $this->request->get('state');
@@ -36,25 +37,36 @@ class SocialController extends Controller
     }
 
     /**
-     * @param string $social
-     * @return mixed|Response
-     * @throws NotFoundHttpException
      * @throws \Exception
      */
     public function actionHandler(string $social)
     {
         \Yii::beginProfile("Social profiling", static::class);
-        $socialObj = $this->config->getSocial(strip_tags($social));
+        $requestArgs = new RequestArgs(
+            $this->config,
+            $this->getCode(),
+            $this->getState()
+        );
+        $object = $this->config->get($social);
         try {
-            if($socialObj === null) {
+            if($object === null) {
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
 
-            return $socialObj->run($this);
+            $user = \Yii::$app->user->identity;
+            $response = $object->request($requestArgs);
 
+            $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
+            $methodRef = new \ReflectionMethod($user, $methodName);
+            if($methodRef->invoke($user, $response, $object)) {
+                return $object->success($this, $requestArgs);
+            }
+            return $object->failed($this, $requestArgs);
+        } catch (\Exception $ex) {
+            \Yii::error($ex->getMessage(), static::class);
+            return $object->error($this, $ex, $requestArgs);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
-
     }
 }

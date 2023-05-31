@@ -1,11 +1,9 @@
 <?php
 
-namespace Celebron\social\interfaces;
-/**
- * @property string $name
- * @property string $icon
- * @property bool $visible
- */
+namespace Celebron\social\old\interfaces;
+
+use Celebron\social\old\Social;
+
 interface ToWidgetInterface
 {
     public function getName():string;

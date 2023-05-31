@@ -1,13 +1,13 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\social\widgets;
 
 use yii\web\AssetBundle;
 use yii\web\JqueryAsset;
 
 class SocialAsset extends AssetBundle
 {
-    public $sourcePath = '@Celebron/social/public';
+    public $sourcePath = '@Celebron/social/widgets/public';
     public $js = ['social.js'];
     public $css = ['social.css'];
     public $depends = [

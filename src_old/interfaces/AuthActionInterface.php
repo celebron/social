@@ -1,8 +1,8 @@
 <?php
 
-namespace Celebron\social\interfaces;
+namespace Celebron\social\old\interfaces;
 
-use Celebron\social\eventArgs\RequestArgs;
+use Celebron\social\old\eventArgs\RequestArgs;
 
 interface AuthActionInterface
 {

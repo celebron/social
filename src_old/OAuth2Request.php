@@ -1,10 +1,10 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
-use Celebron\social\eventArgs\RequestArgs;
-use Celebron\social\interfaces\RequestIdInterface;
-use Celebron\social\interfaces\SetFullUrlInterface;
+use Celebron\social\old\eventArgs\RequestArgs;
+use Celebron\social\old\interfaces\RequestIdInterface;
+use Celebron\social\old\interfaces\SetFullUrlInterface;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
-use Celebron\social\eventArgs\RegisterEventArgs;
+use Celebron\social\old\eventArgs\RegisterEventArgs;
 use yii\base\Exception;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -183,6 +183,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
         $app->urlManager->addRules([
             "{$this->route}/<social>" => "{$this->route}/handler",
         ]);
+
         $app->controllerMap[$this->route] = [
             'class' => SocialController::class,
             'config' => $this,

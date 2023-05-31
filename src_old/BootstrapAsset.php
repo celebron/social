@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
 use yii\web\AssetBundle;
 

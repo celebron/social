@@ -1,8 +1,8 @@
 <?php
 
-namespace Celebron\social\interfaces;
+namespace Celebron\social\old\interfaces;
 
-use Celebron\social\RequestId;
+use Celebron\social\old\RequestId;
 
 /**
  * @property mixed $id

@@ -1,8 +1,8 @@
 <?php
 
-namespace Celebron\social\eventArgs;
+namespace Celebron\social\old\eventArgs;
 
-use Celebron\social\AuthBase;
+use Celebron\social\old\AuthBase;
 use yii\base\Event;
 
 class RegisterEventArgs extends Event

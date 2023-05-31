@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\social\widgets;
 use yii\base\NotSupportedException;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]

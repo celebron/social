@@ -1,9 +1,7 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
-use Celebron\social\interfaces\GetUrlsInterface;
-use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
@@ -14,11 +12,11 @@ use Yiisoft\Http\Header;
  * @property-read null|int $expiresIn
  * @property-read null|string $tokenType
  * @property-read null|string $accessToken
+ * @property-read array $data
  * @property-read string $tokenTypeToken
- * @property-read array $tokenData
  * @property-read null|string $refreshToken
  */
-class RequestId extends BaseObject
+class RequestId extends \yii\base\BaseObject
 {
 
     public string $uri;
@@ -29,7 +27,6 @@ class RequestId extends BaseObject
     public function __construct(OAuth2 $social, array $config = [])
     {
         parent::__construct($config);
-        $this->uri = ($social instanceof GetUrlsInterface) ? $social->getUriInfo(): '';
         $this->token = $social->token;
         $this->client = $social->client;
     }
@@ -59,7 +56,7 @@ class RequestId extends BaseObject
         return $this->getTokenType() . ' ' . $this->getAccessToken();
     }
 
-    public function getTokenData(): array
+    public function getData(): array
     {
         return $this->token->data;
     }

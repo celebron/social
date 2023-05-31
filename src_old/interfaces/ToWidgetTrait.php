@@ -1,14 +1,18 @@
 <?php
 
-namespace Celebron\social\interfaces;
+namespace Celebron\social\old\interfaces;
 
+use Celebron\social\old\Social;
 
 trait ToWidgetTrait
 {
     public const METHOD_REGISTER = 'register';
     public const METHOD_DELETE = 'delete';
     public const METHOD_LOGIN = 'login';
-    
+
+    private ?string $_name;
+    private string $_icon = '';
+    private bool $_visible = true;
     public function getName (): string
     {
         return $this->_name  ?? static::socialName();
@@ -41,17 +45,17 @@ trait ToWidgetTrait
 
     public static function urlLogin(?string $state = null): string
     {
-        return static::url(self::METHOD_LOGIN, $state);
+        return static::url(Social::METHOD_LOGIN, $state);
     }
 
     public static function urlRegister(?string $state= null): string
     {
-        return static::url(self::METHOD_REGISTER, $state);
+        return static::url(Social::METHOD_REGISTER, $state);
     }
 
     public static function urlDelete(?string $state= null): string
     {
-        return static::url(self::METHOD_DELETE, $state);
+        return static::url(Social::METHOD_DELETE, $state);
     }
 
 }

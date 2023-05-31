@@ -1,9 +1,9 @@
 <?php
 
-namespace Celebron\social\eventArgs;
+namespace Celebron\social\old\eventArgs;
 
 
-use Celebron\social\SocialController;
+use Celebron\social\old\SocialController;
 
 /**
  * Параметры для события error

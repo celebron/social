@@ -1,9 +1,10 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\src_old;
 
-use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\old\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
 
@@ -22,6 +23,7 @@ class RequestCode extends BaseObject
 
 
     /**
+     * @throws Exception
      */
     public function __construct (OAuth2 $social, public State $state, array $config = [])
     {

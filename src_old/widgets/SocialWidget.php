@@ -1,10 +1,12 @@
 <?php
 
-namespace Celebron\social\widgets;
+namespace Celebron\social\old\widgets;
 
-use Celebron\social\AuthBase;
-use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\SocialConfig;
+use Celebron\social\old\interfaces\ToWidgetInterface;
+use Celebron\social\old\SocialAsset;
+use Celebron\social\old\SocialConfiguration;
+use Celebron\social\old\Social;
+use Celebron\social\old\WidgetSupport;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -33,8 +35,8 @@ class SocialWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
-    private null|(AuthBase&ToWidgetInterface) $_social = null;
-    private bool $_supportLogin = true;
+    private null|ToWidgetInterface $_social = null;
+    private bool $_supportLogin = false;
     private bool $_supportRegister = false;
 
     /**
@@ -45,7 +47,7 @@ class SocialWidget extends Widget
     {
         parent::init();
         SocialAsset::register($this->view);
-        $this->_social = SocialConfig::social($this->social);
+        $this->_social = SocialConfiguration::socialStatic($this->social);
         $classRef = new \ReflectionClass($this->_social);
         $attributes = $classRef->getAttributes(WidgetSupport::class);
         if (isset($attributes[0])) {
@@ -96,7 +98,7 @@ class SocialWidget extends Widget
 
     public function getName() : string
     {
-        return  $this->_social->getName() ?? $this->_social::socialName();
+        return  $this->_social->getName() ?? ($this->_social::class)::socialName();
     }
 
     /**

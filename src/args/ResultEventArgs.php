@@ -1,8 +1,8 @@
 <?php
 
-namespace Celebron\social\eventArgs;
+namespace Celebron\social\args;
 
-use Celebron\social\Social;
+
 use Celebron\social\SocialController;
 use yii\base\Event;
 

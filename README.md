@@ -16,12 +16,13 @@ Installation
 Configuration
 -------------
 Редактируем файл `config/web.php`, пример:
+
 ```php
     ...,
      'bootstrap' => [..., 'social' ],
     'components'=>[
         'social' => [
-            'class' => Celebron\social\SocialConfiguration::class,
+            'class' => Celebron\social\old\SocialConfiguration::class,
             'socials' => [
                  [
                      'class' => Yandex::class, //Google::class и т.д.

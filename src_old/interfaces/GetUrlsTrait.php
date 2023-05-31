@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social\interfaces;
+namespace Celebron\social\old\interfaces;
 
 trait GetUrlsTrait
 {

@@ -1,15 +1,20 @@
 <?php
 
-namespace Celebron\social\socials;
+namespace Celebron\social\old\socials;
 
-use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\SetFullUrlInterface;
-use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2;
-use Celebron\social\RequestCode;
-use Celebron\social\RequestId;
-use Celebron\social\RequestToken;
-use Celebron\social\Response;
+use Celebron\social\old\interfaces\GetUrlsInterface;
+use Celebron\social\old\interfaces\GetUrlsTrait;
+use Celebron\social\old\interfaces\RequestIdInterface;
+use Celebron\social\old\interfaces\SetFullUrlInterface;
+use Celebron\social\old\interfaces\ToWidgetInterface;
+use Celebron\social\old\interfaces\ToWidgetLoginInterface;
+use Celebron\social\old\interfaces\ToWidgetRegisterInterface;
+use Celebron\social\old\interfaces\ToWidgetTrait;
+use Celebron\social\old\RequestCode;
+use Celebron\social\old\RequestId;
+use Celebron\social\old\RequestToken;
+use Celebron\social\old\Social;
+use Celebron\social\old\WidgetSupport;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -19,17 +24,21 @@ use Yiisoft\Http\Header;
 /**
  *
  *
- *
- * @property-write Request $fullUrl
  */
-class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface
+#[WidgetSupport]
+class Discord extends Social
+    implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, SetFullUrlInterface
 {
-    use ToWidgetTrait;
+    use ToWidgetTrait, GetUrlsTrait;
+    public string $clientUrl = 'https://discord.com/api';
+    public string $uriToken = 'oauth2/token';
+    public string $uriCode = 'oauth2/authorize';
+    public string $uriInfo = 'oauth2/@me';
     public array $scope = [ 'identify' ];
 
-    public string $_icon = '';
-    public ?string $_name;
-    public bool $_visible = true;
+    public string $icon = '';
+    public ?string $name;
+    public bool $visible = true;
 
     public function requestCode (RequestCode $request) : void
     {
@@ -46,7 +55,7 @@ class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): Response
+    public function requestId (RequestId $request): mixed
     {
 
         $url = $request->get(
@@ -54,7 +63,8 @@ class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface
             [ 'format'=>'json' ],
         );
 
-        return $this->sendResponse($url, 'user.id');
+        return $this->sendToField($url, 'user.id');
+        //return $data->data['user']['id'];
     }
 
     public function setFullUrl(Request $request) : string
@@ -90,21 +100,7 @@ class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface
 
     public function getUriInfo (): string
     {
-        return 'oauth2/@me';
+        return $this->uriInfo;
     }
 
-    public function getBaseUrl (): string
-    {
-        return 'https://discord.com/api';
-    }
-
-    public function getUriCode (): string
-    {
-        return 'oauth2/authorize';
-    }
-
-    public function getUriToken (): string
-    {
-       return 'oauth2/token';
-    }
 }
