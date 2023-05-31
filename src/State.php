@@ -67,7 +67,7 @@ class State implements \Stringable
 
     public function equalAction(string $action):bool
     {
-        return $this->normalizeMethod() === $action;
+        return $this->method === $action;
     }
 
     public function isLogin():bool
