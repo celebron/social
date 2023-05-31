@@ -12,6 +12,5 @@ class SocialAsset extends AssetBundle
     public $css = ['social.css'];
     public $depends = [
         JqueryAsset::class,
-        BootstrapAsset::class,
     ];
 }

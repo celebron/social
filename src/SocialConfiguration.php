@@ -23,9 +23,9 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public string $prefixMethod = 'social';
 
     private array $_socials = [];
-    public ?\Closure $onSuccess;
-    public ?\Closure $onFailed;
-    public ?\Closure $onError;
+    public ?\Closure $onSuccess = null;
+    public ?\Closure $onFailed = null;
+    public ?\Closure $onError = null;
 
     public static self $config;
 
