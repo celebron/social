@@ -52,7 +52,7 @@ class Telegram extends AuthBase
      * @return Response
      * @throws BadRequestHttpException
      */
-    public function request(?string $code, State $state, SocialConfiguration $config): Response
+    public function request(?string $code, State $state): Response
     {
         return $this->response('id', $this->getData());
     }
