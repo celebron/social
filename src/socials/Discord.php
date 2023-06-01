@@ -28,7 +28,7 @@ use Yiisoft\Http\Header;
  * @property-read string $uriCode
  * @property-write Request $fullUrl
  */
-#[WidgetSupport(false, true)]
+#[WidgetSupport(true, true)]
 class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
