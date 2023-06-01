@@ -38,7 +38,7 @@
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
         "php": "^8.2",
-        "celebron/yii2-common": "dev-master"
+        "celebron/yii2-common": "^1.0"
     },
     "extra": {
         "branch-alias": {

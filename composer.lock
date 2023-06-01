@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53234d9e9c7044085dc5cda3e901325b",
+    "content-hash": "c97a258b97629a9cc5d19f3bb88ac850",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -147,16 +147,16 @@
         },
         {
             "name": "celebron/yii2-common",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:celebron/yii2-common.git",
-                "reference": "5843916d2482af89a1ded8d9d4448950180385bf"
+                "reference": "42e2e9c28dcce145ee68a462aa62567735077844"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/5843916d2482af89a1ded8d9d4448950180385bf",
-                "reference": "5843916d2482af89a1ded8d9d4448950180385bf",
+                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/42e2e9c28dcce145ee68a462aa62567735077844",
+                "reference": "42e2e9c28dcce145ee68a462aa62567735077844",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,6 @@
             "require-dev": {
                 "roave/security-advisories": "dev-latest"
             },
-            "default-branch": true,
             "type": "yii2-extension",
             "autoload": {
                 "psr-4": {
@@ -187,10 +186,10 @@
                 "yii2"
             ],
             "support": {
-                "source": "https://github.com/celebron/yii2-common/tree/master",
+                "source": "https://github.com/celebron/yii2-common/tree/1.0.0",
                 "issues": "https://github.com/celebron/yii2-common/issues"
             },
-            "time": "2023-06-01T15:32:40+00:00"
+            "time": "2023-06-01T15:54:04+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
