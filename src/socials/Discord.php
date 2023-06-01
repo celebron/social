@@ -11,6 +11,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Response;
+use Celebron\social\widgets\WidgetSupport;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -21,8 +22,13 @@ use Yiisoft\Http\Header;
  *
  *
  *
+ * @property-read string $uriToken
+ * @property-read string $uriInfo
+ * @property-read string $baseUrl
+ * @property-read string $uriCode
  * @property-write Request $fullUrl
  */
+#[WidgetSupport(false, true)]
 class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
 {
     use ToWidgetTrait;

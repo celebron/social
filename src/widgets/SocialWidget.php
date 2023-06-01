@@ -39,7 +39,7 @@ class SocialWidget extends Widget
     public array $options = [];
 
     private null|(AuthBase&ToWidgetInterface) $_social = null;
-    private bool $_supportLogin = true;
+    private bool $_supportLogin = false;
     private bool $_supportRegister = false;
 
     /**

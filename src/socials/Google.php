@@ -10,6 +10,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Response;
+use Celebron\social\widgets\WidgetSupport;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -25,6 +26,7 @@ use Yiisoft\Http\Header;
  * @property-read string $uriCode
  * @property-write string $configFile
  */
+#[WidgetSupport(true, true)]
 class Google extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;

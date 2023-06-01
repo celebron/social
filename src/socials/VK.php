@@ -9,11 +9,18 @@ use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
+use Celebron\social\widgets\WidgetSupport;
 
 
 /**
  * Oauth2 VK
+ *
+ * @property-read string $uriCode
+ * @property-read string $baseUrl
+ * @property-read string $uriInfo
+ * @property-read string $uriToken
  */
+#[WidgetSupport(true, true)]
 class VK extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;

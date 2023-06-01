@@ -12,6 +12,7 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Response;
+use Celebron\social\widgets\WidgetSupport;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
@@ -20,8 +21,12 @@ use yii\web\BadRequestHttpException;
 
 /**
  *
+ * @property-read string $uriToken
+ * @property-read string $uriInfo
+ * @property-read string $uriCode
  * @property-read string $baseUrl
  */
+#[WidgetSupport(true, true)]
 class Yandex extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
