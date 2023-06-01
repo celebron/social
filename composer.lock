@@ -151,12 +151,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:celebron/yii2-common.git",
-                "reference": "ce540edb8e0399276f058b6a632754cda9feef90"
+                "reference": "6e4e7e53fec32824562b43aedbc007c60f6b659e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/ce540edb8e0399276f058b6a632754cda9feef90",
-                "reference": "ce540edb8e0399276f058b6a632754cda9feef90",
+                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/6e4e7e53fec32824562b43aedbc007c60f6b659e",
+                "reference": "6e4e7e53fec32824562b43aedbc007c60f6b659e",
                 "shasum": ""
             },
             "require": {
@@ -190,7 +190,7 @@
                 "source": "https://github.com/celebron/yii2-common/tree/master",
                 "issues": "https://github.com/celebron/yii2-common/issues"
             },
-            "time": "2023-06-01T13:44:52+00:00"
+            "time": "2023-06-01T14:51:27+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
