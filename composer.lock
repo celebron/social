@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac4a2c414249150d848dfca600cf0e4d",
+    "content-hash": "311534e99083d15d58f4496806022c69",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -144,53 +144,6 @@
                 "source": "https://github.com/cebe/markdown"
             },
             "time": "2018-03-26T11:24:36+00:00"
-        },
-        {
-            "name": "celebron/yii2-common",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:celebron/yii2-common.git",
-                "reference": "2367c1d0217064d58d4d65407d1cf023d2a80770"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/2367c1d0217064d58d4d65407d1cf023d2a80770",
-                "reference": "2367c1d0217064d58d4d65407d1cf023d2a80770",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.2",
-                "yiisoft/yii2": "^2.0"
-            },
-            "require-dev": {
-                "roave/security-advisories": "dev-latest"
-            },
-            "default-branch": true,
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "Celebron\\common\\": "src/"
-                }
-            },
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Aleksey Shatalin (celebron)",
-                    "email": "celebron.ru@gmail.com"
-                }
-            ],
-            "keywords": [
-                "extension",
-                "yii2"
-            ],
-            "support": {
-                "source": "https://github.com/celebron/yii2-common/tree/master",
-                "issues": "https://github.com/celebron/yii2-common/issues"
-            },
-            "time": "2023-06-01T15:19:04+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -1322,7 +1275,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "celebron/yii2-common": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
