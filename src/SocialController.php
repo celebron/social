@@ -52,7 +52,8 @@ class SocialController extends Controller
             }
 
             $userClass = \Yii::$app->user->identityClass;
-            $objectUser = \Yii::createObject($userClass);
+
+            $objectUser = \Yii::$app->user->identity ?? \Yii::createObject($userClass);
 
             $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
             $methodRef = new \ReflectionMethod($userClass, $methodName);
