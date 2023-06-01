@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac4a2c414249150d848dfca600cf0e4d",
+    "content-hash": "49b9a8a6370188bbb165dcdca207703d",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -151,12 +151,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:celebron/yii2-common.git",
-                "reference": "afdcd17ea6c08d1a921b3990049a3590a5c4c1d5"
+                "reference": "a526a26121b3a5bf33f969690a8824a056884507"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/afdcd17ea6c08d1a921b3990049a3590a5c4c1d5",
-                "reference": "afdcd17ea6c08d1a921b3990049a3590a5c4c1d5",
+                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/a526a26121b3a5bf33f969690a8824a056884507",
+                "reference": "a526a26121b3a5bf33f969690a8824a056884507",
                 "shasum": ""
             },
             "require": {
@@ -190,7 +190,7 @@
                 "source": "https://github.com/celebron/yii2-common/tree/master",
                 "issues": "https://github.com/celebron/yii2-common/issues"
             },
-            "time": "2023-06-01T13:15:05+00:00"
+            "time": "2023-06-01T13:26:43+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -1320,12 +1320,12 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
         "celebron/yii2-common": 20,
         "roave/security-advisories": 20
     },
-    "prefer-stable": true,
+    "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
