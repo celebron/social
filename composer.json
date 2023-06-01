@@ -49,7 +49,5 @@
         "allow-plugins": {
             "yiisoft/yii2-composer": true
         }
-    },
-    "prefer-stable": true,
-    "minimum-stability": "dev"
+    }
 }
