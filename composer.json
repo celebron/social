@@ -1,7 +1,10 @@
 {
     "name": "celebron/yii2-social-auth",
     "type": "yii2-extension",
-    "keywords": ["yii2", "extension"],
+    "keywords": [
+        "yii2",
+        "extension"
+    ],
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
@@ -31,7 +34,6 @@
     ],
     "require-dev": {
         "roave/security-advisories": "dev-latest"
-
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
@@ -49,6 +51,6 @@
         "allow-plugins": {
             "yiisoft/yii2-composer": true
         }
-    },
-    "minimum-stability": "stable"
+    }
 }
+

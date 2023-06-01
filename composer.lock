@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6aba28175cd0ee72c68df0e65ed0e356",
+    "content-hash": "49b9a8a6370188bbb165dcdca207703d",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -151,12 +151,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:celebron/yii2-common.git",
-                "reference": "f6ebb97d9266174d900ce5616495f0b272f8c20f"
+                "reference": "b31386f61862fd20694881317c6c80bad8299667"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/f6ebb97d9266174d900ce5616495f0b272f8c20f",
-                "reference": "f6ebb97d9266174d900ce5616495f0b272f8c20f",
+                "url": "https://api.github.com/repos/celebron/yii2-common/zipball/b31386f61862fd20694881317c6c80bad8299667",
+                "reference": "b31386f61862fd20694881317c6c80bad8299667",
                 "shasum": ""
             },
             "require": {
@@ -190,7 +190,7 @@
                 "source": "https://github.com/celebron/yii2-common/tree/master",
                 "issues": "https://github.com/celebron/yii2-common/issues"
             },
-            "time": "2023-06-01T14:59:13+00:00"
+            "time": "2023-06-01T15:08:14+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
