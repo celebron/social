@@ -11,6 +11,9 @@ use yii\helpers\ArrayHelper;
  */
 class Response extends BaseObject
 {
+    //### Передача в success или failed ###//
+    public mixed $response = null;
+
     public function __construct (
         public readonly string                      $social,
         private readonly string|\Closure|array|null $field,
