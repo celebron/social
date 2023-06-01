@@ -2,12 +2,10 @@
 
 namespace Celebron\social\widgets;
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\AuthBase;
-use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\OAuth2;
 use Celebron\social\SocialConfiguration;
-use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;

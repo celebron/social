@@ -4,6 +4,7 @@
 namespace Celebron\social\socials;
 
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
@@ -12,7 +13,6 @@ use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
 use Celebron\social\Response;
-use Celebron\social\widgets\WidgetSupport;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;

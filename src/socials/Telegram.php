@@ -3,12 +3,11 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\args\RequestArgs;
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\AuthBase;
 use Celebron\social\Response;
 use Celebron\social\SocialConfiguration;
 use Celebron\social\State;
-use Celebron\social\widgets\WidgetSupport;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 
 /**

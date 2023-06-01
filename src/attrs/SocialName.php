@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\social\attrs;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class SocialName

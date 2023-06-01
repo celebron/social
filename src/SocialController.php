@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use Celebron\social\args\RequestArgs;
+use Celebron\social\attrs\Request;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -50,12 +51,27 @@ class SocialController extends Controller
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
 
-            $userClass = \Yii::$app->user->identityClass;
-            $response = $object->request($this->code, $this->getState(), $this->config);
-            $objectUser = \Yii::createObject($userClass);
-
             $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
             $methodRef = new \ReflectionMethod($userClass, $methodName);
+
+            $userClass = \Yii::$app->user->identityClass;
+            $objectUser = \Yii::createObject($userClass);
+
+            $attributes = $methodRef->getAttributes(Request::class);
+            $requested = true;
+            if(isset($attributes[0])) {
+                /** @var Request $attr */
+                $attr = $attributes[0]->newInstance();
+                $requested = $attr->request;
+            }
+
+            if($requested) {
+                $response = $object->request($this->code, $this->getState(), $this->config);
+            } else {
+                $response = new Response($object::socialName(), null, null);
+            }
+
+
             if($methodRef->invoke($objectUser, $response, $object)) {
                 return $object->success($this, $response);
             }

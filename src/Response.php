@@ -12,10 +12,10 @@ use yii\helpers\ArrayHelper;
 class Response extends BaseObject
 {
     public function __construct (
-        public readonly string  $social,
-        private readonly string|\Closure|array $field,
-        public readonly mixed $data,
-        array $config = []
+        public readonly string                      $social,
+        private readonly string|\Closure|array|null $field,
+        public readonly mixed                       $data,
+        array                                       $config = []
     ){
         parent::__construct($config);
     }
@@ -28,5 +28,9 @@ class Response extends BaseObject
         return ArrayHelper::getValue($this->data, $this->field);
     }
 
+    public function isRequested():bool
+    {
+        return $this->field !== null && $this->data !== null;
+    }
 
 }

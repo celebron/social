@@ -2,11 +2,11 @@
 
 namespace Celebron\social;
 
-use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
+use Celebron\social\attrs\SocialName;
+use Celebron\social\interfaces\SocialInterface;
 use yii\base\Model;
 use yii\base\NotSupportedException;
-use yii\web\NotFoundHttpException;
 
 
 abstract class AuthBase extends Model
