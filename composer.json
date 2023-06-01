@@ -26,10 +26,6 @@
             "url": "https://asset-packagist.org"
         },
         {
-            "type": "composer",
-            "url": "https://cerebron.ru/composer"
-        },
-        {
             "type": "github",
             "url": "https://github.com/celebron/yii2-common.git"
         }
