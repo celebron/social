@@ -40,11 +40,6 @@
         "php": "^8.2",
         "celebron/yii2-common": "^1.0"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-main": "1.0.x-dev"
-        }
-    },
     "config": {
         "allow-plugins": {
             "yiisoft/yii2-composer": true
