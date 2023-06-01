@@ -3,12 +3,10 @@
 namespace Celebron\social\interfaces;
 
 
+use Celebron\social\State;
+
 trait ToWidgetTrait
 {
-    public const METHOD_REGISTER = 'register';
-    public const METHOD_DELETE = 'delete';
-    public const METHOD_LOGIN = 'login';
-    
     public function getName (): string
     {
         return $this->_name  ?? static::socialName();
@@ -41,17 +39,17 @@ trait ToWidgetTrait
 
     public static function urlLogin(?string $state = null): string
     {
-        return static::url(self::METHOD_LOGIN, $state);
+        return static::url(State::ACTION_LOGIN, $state);
     }
 
     public static function urlRegister(?string $state= null): string
     {
-        return static::url(self::METHOD_REGISTER, $state);
+        return static::url(State::ACTION_REGISTER, $state);
     }
 
     public static function urlDelete(?string $state= null): string
     {
-        return static::url(self::METHOD_DELETE, $state);
+        return static::url(State::ACTION_DELETE, $state);
     }
 
 }

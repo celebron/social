@@ -2,8 +2,11 @@
 
 namespace Celebron\social;
 
+use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
 use yii\base\Model;
+use yii\base\NotSupportedException;
+use yii\web\NotFoundHttpException;
 
 
 abstract class AuthBase extends Model
@@ -69,4 +72,14 @@ abstract class AuthBase extends Model
     {
         return SocialConfiguration::url(static::socialName(), $method, $state);
     }
+
+    public static function getSocialId(): mixed
+    {
+        $user = \Yii::$app->user->identity;
+        if($user instanceof SocialInterface) {
+            return $user->getSocialId(static::socialName());
+        }
+        throw new NotSupportedException('Not released ' . SocialInterface::class);
+    }
+
 }

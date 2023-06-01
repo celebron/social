@@ -98,16 +98,6 @@ class State implements \Stringable
         return $obj;
     }
 
-    public static function createLogin(?string $state = null):self
-    {
-        return static::create(self::ACTION_LOGIN, $state);
-    }
-
-    public static function createRegister(?string $state = null):self
-    {
-        return static::create(self::ACTION_REGISTER, $state);
-    }
-
     public static function open(string|\Stringable $stateBase64):self
     {
         return (new self())->decode($stateBase64);

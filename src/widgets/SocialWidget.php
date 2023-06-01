@@ -3,9 +3,11 @@
 namespace Celebron\social\widgets;
 
 use Celebron\social\AuthBase;
+use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\OAuth2;
 use Celebron\social\SocialConfiguration;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -21,7 +23,9 @@ class SocialWidget extends Widget
     public const TYPE_LOGIN = 'login';
     public const TYPE_REGISTER = 'register';
 
+    /** @var string Название социальной сети из конфига */
     public string $social;
+
     public string $type = self::TYPE_LOGIN;
     public ?bool $visible = null; //null -> $_social->visible
 
@@ -88,11 +92,9 @@ class SocialWidget extends Widget
      */
     public function runLogin(): string
     {
-        /** @var OAuth2 $social */
-        $social = $this->_social::class;
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, $social::urlLogin(), $this->loginOptions) . PHP_EOL;
+        return "\t" . Html::a($text, $this->_social::urlLogin(), $this->loginOptions) . PHP_EOL;
     }
 
     public function getName() : string
@@ -126,16 +128,14 @@ class SocialWidget extends Widget
      */
     public function runRegister(): string
     {
-        /** @var Social $social */
-        $social = $this->_social::class;
-
-        $socialId = $this->_social->getSocialId();
-        $idText = Html::a("<i class='bi bi-play'></i>",$social::urlRegister());
+        $user = \Yii::$app->user->identity;
+        $socialId = $this->_social::getSocialId();
+        $idText = Html::a("<i class='bi bi-play'></i>",$this->_social::urlRegister());
         $idText .= $socialId;
-        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $social::urlDelete());
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $this->_social::urlDelete());
         if($socialId === null) {
             $idText = "<i class='bi bi-stop'></i>";
-            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$social::urlRegister());
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$this->_social::urlRegister());
         }
 
         $this->registerOptions['icon']['class'][] = 'social-icon-view';
