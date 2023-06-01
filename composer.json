@@ -24,6 +24,14 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
+        },
+        {
+            "type": "composer",
+            "url": "https://cerebron.ru/composer"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/celebron/yii2-common.git"
         }
     ],
     "require-dev": {
@@ -34,6 +42,7 @@
         "yiisoft/yii2-httpclient": "^2.0",
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
+        "celebron/yii2-common": "dev-master",
         "php": "^8.2"
     },
     "extra": {
