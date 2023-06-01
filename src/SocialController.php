@@ -51,11 +51,11 @@ class SocialController extends Controller
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
 
-            $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
-            $methodRef = new \ReflectionMethod($userClass, $methodName);
-
             $userClass = \Yii::$app->user->identityClass;
             $objectUser = \Yii::createObject($userClass);
+
+            $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
+            $methodRef = new \ReflectionMethod($userClass, $methodName);
 
             $attributes = $methodRef->getAttributes(Request::class);
             $requested = true;
@@ -70,7 +70,6 @@ class SocialController extends Controller
             } else {
                 $response = new Response($object::socialName(), null, null);
             }
-
 
             if($methodRef->invoke($objectUser, $response, $object)) {
                 return $object->success($this, $response);
