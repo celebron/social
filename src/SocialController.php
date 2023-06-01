@@ -2,7 +2,6 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\RequestArgs;
 use Celebron\social\attrs\Request;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -67,14 +66,18 @@ class SocialController extends Controller
             }
 
             if($requested) {
-                $response = $object->request($this->code, $this->getState(), $this->config);
+                \Yii::info("Request to {$social} server", static::class);
+                $response = $object->request($this->code, $this->getState());
             } else {
                 $response = new Response($object::socialName(), null, null);
             }
 
             if($methodRef->invoke($objectUser, $response, $object)) {
+                \Yii::info("Invoke method ({$methodRef->getShortName()}) successful", static::class);
                 return $object->success($this, $response);
             }
+
+            \Yii::warning("Invoke method ({$methodRef->getShortName()}) failed", static::class);
             return $object->failed($this, $response);
         } catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
