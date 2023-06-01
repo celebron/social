@@ -18,7 +18,7 @@ abstract class AuthBase extends Model
 
     abstract public function request(?string $code, State $state, SocialConfiguration $config):Response;
 
-    public function __construct (SocialConfiguration $configuration, $config = [])
+    public function __construct (public readonly SocialConfiguration $configuration, array $config = [])
     {
         parent::__construct($config);
     }
