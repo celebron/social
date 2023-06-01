@@ -18,6 +18,11 @@ abstract class AuthBase extends Model
 
     abstract public function request(?string $code, State $state, SocialConfiguration $config):Response;
 
+    public function __construct (SocialConfiguration $configuration, $config = [])
+    {
+        parent::__construct($config);
+    }
+
     public function success(SocialController $action, Response $response): mixed
     {
         $eventArgs = new ResultEventArgs($action, $response);
