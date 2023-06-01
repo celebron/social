@@ -48,14 +48,13 @@ abstract class OAuth2 extends AuthBase
     /**
      * @param string|null $code
      * @param State $state
-     * @param SocialConfiguration $config
-     * @return \Celebron\social\Response
+     * @return Response
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
      * @throws InvalidRouteException
      */
-    public function request(?string $code, State $state, SocialConfiguration $config): \Celebron\social\Response
+    public function request(?string $code, State $state): \Celebron\social\Response
     {
         $session = \Yii::$app->session;
         if (!$session->isActive) {

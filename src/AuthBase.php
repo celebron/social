@@ -16,7 +16,7 @@ abstract class AuthBase extends Model
     public const EVENT_ERROR = 'error';
     public bool $active = false;
 
-    abstract public function request(?string $code, State $state, SocialConfiguration $config):Response;
+    abstract public function request(?string $code, State $state):Response;
 
     public function __construct (public readonly SocialConfiguration $config, array $cfg = [])
     {
