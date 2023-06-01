@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\common\Token;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;

@@ -22,12 +22,14 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public string $route = "social";
     public string $prefixMethod = 'social';
 
+    public ?string $adminHandler = null;
+
     private array $_socials = [];
     public ?\Closure $onSuccess = null;
     public ?\Closure $onFailed = null;
     public ?\Closure $onError = null;
 
-    public static self $config;
+    private static self $config;
 
     public function init ()
     {
@@ -37,6 +39,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function bootstrap ($app)
     {
         $app->urlManager->addRules([
+            "{$this->route}/<social>/admin" => "{$this->route}/handler-admin",
             "{$this->route}/<social>" => "{$this->route}/handler",
         ]);
 

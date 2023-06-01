@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use Celebron\social\attrs\Request;
+use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -40,7 +41,7 @@ class SocialController extends Controller
      * @throws BadRequestHttpException
      * @throws \Exception
      */
-    public function actionHandler(string $social)
+    public function handler(string $social, string $userClass, ?object $userObject)
     {
         \Yii::beginProfile("Social profiling", static::class);
         $object = $this->config->get($social);
@@ -49,11 +50,7 @@ class SocialController extends Controller
             if($object === null) {
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
-
-            $userClass = \Yii::$app->user->identityClass;
-
-            $objectUser = \Yii::$app->user->identity ?? \Yii::createObject($userClass);
-
+            $userObject  =  $userObject ?? \Yii::createObject($userClass);
             $methodName = $this->config->prefixMethod . $this->getState()->normalizeMethod();
             $methodRef = new \ReflectionMethod($userClass, $methodName);
 
@@ -72,7 +69,7 @@ class SocialController extends Controller
                 $response = new Response($object::socialName(), null, null);
             }
 
-            if($methodRef->invoke($objectUser, $response, $object)) {
+            if($methodRef->invoke($userObject, $response, $object)) {
                 \Yii::info("Invoke method ({$methodRef->getShortName()}) successful", static::class);
                 return $object->success($this, $response);
             }
@@ -85,5 +82,18 @@ class SocialController extends Controller
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function actionHandler($social)
+    {
+        return $this->handler($social, \Yii::$app->user->identityClass, \Yii::$app->user->identity);
+    }
+
+    public function actionHandlerAdmin($social)
+    {
+
     }
 }
