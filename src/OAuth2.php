@@ -38,12 +38,12 @@ abstract class OAuth2 extends AuthBase
 
     public function __construct (SocialConfiguration $config, array $cfg = [])
     {
-        parent::__construct($config, $cfg);
         $this->client = new Client();
         $this->client->transport = CurlTransport::class;
         if($this instanceof GetUrlsInterface) {
             $this->client->baseUrl = $this->getBaseUrl();
         }
+        parent::__construct($config, $cfg);
     }
 
     /**
