@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use Celebron\social\args\RegisterEventArgs;
+use Celebron\social\attrs\SocialName;
 use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -11,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\UnknownMethodException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\web\Application;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -40,6 +42,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
         self::$config = $this;
     }
 
+    /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */
     public function bootstrap ($app)
     {
         $app->urlManager->addRules([
@@ -55,22 +58,32 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     /**
      * @throws InvalidConfigException
+     * @throws \ReflectionException
      */
-    public function add(array|callable|string $socialClass, $key = null): void
+    public function add(array $socialClassConfig, mixed $socialName): void
     {
-        $registerEventArgs = new RegisterEventArgs();
-        $object = \Yii::createObject($socialClass, [ $this ]);
-        $registerEventArgs->support = false;
+        if(is_numeric($socialName)) {
+            $classRef = new \ReflectionClass($socialName['class']);
+            $socialName = $classRef->getShortName();
+            $attrs = $classRef->getAttributes(SocialName::class);
+            if(isset($attrs[0])) {
+                /** @var SocialName $attr */
+                $attr = $attrs[0]->newInstance();
+                $socialName = $attr->name;
+            }
+            $socialName = strtolower(trim($socialName));
+        }
 
+        if(ArrayHelper::keyExists($socialName, $this->_socials)) {
+            throw new InvalidConfigException("Key $socialName exists");
+        }
+
+        $registerEventArgs = new RegisterEventArgs();
+        $object = \Yii::createObject($socialClassConfig, [ $socialName, $this ]);
+
+        $registerEventArgs->support = false;
         if($object instanceof AuthBase) {
             $registerEventArgs->social = $object;
-
-            if(is_numeric($key) || $key === null) {
-                $key = strtolower($object::socialName());
-                if(ArrayHelper::keyExists($key, $this->_socials)) {
-                    throw new InvalidConfigException("Key $key exists");
-                }
-            }
 
             if($this->onSuccess !== null) {
                 $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess);
@@ -94,12 +107,13 @@ class SocialConfiguration extends Component implements BootstrapInterface
         }
 
         if($registerEventArgs->support && $object?->active) {
-            $this->_socials[$key] = $object;
+            $this->_socials[$socialName] = $object;
         }
     }
 
     /**
      * @throws InvalidConfigException
+     * @throws \ReflectionException
      */
     public function setSocials(array $socials):void
     {
@@ -141,7 +155,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
             return null;
         }
 
-        if($object instanceof OAuth2) {
+        if($object instanceof OAuth2 && \Yii::$app instanceof Application) {
             $object->redirectUrl = Url::toRoute([
                 "{$this->route}/handler",
                 'social' => $social,
@@ -192,7 +206,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
         }
         if(str_starts_with($name, 'url')) {
             $name = str_replace('url','', $name);
-            return static::url($name, $arguments[0], isset($arguments[1])?:null);
+            return static::url($name, $arguments[0], $arguments[1] ?? null);
         }
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
     }
