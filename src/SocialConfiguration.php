@@ -28,14 +28,12 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public string $route = "social";
     public string $prefixMethod = 'social';
 
-    public ?string $adminHandler = null;
-
     private array $_socials = [];
     public ?\Closure $onSuccess = null;
     public ?\Closure $onFailed = null;
     public ?\Closure $onError = null;
 
-    private static self $config;
+    public static self $config;
 
     public function __construct ($cfg = [])
     {

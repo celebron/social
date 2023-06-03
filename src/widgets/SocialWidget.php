@@ -19,13 +19,10 @@ use yii\web\NotFoundHttpException;
  */
 class SocialWidget extends Widget
 {
-    public const TYPE_LOGIN = 'login';
-    public const TYPE_REGISTER = 'register';
-
     /** @var string Название социальной сети из конфига */
     public string $social;
 
-    public string $type = self::TYPE_LOGIN;
+    public string $type = State::METHOD_LOGIN;
     public ?bool $visible = null; //null -> $_social->visible
 
     public bool|string $icon = false;
@@ -71,9 +68,9 @@ class SocialWidget extends Widget
             $this->options['class'][] = "social-{$this->type}-block";
             $this->options['class'][] = "social_{$this->social}";
             $html .= Html::beginTag('div', $this->options) . PHP_EOL;
-            if(($this->type === self::TYPE_LOGIN) && $this->_supportLogin) {
+            if(($this->type === State::METHOD_LOGIN) && $this->_supportLogin) {
                 $html .= $this->getVisible() ? $this->runLogin() : $this->options['loginNoVisible'] ?? '';
-            } elseif(($this->type === self::TYPE_REGISTER) && $this->_supportRegister) {
+            } elseif(($this->type === State::METHOD_REGISTER) && $this->_supportRegister) {
                 $html .= $this->getVisible() ? $this->runRegister() : $this->options['registerNoVisible'] ?? '';
             }
             $html .= Html::endTag('div') . PHP_EOL;

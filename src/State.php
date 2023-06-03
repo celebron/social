@@ -8,9 +8,9 @@ use yii\helpers\Json;
 class State implements \Stringable
 {
 
-    public const ACTION_LOGIN = 'login';
-    public const ACTION_REGISTER = 'register';
-    public const ACTION_DELETE = 'delete';
+    public const METHOD_LOGIN = 'login';
+    public const METHOD_REGISTER = 'register';
+    public const METHOD_DELETE = 'delete';
 
     public ?string $method = null;
     public string $random;
@@ -72,17 +72,17 @@ class State implements \Stringable
 
     public function isLogin():bool
     {
-        return $this->equalAction(self::ACTION_LOGIN);
+        return $this->equalAction(self::METHOD_LOGIN);
     }
 
     public function isRegister():bool
     {
-        return $this->equalAction(self::ACTION_REGISTER);
+        return $this->equalAction(self::METHOD_REGISTER);
     }
 
     public function isDelete():bool
     {
-        return $this->equalAction(self::ACTION_DELETE);
+        return $this->equalAction(self::METHOD_DELETE);
     }
 
     public function __toString ()

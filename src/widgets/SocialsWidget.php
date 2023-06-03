@@ -4,8 +4,8 @@ namespace Celebron\social\widgets;
 
 use Celebron\social\AuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\OAuth2;
 use Celebron\social\SocialConfiguration;
+use Celebron\social\State;
 use yii\base\Widget;
 use yii\helpers\Html;
 
@@ -15,7 +15,7 @@ use yii\helpers\Html;
 class SocialsWidget extends Widget
 {
 
-    public string $type = SocialWidget::TYPE_LOGIN;
+    public string $type = State::METHOD_LOGIN;
 
     public bool|string $icon = false;
 
@@ -46,7 +46,7 @@ class SocialsWidget extends Widget
         $html = Html::beginTag('div',['class'=> 'socials-block']);
         foreach ($this->_socials as $social) {
             /** @var ToWidgetInterface $social  */
-            if($this->type === SocialWidget::TYPE_REGISTER && !$social->getVisible()) {
+            if($this->type === State::METHOD_REGISTER && !$social->getVisible()) {
                 continue;
             }
             $html .= SocialWidget::widget([
