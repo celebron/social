@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\args\RequestCodeEventArgs;
 use Celebron\social\args\RequestEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
@@ -35,10 +36,9 @@ class RequestCode extends BaseObject
 
     public function generateUri() : array
     {
-        $event = new Event();
-        $event->data = $this->data;
+        $event = new RequestCodeEventArgs($this->data);
         $this->social->trigger(OAuth2::EVENT_GENERATE, $event);
-        $this->data = $event->data;
+        $this->data = $event->newData;
 
         $default = [
             0 => $this->uri,
