@@ -42,14 +42,17 @@ abstract class OAuth2 extends AuthBase
 
     abstract public function requestId(RequestId $request): \Celebron\social\Response;
 
-    public function __construct (SocialConfiguration $config, array $cfg = [])
+    public function __construct (
+        string $socialName,
+        SocialConfiguration $config,
+        array $cfg = [])
     {
         $this->client = new Client();
         $this->client->transport = CurlTransport::class;
         if($this instanceof GetUrlsInterface) {
             $this->client->baseUrl = $this->getBaseUrl();
         }
-        parent::__construct($config, $cfg);
+        parent::__construct($socialName, $config, $cfg);
     }
 
     /**
