@@ -3,8 +3,10 @@
 namespace Celebron\social;
 
 use Celebron\common\Token;
+use Celebron\social\args\RequestEventArgs;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
+use yii\base\Event;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;
@@ -13,6 +15,8 @@ use yii\web\BadRequestHttpException;
 
 abstract class OAuth2 extends AuthBase
 {
+    public const EVENT_GENERATE = 'generate';
+
     public string $clientId;
     public string $clientSecret;
     public string $redirectUrl;

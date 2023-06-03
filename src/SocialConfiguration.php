@@ -43,11 +43,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function bootstrap ($app)
     {
         $app->urlManager->addRules([
-            [
-                'pattern' => "{$this->route}/<social>/<handler>",
-                'route' => '{$this->route}/handler<handler>',
-                'defaults' => ['handler' => ''],
-            ]
+            "{$this->route}/<social>" => "{$this->route}/handler",
         ]);
 
         $app->controllerMap[$this->route] = [
@@ -191,12 +187,12 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public static function __callStatic ($name, $arguments)
     {
         if(str_starts_with($name, 'social')) {
-            $name = substr($name, 0, '6');
+            $name = str_replace('social','', $name);
             return static::social($name, ...$arguments);
         }
         if(str_starts_with($name, 'url')) {
-            $name = substr($name, 0, 3);
-            return static::url($name, $arguments[0], $arguments[1]);
+            $name = str_replace('url','', $name);
+            return static::url($name, $arguments[0], isset($arguments[1])?:null);
         }
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
     }
