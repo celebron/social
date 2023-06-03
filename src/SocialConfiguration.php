@@ -3,8 +3,12 @@
 namespace Celebron\social;
 
 use Celebron\social\args\RegisterEventArgs;
+use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
+use yii\base\UnknownMethodException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -39,66 +43,79 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function bootstrap ($app)
     {
         $app->urlManager->addRules([
-            "{$this->route}/<social>/admin" => "{$this->route}/handler-admin",
-            "{$this->route}/<social>" => "{$this->route}/handler",
+            [
+                'pattern' => "{$this->route}/<social>/<handler>",
+                'route' => '{$this->route}/handler<handler>',
+                'defaults' => ['handler' => ''],
+            ]
         ]);
 
         $app->controllerMap[$this->route] = [
             'class' => SocialController::class,
             'config' => $this,
         ];
+
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
+    public function add(array|callable|string $socialClass, $key = null): void
+    {
+        $registerEventArgs = new RegisterEventArgs();
+        $object = \Yii::createObject($socialClass, [ $this ]);
+        $registerEventArgs->support = false;
+
+        if($object instanceof AuthBase) {
+            $registerEventArgs->social = $object;
+
+            if(is_numeric($key) || $key === null) {
+                $key = strtolower($object::socialName());
+                if(ArrayHelper::keyExists($key, $this->_socials)) {
+                    throw new InvalidConfigException("Key $key exists");
+                }
+            }
+
+            if($this->onSuccess !== null) {
+                $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess);
+            }
+
+            if($this->onFailed !== null) {
+                $object->on(AuthBase::EVENT_FAILED, $this->onFailed);
+            }
+
+            if($this->onError !== null) {
+                $object->on(AuthBase::EVENT_ERROR, $this->onError);
+            }
+
+            $registerEventArgs->support = true;
+        }
+
+        if(!$registerEventArgs->support) {
+            \Yii::warning($object::class . ' not support',static::class);
+        }
+
+        if($registerEventArgs->support && $object?->active) {
+            $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
+            $this->_socials[$key] = $object;
+        }
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
     public function setSocials(array $socials):void
     {
         $this->trigger(self::EVENT_BEFORE_REGISTER);
-        $i = 0;
         foreach ($socials as $key => $class) {
-            $object = \Yii::createObject($class, [ $this ]);
-            $registerEventArgs = new RegisterEventArgs($object);
-            $registerEventArgs->support = false;
-
-            if($object instanceof AuthBase) {
-                if(!$object->active) {
-                    continue;
-                }
-
-                if(is_numeric($key)) {
-                    $key = strtolower($object::socialName());
-                    if(ArrayHelper::keyExists($key, $this->_socials)) {
-                        $key .= $i++;
-                    }
-                }
-
-                if($this->onSuccess !== null) {
-                    $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess);
-                }
-
-                if($this->onFailed !== null) {
-                    $object->on(AuthBase::EVENT_FAILED, $this->onFailed);
-                }
-
-                if($this->onError !== null) {
-                    $object->on(AuthBase::EVENT_ERROR, $this->onError);
-                }
-
-                $registerEventArgs->support = true;
-            }
-
-            //Триггер непосредственной регистрации
-            $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
-
-            //Не регистрировать, если не поддерживается
-            if(!$registerEventArgs->support) {
-                \Yii::warning($object::class . ' not support',static::class);
-                continue;
-            }
-
-            $this->_socials[$key] = $object;
+            $this->add($class, $key);
         }
         $this->trigger(self::EVENT_AFTER_REGISTER);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function getSocials (...$interfaces): array
     {
         if(count($interfaces) > 0) {
@@ -148,8 +165,8 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * Выводит Social класс по имени класса (static)
      * @param string $socialName
+     * @param mixed ...$interfaces
      * @return null|AuthBase
-     * @throws NotFoundHttpException
      * @throws \Exception
      */
     public static function social(string $socialName, ...$interfaces) : ?AuthBase
@@ -160,9 +177,26 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * Вывод Socials[] (static)
      * @return AuthBase[]
+     * @throws \ReflectionException
      */
     public static function socials(...$interfaces): array
     {
         return static::$config->getSocials(...$interfaces);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function __callStatic ($name, $arguments)
+    {
+        if(str_starts_with($name, 'social')) {
+            $name = substr($name, 0, '6');
+            return static::social($name, ...$arguments);
+        }
+        if(str_starts_with($name, 'url')) {
+            $name = substr($name, 0, 3);
+            return static::url($name, $arguments[0], $arguments[1]);
+        }
+        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
     }
 }

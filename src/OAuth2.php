@@ -141,7 +141,4 @@ abstract class OAuth2 extends AuthBase
         $response = $this->send($sender);
         return $this->response($field, $response->getData());
     }
-
-
-
 }

@@ -5,11 +5,12 @@ namespace Celebron\social;
 use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
 use Celebron\social\attrs\SocialName;
 use Celebron\social\interfaces\SocialInterface;
+use yii\base\Component;
 use yii\base\Model;
 use yii\base\NotSupportedException;
 
 
-abstract class AuthBase extends Model
+abstract class AuthBase extends Component
 {
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
