@@ -63,7 +63,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public function add(array $socialClassConfig, mixed $socialName): void
     {
         if(is_numeric($socialName)) {
-            $classRef = new \ReflectionClass($socialName['class']);
+            $classRef = new \ReflectionClass($socialClassConfig['class']);
             $socialName = $classRef->getShortName();
             $attrs = $classRef->getAttributes(SocialName::class);
             if(isset($attrs[0])) {
