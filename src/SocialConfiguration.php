@@ -91,12 +91,13 @@ class SocialConfiguration extends Component implements BootstrapInterface
             $registerEventArgs->support = true;
         }
 
+        $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
+
         if(!$registerEventArgs->support) {
             \Yii::warning($object::class . ' not support',static::class);
         }
 
         if($registerEventArgs->support && $object?->active) {
-            $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
             $this->_socials[$key] = $object;
         }
     }
