@@ -9,7 +9,7 @@ trait ToWidgetTrait
 {
     public function getName (): string
     {
-        return $this->_name  ?? static::socialName();
+        return $this->_name  ?? $this->socialName;
     }
 
     public function setName(?string $name):void
@@ -19,7 +19,7 @@ trait ToWidgetTrait
 
     public function getIcon (): string
     {
-        return $this->_icon;
+        return \Yii::getAlias($this->_icon);
     }
 
     public function setIcon(string $icon):void

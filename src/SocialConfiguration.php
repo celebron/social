@@ -37,9 +37,10 @@ class SocialConfiguration extends Component implements BootstrapInterface
 
     private static self $config;
 
-    public function init ()
+    public function __construct ($cfg = [])
     {
         self::$config = $this;
+        parent::__construct($cfg);
     }
 
     /** @noinspection PhpUnnecessaryCurlyVarSyntaxInspection */

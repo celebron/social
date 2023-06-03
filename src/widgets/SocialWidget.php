@@ -94,12 +94,12 @@ class SocialWidget extends Widget
     {
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, SocialConfiguration::url($this->social, State::ACTION_LOGIN), $this->loginOptions) . PHP_EOL;
+        return "\t" . Html::a($text, $this->_social->urlLogin(), $this->loginOptions) . PHP_EOL;
     }
 
     public function getName() : string
     {
-        return  $this->_social->getName() ?? $this->_social->socialName;
+        return  $this->_social->getName();
     }
 
     /**
@@ -110,7 +110,7 @@ class SocialWidget extends Widget
     public function getIcon(bool $html = false): bool|string|null
     {
         if (is_bool($this->icon)) {
-            $icon = $this->icon && !empty( $this->_social->getIcon()) ? \Yii::getAlias( $this->_social->getIcon()) : null;
+            $icon = $this->icon && !empty( $this->_social->getIcon()) ? $this->_social->getIcon() : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }

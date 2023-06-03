@@ -57,7 +57,7 @@ class SocialsWidget extends Widget
                 'type' => $this->type,
                 'icon' => $this->icon,
                 'loginText' => $this->loginText,
-                'social' => ($social::class)::socialName()
+                'social' => $social->socialName,
             ]);
         }
         $html .= Html::endTag('div');
