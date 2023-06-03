@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
@@ -26,18 +27,18 @@ class RequestToken extends BaseObject
     public bool $send = true;
     public array $header = [];
     public array $params = [];
-
-    public readonly string  $code;
     private readonly Client $client;
-    public function __construct (string $code, OAuth2 $social, array $config = [])
-    {
+    public function __construct (
+        public readonly string $code,
+        protected OAuth2 $social,
+        array $config = []
+    ) {
         parent::__construct($config);
-        $this->code = $code;
-        $this->uri = ($social instanceof GetUrlsInterface) ? $social->getUriToken():'';
-        $this->client_id = $social->clientId;
-        $this->redirect_uri = $social->redirectUrl;
-        $this->client_secret = $social->clientSecret;
-        $this->client = $social->client;
+        $this->uri = ($this->social instanceof GetUrlsInterface) ? $this->social->getUriToken():'';
+        $this->client_id = $this->social->clientId;
+        $this->redirect_uri = $this->social->redirectUrl;
+        $this->client_secret = $this->social->clientSecret;
+        $this->client = $this->social->client;
     }
 
     public function setAuthorization(string $value) : void
@@ -52,6 +53,10 @@ class RequestToken extends BaseObject
 
     public function generateData(): array
     {
+        $event = new DataEventArgs($this->data);
+        $this->social->trigger(OAuth2::EVENT_DATA_TOKEN, $event);
+        $this->data = $event->newData;
+
         return ArrayHelper::merge([
             'redirect_uri' => $this->redirect_uri,
             'grant_type' => $this->grant_type,

@@ -3,19 +3,21 @@
 namespace Celebron\social;
 
 use Celebron\common\Token;
-use Celebron\social\args\RequestEventArgs;
+use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 
 
 abstract class OAuth2 extends AuthBase
 {
-    public const EVENT_GENERATE = 'generate';
+    public const EVENT_DATA_CODE = 'dataCode';
+    public const EVENT_DATA_TOKEN = 'dataToken';
 
     public string $clientId;
     public string $clientSecret;
@@ -112,9 +114,9 @@ abstract class OAuth2 extends AuthBase
         }
 
         if (isset($data['error'], $data['error_description'])) {
-            throw new BadRequestHttpException('[' . static::socialName() . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
+            throw new BadRequestHttpException('[' . $this->socialName . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
         }
-        throw new BadRequestHttpException('[' . static::socialName() . "]Response not correct. Code E{$response->getStatusCode()}");
+        throw new BadRequestHttpException('[' . $this->socialName . "]Response not correct. Code E{$response->getStatusCode()}");
     }
 
     /**
@@ -144,5 +146,14 @@ abstract class OAuth2 extends AuthBase
     {
         $response = $this->send($sender);
         return $this->response($field, $response->getData());
+    }
+
+    public function url(string $method, ?string $state = null):string
+    {
+        return Url::toRoute([
+            0 => $this->config->route . '/handler',
+            'social' => $this->socialName,
+            'state' => (string)State::create($method, $state),
+        ], true);
     }
 }

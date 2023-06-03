@@ -21,6 +21,9 @@ class Telegram extends AuthBase
 
     public int $timeout = 86400;
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function getData():array
     {
         $auth_data = \Yii::$app->request->get();

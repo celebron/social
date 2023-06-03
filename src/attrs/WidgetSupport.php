@@ -7,6 +7,9 @@ use yii\base\NotSupportedException;
 class WidgetSupport
 {
 
+    /**
+     * @throws NotSupportedException
+     */
     public function __construct (public bool $register = true, public bool $login = true)
     {
         if(!$this->register && !$this->login) {

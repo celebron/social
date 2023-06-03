@@ -29,6 +29,9 @@ class SocialsWidget extends Widget
     /** @var AuthBase[]  */
     private array $_socials = [];
 
+    /**
+     * @throws \ReflectionException
+     */
     public function init ()
     {
         parent::init();

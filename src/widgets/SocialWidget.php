@@ -6,6 +6,7 @@ use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\AuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\SocialConfiguration;
+use Celebron\social\State;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -43,6 +44,7 @@ class SocialWidget extends Widget
     /**
      * @throws \ReflectionException
      * @throws NotFoundHttpException
+     * @throws \Exception
      */
     public function init ()
     {
@@ -92,12 +94,12 @@ class SocialWidget extends Widget
     {
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, $this->_social::urlLogin(), $this->loginOptions) . PHP_EOL;
+        return "\t" . Html::a($text, SocialConfiguration::url($this->social, State::ACTION_LOGIN), $this->loginOptions) . PHP_EOL;
     }
 
     public function getName() : string
     {
-        return  $this->_social->getName() ?? $this->_social::socialName();
+        return  $this->_social->getName() ?? $this->_social->socialName;
     }
 
     /**
@@ -107,11 +109,8 @@ class SocialWidget extends Widget
      */
     public function getIcon(bool $html = false): bool|string|null
     {
-        /** @var ToWidgetInterface $social */
-        $social = $this->_social::class;
-
         if (is_bool($this->icon)) {
-            $icon = $this->icon && !empty( $social->getIcon()) ? \Yii::getAlias( $social->getIcon()) : null;
+            $icon = $this->icon && !empty( $this->_social->getIcon()) ? \Yii::getAlias( $this->_social->getIcon()) : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }
@@ -127,13 +126,13 @@ class SocialWidget extends Widget
     public function runRegister(): string
     {
         $user = \Yii::$app->user->identity;
-        $socialId = $this->_social::getSocialId();
-        $idText = Html::a("<i class='bi bi-play'></i>",$this->_social::urlRegister());
+        $socialId = $this->_social->getSocialId();
+        $idText = Html::a("<i class='bi bi-play'></i>",$this->_social->urlRegister());
         $idText .= $socialId;
-        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $this->_social::urlDelete());
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $this->_social->urlDelete());
         if($socialId === null) {
             $idText = "<i class='bi bi-stop'></i>";
-            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$this->_social::urlRegister());
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$this->_social->urlRegister());
         }
 
         $this->registerOptions['icon']['class'][] = 'social-icon-view';

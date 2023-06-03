@@ -37,19 +37,19 @@ trait ToWidgetTrait
         $this->_visible = $visible;
     }
 
-    public static function urlLogin(?string $state = null): string
+    public function urlLogin(?string $state = null): string
     {
-        return static::url(State::ACTION_LOGIN, $state);
+        return $this->url(State::ACTION_LOGIN, $state);
     }
 
-    public static function urlRegister(?string $state= null): string
+    public function urlRegister(?string $state= null): string
     {
-        return static::url(State::ACTION_REGISTER, $state);
+        return $this->url(State::ACTION_REGISTER, $state);
     }
 
-    public static function urlDelete(?string $state= null): string
+    public function urlDelete(?string $state= null): string
     {
-        return static::url(State::ACTION_DELETE, $state);
+        return $this->url(State::ACTION_DELETE, $state);
     }
 
 }

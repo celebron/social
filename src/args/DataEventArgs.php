@@ -2,7 +2,7 @@
 
 namespace Celebron\social\args;
 
-class RequestCodeEventArgs extends \yii\base\Event
+class DataEventArgs extends \yii\base\Event
 {
 
 

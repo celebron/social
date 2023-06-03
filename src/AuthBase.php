@@ -2,14 +2,17 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
-use Celebron\social\attrs\SocialName;
 use Celebron\social\interfaces\SocialInterface;
+use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
 use yii\base\Component;
 use yii\base\Model;
 use yii\base\NotSupportedException;
 
 
+/**
+ *
+ * @property-read mixed $socialId
+ */
 abstract class AuthBase extends Component
 {
     public const EVENT_SUCCESS = 'success';
@@ -19,8 +22,11 @@ abstract class AuthBase extends Component
 
     abstract public function request(?string $code, State $state):Response;
 
-    public function __construct (public readonly SocialConfiguration $config, array $cfg = [])
-    {
+    public function __construct (
+        public readonly string $socialName,
+        public readonly SocialConfiguration $config,
+        array $cfg = []
+    ){
         parent::__construct($cfg);
     }
 
@@ -51,41 +57,17 @@ abstract class AuthBase extends Component
         return $eventArgs->result;
     }
 
-    protected function response(string|\Closure|array $field, mixed $data): Response
+    public function response(string|\Closure|array|null $field, mixed $data) : Response
     {
-        return new Response(static::socialName(), $field, $data);
+        return new Response($this->socialName, $field,$data);
     }
 
-
-    final public static function socialName(): string
-    {
-        $reflect = new \ReflectionClass(static::class);
-        $attributes = $reflect->getAttributes(SocialName::class);
-        $socialName = $reflect->getShortName();
-        if(count($attributes) > 0) {
-            $socialName = $attributes[0]->getArguments()[0];
-        }
-        return $socialName;
-    }
-
-    /**
-     * Ссылка на oauth2 авторизацию
-     * @param string $method
-     * @param string|null $state
-     * @return string
-     */
-    final public static function url(string $method, ?string $state = null) : string
-    {
-        return SocialConfiguration::url(static::socialName(), $method, $state);
-    }
-
-    public static function getSocialId(): mixed
+    public function getSocialId():mixed
     {
         $user = \Yii::$app->user->identity;
         if($user instanceof SocialInterface) {
-            return $user->getSocialId(static::socialName());
+            return $user->getSocialId($this->socialName);
         }
         throw new NotSupportedException('Not released ' . SocialInterface::class);
     }
-
 }

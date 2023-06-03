@@ -66,7 +66,7 @@ class SocialController extends Controller
                 \Yii::info("Request to {$social} server", static::class);
                 $response = $object->request($this->code, $this->getState());
             } else {
-                $response = new Response($object::socialName(), null, null);
+                $response = new Response($object->socialName, null, null);
             }
 
             if($methodRef->invoke($userObject, $response, $object)) {
