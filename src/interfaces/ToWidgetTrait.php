@@ -39,17 +39,17 @@ trait ToWidgetTrait
 
     public function urlLogin(?string $state = null): string
     {
-        return $this->url(State::ACTION_LOGIN, $state);
+        return $this->url(State::METHOD_LOGIN, $state);
     }
 
     public function urlRegister(?string $state= null): string
     {
-        return $this->url(State::ACTION_REGISTER, $state);
+        return $this->url(State::METHOD_REGISTER, $state);
     }
 
     public function urlDelete(?string $state= null): string
     {
-        return $this->url(State::ACTION_DELETE, $state);
+        return $this->url(State::METHOD_DELETE, $state);
     }
 
 }
