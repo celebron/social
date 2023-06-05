@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use yii\base\Exception;
+use yii\base\UnknownMethodException;
 use yii\helpers\Json;
 
 class State implements \Stringable
@@ -102,4 +103,14 @@ class State implements \Stringable
     {
         return (new self())->decode($stateBase64);
     }
+
+    public static function __callStatic ($name, $arguments)
+    {
+        if(str_starts_with($name, 'create')) {
+            $name = str_replace('create','', $name);
+            return static::create($name, $arguments[0] ?? null);
+        }
+        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
+    }
+
 }
