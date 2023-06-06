@@ -4,10 +4,8 @@ namespace Celebron\social;
 
 use Celebron\social\args\RegisterEventArgs;
 use Celebron\social\attrs\SocialName;
-use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\UnknownMethodException;
 use yii\helpers\ArrayHelper;
@@ -26,7 +24,6 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public const EVENT_REGISTER = 'register';
 
     public string $route = "social";
-
     private array $_socials = [];
     public ?\Closure $onSuccess = null;
     public ?\Closure $onFailed = null;
@@ -199,11 +196,11 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public static function __callStatic ($name, $arguments)
     {
         if(str_starts_with($name, 'social')) {
-            $name = str_replace('social','', $name);
+            $name = substr($name, 6, strlen($name));
             return static::social($name, ...$arguments);
         }
         if(str_starts_with($name, 'url')) {
-            $name = str_replace('url','', $name);
+            $name = substr($name, 3, strlen($name));
             return static::url($name, $arguments[0], $arguments[1] ?? null);
         }
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
