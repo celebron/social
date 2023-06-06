@@ -19,7 +19,7 @@ Configuration
 
 ```php
     ...,
-     'bootstrap' => [..., 'social' ],
+    'bootstrap' => [..., 'social' ],
     'components'=>[
         'social' => [
             'class' => Celebron\social\SocialConfiguration::class,
@@ -28,8 +28,7 @@ Configuration
                      'class' => Yandex::class, //Google::class и т.д.
                      'active' => true,
                      'clientId' => '...',
-                     'clientSecret' => '...',
-                     'field' => 'id_yandex',
+                     'clientSecret' => '...,
                 ],
                 ...    
             ],  
@@ -39,25 +38,21 @@ Configuration
 ```
 Необходимо подключить компонент <i>SocialConfiguration</i> в <i>bootstrap</i>, как приведено в примере
 ### [[SocialConfiguration::class]]
-    [optional] string       $route ('social')            - роут для OAuth redirect path   
-    [optional] string       $register ('register')       - state - регистрации
-    [optional] int          $duration (0)                - Срок действия авторизации
-    [optional] Closure|null $onAllError (null)           - обработка всех ошибок socials
-    [optional] Closure|null $onAllRegisterSuccess (null) - обработчик всех успешных регистраций
-    [optional] Closure|null $onAllLoginSuccess (null)    - обработчик всех успешных логинов
-    [optional] Closure|null $onAllDeleteSuccess (null)   - обработчик всех упешных удалений
-    [optional] Closure|null $findUserAlg (null)          - переопределение алгоритма поиска пользователя
-    [required] Social[]     $socials                     - список всех соц. сетей 
+    [optional] string       $route ('social')   - роут для OAuth redirect path   
+    [optional] Closure|null $onError (null)     - обработка всех ошибок socials
+    [optional] Closure|null $onSuccess (null)   - обработчик всех успешных выполнений (event)
+    [optional] Closure|null $onFailed (null)    - обработчик всех провальных выполнений (event)
+    [required] Social[]     $socials            - список всех соц. сетей ([ 'ключ" => AuthBase::class ])
+   
 
-
-### [[SocialOAuth::class]]    (Google::class, Yandex::class, ...)
-    [required] string $field               - поле в базе данных
-    [optional] bool   $activate (false)    - активировать механизм
-    [optional] string $name                - название для Widget
-    [optional] $icon                       - иконка для Widget 
-    [required|optional] $clientId          - OAuth clientId
-    [required|optional] $clientSecret      - OAuth clientSecret
-    [optional] $clientUrl                  - OAuth api url
+### [[OAuth2::class]]    (Google::class, Yandex::class, ...) 
+    [optional] bool   $activate (false) - активировать механизм
+    [optional] string $name             - название для Widget
+    [optional] $icon                    - иконка для Widget 
+    [optional] $visible                 - отображение для Widget
+    [required|optional] $clientId       - OAuth clientId
+    [required|optional] $clientSecret   - OAuth clientSecret
+    [optional] $clientUrl               - OAuth api url
     
     
 Ссылка redirect в консолях соц.сетей (oauth2 и прочее)
