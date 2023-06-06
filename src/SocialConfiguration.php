@@ -68,40 +68,31 @@ class SocialConfiguration extends Component implements BootstrapInterface
             }
             $socialName = strtolower(trim($socialName));
         }
-
         if(ArrayHelper::keyExists($socialName, $this->_socials)) {
             throw new InvalidConfigException("Key $socialName exists");
         }
-
         $registerEventArgs = new RegisterEventArgs();
         $object = \Yii::createObject($socialClassConfig, [ $socialName, $this ]);
-
         $registerEventArgs->support = false;
         if($object instanceof AuthBase) {
             $registerEventArgs->social = $object;
-
             if($this->onSuccess !== null) {
                 $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess);
             }
-
             if($this->onFailed !== null) {
                 $object->on(AuthBase::EVENT_FAILED, $this->onFailed);
             }
-
             if($this->onError !== null) {
                 $object->on(AuthBase::EVENT_ERROR, $this->onError);
             }
-
             $registerEventArgs->support = true;
         }
-
         $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
-
         if(!$registerEventArgs->support) {
             \Yii::warning($object::class . ' not support',static::class);
         }
-
         if($registerEventArgs->support && $object?->active) {
+            \Yii::info("$socialName registered...", static::class);
             $this->_socials[$socialName] = $object;
         }
     }
