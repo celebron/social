@@ -3,10 +3,8 @@
 namespace Celebron\social;
 
 use Celebron\common\Token;
-use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
-use yii\base\Event;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;
@@ -14,14 +12,20 @@ use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 
 
+/**
+ *
+ * @property string $clientId
+ * @property string $redirectUrl
+ * @property string $clientSecret
+ */
 abstract class OAuth2 extends AuthBase
 {
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
 
-    public string $clientId;
-    public string $clientSecret;
-    public string $redirectUrl;
+    private ?string $_clientId = null;
+    private string $_clientSecret;
+    private string $_redirectUrl;
 
 
     public readonly Client $client;
@@ -56,9 +60,60 @@ abstract class OAuth2 extends AuthBase
     }
 
     /**
+     * @throws InvalidConfigException
+     */
+    public function getClientId():string
+    {
+        if(empty($this->_clientId)) {
+            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientId'])) {
+               return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientId'];
+            }
+            throw new InvalidConfigException('Not param "clientId" to social "' . $this->socialName. '"');
+        }
+
+        return $this->_clientId;
+    }
+    public function setClientId(string $value): void
+    {
+        $this->_clientId = $value;
+    }
+    public function getClientSecret() : string
+    {
+        if(empty($this->_clientSecret)) {
+            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'])) {
+                return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'];
+            }
+            throw new InvalidConfigException('Not param "clientSecret" to social "' . $this->socialName. '"');
+        }
+
+        return $this->_clientSecret;
+    }
+
+    public function setClientSecret(string $value): void
+    {
+        $this->_clientSecret = $value;
+    }
+
+    public function getRedirectUrl(): string
+    {
+        if(empty($this->_redirectUrl)) {
+            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['redirectUrl'])) {
+                return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['redirectUrl'];
+            }
+            throw new InvalidConfigException('Not param "redirectUrl" to social "' . $this->socialName. '"');
+        }
+
+        return $this->_redirectUrl;
+    }
+    public function setRedirectUrl(string $value): void
+    {
+        $this->_redirectUrl = $value;
+    }
+
+    /**
      * @param string|null $code
      * @param State $state
-     * @return Response
+     * @return  \Celebron\social\Response
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
