@@ -2,11 +2,9 @@
 
 namespace Celebron\social\socials;
 
-use Celebron\social\args\RequestArgs;
 use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\AuthBase;
 use Celebron\social\Response;
-use Celebron\social\SocialConfiguration;
 use Celebron\social\State;
 use yii\web\BadRequestHttpException;
 
@@ -51,7 +49,6 @@ class Telegram extends AuthBase
     /**
      * @param string|null $code
      * @param State $state
-     * @param SocialConfiguration $config
      * @return Response
      * @throws BadRequestHttpException
      */

@@ -24,12 +24,16 @@ class SocialConfiguration extends Component implements BootstrapInterface
     public const EVENT_REGISTER = 'register';
 
     public string $route = "social";
-    private array $_socials = [];
+
+    public ?string $paramsGroup = null;
     public ?\Closure $onSuccess = null;
     public ?\Closure $onFailed = null;
     public ?\Closure $onError = null;
 
+
+
     public static self $config;
+    private array $_socials = [];
 
     public function __construct ($cfg = [])
     {
