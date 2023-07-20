@@ -67,6 +67,9 @@ class Configuration extends Component implements BootstrapInterface
     {
         if(is_numeric($socialName)) {
             $classRef = new \ReflectionClass($socialClassConfig['class']);
+            if($classRef->isSubclassOf(CustomOAuth2::class)) {
+                throw new InvalidConfigException('Class "' . $classRef->getName() .'" is inherited from "'. CustomOAuth2::class .'". An explicit definition of the key is required.');
+            }
             $socialName = $classRef->getShortName();
             $attrs = $classRef->getAttributes(SocialName::class);
             if(isset($attrs[0])) {

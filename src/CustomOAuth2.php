@@ -1,12 +1,8 @@
 <?php
 
-namespace Celebron\social\socials;
+namespace Celebron\social;
 
-use Celebron\social\RequestCode;
-use Celebron\social\RequestId;
-use Celebron\social\RequestToken;
-
-class CustomOAuth2 extends \Celebron\social\OAuth2
+class CustomOAuth2 extends OAuth2
 {
     /** @var \Closure - method(RequestCode $request, CustomOAuth2 $object) */
     public \Closure $closureCode;
