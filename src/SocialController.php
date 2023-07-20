@@ -76,9 +76,10 @@ class SocialController extends Controller
 
             \Yii::warning("Invoke method ({$methodRef->getShortName()}) failed", static::class);
             return $object->failed($this, $response);
-        } catch (\Exception $ex) {
+        }
+        catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
-            return $object->error($this, $ex);
+            return AuthBase::ToException($object, $this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
