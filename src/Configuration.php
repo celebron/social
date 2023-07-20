@@ -69,7 +69,7 @@ class Configuration extends Component implements BootstrapInterface
         if(is_numeric($socialName)) {
             $classRef = new \ReflectionClass($socialClassConfig['class']);
             if($classRef->isSubclassOf(CustomInterface::class)) {
-                throw new InvalidConfigException('Class "' . $classRef->getName() .'" implement "'. CustomInterface::class .'". An explicit definition of the key is required.');
+                throw new InvalidConfigException('An explicit definition of the key is required.');
             }
             $socialName = $classRef->getShortName();
             $attrs = $classRef->getAttributes(SocialName::class);
