@@ -8,11 +8,6 @@
             "Celebron\\social\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Celebron\\social\\tests\\": "tests/"
-        }
-    },
     "authors": [
         {
             "name": "Aleksey Shatalin (celebron)",

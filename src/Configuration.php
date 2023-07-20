@@ -12,18 +12,23 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Application;
 
+
 /**
  *
  * @property-write array $socials
+ *
+ * @method socialYandex
+ * @method socialVk
+ * @method socialTelegram
+ * @method
+ *
  */
-class SocialConfiguration extends Component implements BootstrapInterface
+class Configuration extends Component implements BootstrapInterface
 {
     public const EVENT_BEFORE_REGISTER = 'beforeRegister';
     public const EVENT_AFTER_REGISTER = 'afterRegister';
     public const EVENT_REGISTER = 'register';
-
     public string $route = "social";
-
     public ?string $paramsGroup = null;
     public ?\Closure $onSuccess = null;
     public ?\Closure $onFailed = null;
@@ -72,7 +77,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
             $socialName = strtolower(trim($socialName));
         }
         if(ArrayHelper::keyExists($socialName, $this->_socials)) {
-            throw new InvalidConfigException("Key $socialName exists");
+            throw new InvalidConfigException("Key $socialName not exists");
         }
         $registerEventArgs = new RegisterEventArgs();
         $object = \Yii::createObject($socialClassConfig, [ $socialName, $this ]);
@@ -93,8 +98,7 @@ class SocialConfiguration extends Component implements BootstrapInterface
         $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
         if(!$registerEventArgs->support) {
             \Yii::warning($object::class . ' not support',static::class);
-        }
-        if($registerEventArgs->support && $object?->active) {
+        } else {
             \Yii::info("$socialName registered...", static::class);
             $this->_socials[$socialName] = $object;
         }
@@ -187,16 +191,14 @@ class SocialConfiguration extends Component implements BootstrapInterface
     /**
      * @throws \Exception
      */
-    public static function __callStatic ($name, $arguments)
+    public static function __callStatic ($methodName, $arguments)
     {
-        if(str_starts_with($name, 'social')) {
-            $name = substr($name, 6, strlen($name));
-            return static::social($name, ...$arguments);
+        if(str_starts_with($methodName, 'social')) {
+            return static::social(substr($methodName, 6), ...$arguments);
         }
-        if(str_starts_with($name, 'url')) {
-            $name = substr($name, 3, strlen($name));
-            return static::url($name, $arguments[0], $arguments[1] ?? null);
+        if(str_starts_with($methodName, 'url')) {
+            return static::url(substr($methodName, 3), $arguments[0], $arguments[1] ?? null);
         }
-        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
+        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
     }
 }

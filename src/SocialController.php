@@ -14,7 +14,7 @@ use yii\web\NotFoundHttpException;
  */
 class SocialController extends Controller
 {
-    public SocialConfiguration $config;
+    public Configuration $config;
 
     public function getCode() : ?string
     {
@@ -46,9 +46,16 @@ class SocialController extends Controller
         $object = $this->config->get($social);
 
         try {
+            //Если не поддерживается
             if($object === null) {
-                throw  throw new NotFoundHttpException("Social '{$social}' not registered");
+                throw new NotFoundHttpException("Social '$social' not registered");
             }
+
+            //Если не активна
+            if(!$object->active) {
+                throw new NotFoundHttpException("Social '$social' not active");
+            }
+
             $userObject  =  $userObject ?? \Yii::createObject($userClass);
             $methodName = 'social' . $this->getState()->normalizeMethod();
             $methodRef = new \ReflectionMethod($userClass, $methodName);
@@ -62,7 +69,7 @@ class SocialController extends Controller
             }
 
             if($requested) {
-                \Yii::info("Request to {$social} server", static::class);
+                \Yii::info("Request to $social server", static::class);
                 $response = $object->request($this->code, $this->getState());
             } else {
                 $response = new Response($object->socialName, null, null);

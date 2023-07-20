@@ -4,7 +4,7 @@ namespace Celebron\social\widgets;
 
 use Celebron\social\AuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\SocialConfiguration;
+use Celebron\social\Configuration;
 use Celebron\social\State;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -35,7 +35,7 @@ class SocialsWidget extends Widget
     public function init ()
     {
         parent::init();
-        $this->_socials = SocialConfiguration::socials(ToWidgetInterface::class);
+        $this->_socials = Configuration::socials(ToWidgetInterface::class);
     }
 
     /**

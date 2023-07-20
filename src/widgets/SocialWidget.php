@@ -5,7 +5,7 @@ namespace Celebron\social\widgets;
 use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\AuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\SocialConfiguration;
+use Celebron\social\Configuration;
 use Celebron\social\State;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
@@ -47,7 +47,7 @@ class SocialWidget extends Widget
     {
         parent::init();
         SocialAsset::register($this->view);
-        $this->_social = SocialConfiguration::social($this->social);
+        $this->_social = Configuration::social($this->social);
         $classRef = new \ReflectionClass($this->_social);
         $attributes = $classRef->getAttributes(WidgetSupport::class);
         if (isset($attributes[0])) {

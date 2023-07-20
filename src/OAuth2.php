@@ -25,8 +25,7 @@ abstract class OAuth2 extends AuthBase
 
     private ?string $_clientId = null;
     private string $_clientSecret;
-    private string $_redirectUrl;
-
+    public string $redirectUrl;
 
     public readonly Client $client;
 
@@ -47,9 +46,9 @@ abstract class OAuth2 extends AuthBase
     abstract public function requestId(RequestId $request): \Celebron\social\Response;
 
     public function __construct (
-        string $socialName,
-        SocialConfiguration $config,
-        array $cfg = [])
+        string        $socialName,
+        Configuration $config,
+        array         $cfg = [])
     {
         $this->client = new Client();
         $this->client->transport = CurlTransport::class;
@@ -92,22 +91,6 @@ abstract class OAuth2 extends AuthBase
     public function setClientSecret(string $value): void
     {
         $this->_clientSecret = $value;
-    }
-
-    public function getRedirectUrl(): string
-    {
-        if(empty($this->_redirectUrl)) {
-            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['redirectUrl'])) {
-                return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['redirectUrl'];
-            }
-            throw new InvalidConfigException('Not param "redirectUrl" to social "' . $this->socialName. '"');
-        }
-
-        return $this->_redirectUrl;
-    }
-    public function setRedirectUrl(string $value): void
-    {
-        $this->_redirectUrl = $value;
     }
 
     /**

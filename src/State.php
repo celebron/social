@@ -6,6 +6,11 @@ use yii\base\Exception;
 use yii\base\UnknownMethodException;
 use yii\helpers\Json;
 
+/**
+ * Создания State параметра для запроса в OAuth2 server
+ * @example
+ *  static::create{MethodName}($state) = static::create({MethodName}, $state)
+ */
 class State implements \Stringable
 {
 
@@ -104,13 +109,15 @@ class State implements \Stringable
         return (new self())->decode($stateBase64);
     }
 
-    public static function __callStatic ($name, $arguments)
+    public static function __callStatic ($methodName, $arguments)
     {
-        if(str_starts_with($name, 'create')) {
-            $name = str_replace('create','', $name);
-            return static::create($name, $arguments[0] ?? null);
+        $prefix = 'start';
+        $prefixLen = strlen($prefix);
+
+        if(str_starts_with($methodName, $prefix)) {
+            return static::create(substr($methodName, $prefixLen), $arguments[0] ?? null);
         }
-        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
+        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
     }
 
 }
