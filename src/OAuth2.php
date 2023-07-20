@@ -112,9 +112,6 @@ abstract class OAuth2 extends AuthBase
         if ($code === null) {
             $request = new RequestCode($this, $state);
             $this->requestCode($request);
-            if(empty($request->uri)) {
-                throw new BadRequestHttpException('[RequestCode] Empty URI');
-            }
 
             $session['social_random'] = $request->state->random;
             $url = $this->client->get($request->generateUri());
@@ -133,9 +130,6 @@ abstract class OAuth2 extends AuthBase
         if ($equalRandom) {
             $request = new RequestToken($code, $this);
             $this->requestToken($request);
-            if(empty($request->uri)) {
-                throw new BadRequestHttpException('[RequestToken] Empty request URI',1);
-            }
 
             if ($request->send) {
                 $this->token = $this->sendToken($request);
@@ -146,9 +140,6 @@ abstract class OAuth2 extends AuthBase
 
         $request = new RequestId($this);
         $response = $this->requestId($request);
-        if(empty($request->uri)) {
-            throw new BadRequestHttpException('[RequestId] Empty request URI',2);
-        }
 
         \Yii::debug("Userid: {$response->id}.", static::class);
         return  $response;

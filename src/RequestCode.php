@@ -5,7 +5,9 @@ namespace Celebron\social;
 use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 
 
 /**
@@ -37,6 +39,10 @@ class RequestCode extends BaseObject
         $event = new DataEventArgs($this->data);
         $this->social->trigger(OAuth2::EVENT_DATA_CODE, $event);
         $this->data = $event->newData;
+
+        if(empty($this->uri)) {
+            throw new BadRequestHttpException('[RequestCode] Property $uri empty.');
+        }
 
         $default = [
             0 => $this->uri,

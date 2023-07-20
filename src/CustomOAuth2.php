@@ -20,21 +20,22 @@ class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
 
 
     /** @var ?\Closure - method(RequestCode $request, CustomOAuth2 $object) */
-    public ?\Closure $closureCode = null;
+    public ?\Closure $handleCode = null;
     /** @var ?\Closure - method(RequestToken $request, CustomOAth2 $object) */
-    public ?\Closure $closureToken = null;
+    public ?\Closure $handleToken = null;
     /** @var ?\Closure - method(RequestId $request, CustomOAth2 $object) */
-    public ?\Closure $closureId = null;
+    public ?\Closure $handleId = null;
 
     /**
      * @inheritDoc
      */
     public function requestCode (RequestCode $request): void
     {
-        if($this->closureCode !== null) {
-            call_user_func($this->closureCode, $request, $this);
+        if($this->handleCode !== null) {
+            call_user_func($this->handleCode, $request, $this);
+        } else {
+            throw new InvalidConfigException('Property $handleCode is null');
         }
-        throw new InvalidConfigException('Property $closureCode is null');
     }
 
     /**
@@ -42,17 +43,18 @@ class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
      */
     public function requestToken (RequestToken $request): void
     {
-        if($this->closureToken !== null) {
-            call_user_func($this->closureToken, $request, $this);
+        if($this->handleToken !== null) {
+            call_user_func($this->handleToken, $request, $this);
+        } else {
+            throw new InvalidConfigException('Property $handleToken is null');
         }
-        throw new InvalidConfigException('Property $closureToken is null');
     }
 
     public function requestId (RequestId $request): \Celebron\social\Response
     {
-        if($this->closureId !== null) {
-            return call_user_func($this->closureId, $request, $this);
+        if($this->handleId !== null) {
+            return call_user_func($this->handleId, $request, $this);
         }
-        throw new InvalidConfigException('Property $closureId is null');
+        throw new InvalidConfigException('Property $handleId is null');
     }
 }

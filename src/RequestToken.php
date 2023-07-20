@@ -8,6 +8,7 @@ use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
+use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
 /**
@@ -68,6 +69,9 @@ class RequestToken extends BaseObject
 
     public function sender() : Request
     {
+        if(empty($this->uri)) {
+            throw new BadRequestHttpException('[RequestToken] Property $uri empty.');
+        }
         return $this->client->post($this->uri, $this->generateData(), $this->header, $this->params);
     }
 

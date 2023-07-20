@@ -8,6 +8,7 @@ use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
+use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
 /**
@@ -17,12 +18,13 @@ use Yiisoft\Http\Header;
  * @property-read null|string $accessToken
  * @property-read string $tokenTypeToken
  * @property-read array $tokenData
+ * @property string $uri
  * @property-read null|string $refreshToken
  */
 class RequestId extends BaseObject
 {
 
-    public string $uri;
+    private string $_uri = '';
 
     public readonly Token $token;
     private readonly Client $client;
@@ -30,10 +32,29 @@ class RequestId extends BaseObject
     public function __construct(OAuth2 $social, array $config = [])
     {
         parent::__construct($config);
-        $this->uri = ($social instanceof GetUrlsInterface) ? $social->getUriInfo(): '';
+        if ($social instanceof GetUrlsInterface) {
+            $this->setUri($social->getUriInfo());
+        }
         $this->token = $social->token;
         $this->client = $social->client;
     }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function getUri():string
+    {
+        if(empty($this->_uri)) {
+            throw new BadRequestHttpException('[RequestId] Property $uri empty');
+        }
+        return $this->_uri;
+    }
+
+    public function setUri(string $uri):void
+    {
+        $this->_uri = $uri;
+    }
+
 
     public function getAccessToken() : ?string
     {
@@ -70,10 +91,11 @@ class RequestId extends BaseObject
      * @param array $header
      * @param array $data
      * @return Request
+     * @throws BadRequestHttpException
      */
     public function get(array $header = [], array $data = []): Request
     {
-        return  $this->client->get($this->uri, $data, $header);
+        return  $this->client->get($this->getUri(), $data, $header);
     }
 
 
@@ -94,10 +116,11 @@ class RequestId extends BaseObject
      * @param array $data
      * @param array $header
      * @return Request
+     * @throws BadRequestHttpException
      */
     public function post(array $data = [], array $header = []): Request
     {
-        return $this->client->post($this->uri, $data, $header);
+        return $this->client->post($this->getUri(), $data, $header);
     }
 
     /**
@@ -113,14 +136,20 @@ class RequestId extends BaseObject
         return $this->post($header, $data);
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function put(?array $data, array $header = []): Request
     {
-        return $this->client->put($this->uri, $data, $header);
+        return $this->client->put($this->getUri(), $data, $header);
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function delete(?array $data, array $header = []): Request
     {
-        return $this->client->delete($this->uri, $data, $header);
+        return $this->client->delete($this->getUri(), $data, $header);
     }
 
 }
