@@ -3,9 +3,12 @@
 namespace Celebron\social;
 
 use Celebron\social\interfaces\CustomInterface;
+use Celebron\social\interfaces\ToWidgetInterface;
+use Celebron\social\interfaces\ToWidgetTrait;
 
-class CustomOAuth2 extends OAuth2 implements CustomInterface
+class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
 {
+    use ToWidgetTrait;
     /** @var \Closure - method(RequestCode $request, CustomOAuth2 $object) */
     public \Closure $closureCode;
     /** @var \Closure - method(RequestToken $request, CustomOAth2 $object) */
