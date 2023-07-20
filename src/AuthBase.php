@@ -53,7 +53,6 @@ abstract class AuthBase extends Component
     {
         $user = \Yii::$app->user->identity;
         if($user instanceof SocialInterface) {
-            //return $user->getSocialId($this->socialName);
             $field = $user->getSocialField($this->socialName);
             return $user->$field;
         }
