@@ -44,16 +44,6 @@ abstract class AuthBase extends Component
         return $eventArgs->result ?? $action->goBack();
     }
 
-    public function error(SocialController $action, \Exception $ex): mixed
-    {
-        $eventArgs = new ErrorEventArgs($action, $ex);
-        $this->trigger(self::EVENT_ERROR, $eventArgs);
-        if($eventArgs->result === null) {
-            throw $eventArgs->exception;
-        }
-        return $eventArgs->result;
-    }
-
     public function response(string|\Closure|array|null $field, mixed $data) : Response
     {
         return new Response($this->socialName, $field,$data);
@@ -70,11 +60,13 @@ abstract class AuthBase extends Component
 
     public static function ToException(?self $base, SocialController $controller, \Exception $ex)
     {
-        if(isset($base)) {
-            return $base->error($controller, $ex);
-        }
         $error = new ErrorEventArgs($controller, $ex);
-        Event::trigger(static::class, self::EVENT_ERROR, $error);
+        if(isset($base)) {
+            $base->trigger(self::EVENT_ERROR, $error);
+        } else {
+            Event::trigger(static::class, self::EVENT_ERROR, $error);
+        }
+
         if($error->result === null) {
             throw $error->exception;
         }
