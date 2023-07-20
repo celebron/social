@@ -165,7 +165,7 @@ abstract class OAuth2 extends AuthBase
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    final protected function sendToken(RequestToken $sender) : Token
+    final public function sendToken(RequestToken $sender) : Token
     {
         //Получаем данные
         $data = $this
@@ -183,7 +183,7 @@ abstract class OAuth2 extends AuthBase
      * @throws InvalidConfigException
      * @throws \Exception
      */
-    protected function sendResponse(Request $sender, string|\Closure|array $field) : \Celebron\social\Response
+    public function sendResponse(Request $sender, string|\Closure|array $field) : \Celebron\social\Response
     {
         $response = $this->send($sender);
         return $this->response($field, $response->getData());
