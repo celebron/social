@@ -3,10 +3,8 @@
 namespace Celebron\social;
 
 use Celebron\common\Token;
-use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\GetUrlsInterface;
-use yii\base\Event;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;

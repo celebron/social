@@ -11,7 +11,6 @@ use yii\base\UnknownMethodException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Application;
-use yii\web\NotFoundHttpException;
 
 /**
  *

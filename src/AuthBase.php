@@ -5,7 +5,7 @@ namespace Celebron\social;
 use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
 use yii\base\Component;
-use yii\base\Model;
+use yii\base\Event;
 use yii\base\NotSupportedException;
 
 
@@ -44,9 +44,6 @@ abstract class AuthBase extends Component
         return $eventArgs->result ?? $action->goBack();
     }
 
-    /**
-     * @throws \Exception
-     */
     public function error(SocialController $action, \Exception $ex): mixed
     {
         $eventArgs = new ErrorEventArgs($action, $ex);
@@ -69,5 +66,18 @@ abstract class AuthBase extends Component
             return $user->getSocialId($this->socialName);
         }
         throw new NotSupportedException('Not released ' . SocialInterface::class);
+    }
+
+    public static function ToException(?self $base, SocialController $controller, \Exception $ex)
+    {
+        if(isset($base)) {
+            return $base->error($controller, $ex);
+        }
+        $error = new ErrorEventArgs($controller, $ex);
+        Event::trigger(static::class, self::EVENT_ERROR, $error);
+        if($error->result === null) {
+            throw $error->exception;
+        }
+        return $error->result;
     }
 }

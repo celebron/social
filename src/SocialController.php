@@ -3,7 +3,6 @@
 namespace Celebron\social;
 
 use Celebron\social\attrs\Request;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

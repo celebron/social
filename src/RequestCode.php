@@ -5,7 +5,6 @@ namespace Celebron\social;
 use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
-use yii\base\Event;
 use yii\helpers\ArrayHelper;
 
 
