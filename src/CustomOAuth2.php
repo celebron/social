@@ -10,6 +10,11 @@ use Celebron\social\interfaces\ToWidgetTrait;
 class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
+
+    private string $_icon = '';
+    private ?string $_name;
+    private bool $_visible = true;
+
     /** @var \Closure - method(RequestCode $request, CustomOAuth2 $object) */
     public \Closure $closureCode;
     /** @var \Closure - method(RequestToken $request, CustomOAth2 $object) */
