@@ -2,7 +2,9 @@
 
 namespace Celebron\social;
 
-class CustomOAuth2 extends OAuth2
+use Celebron\social\interfaces\CustomInterface;
+
+class CustomOAuth2 extends OAuth2 implements CustomInterface
 {
     /** @var \Closure - method(RequestCode $request, CustomOAuth2 $object) */
     public \Closure $closureCode;

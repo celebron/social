@@ -4,6 +4,7 @@ namespace Celebron\social;
 
 use Celebron\social\args\RegisterEventArgs;
 use Celebron\social\attrs\SocialName;
+use Celebron\social\interfaces\CustomInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -67,8 +68,8 @@ class Configuration extends Component implements BootstrapInterface
     {
         if(is_numeric($socialName)) {
             $classRef = new \ReflectionClass($socialClassConfig['class']);
-            if($classRef->isSubclassOf(CustomOAuth2::class)) {
-                throw new InvalidConfigException('Class "' . $classRef->getName() .'" is inherited from "'. CustomOAuth2::class .'". An explicit definition of the key is required.');
+            if($classRef->isSubclassOf(CustomInterface::class)) {
+                throw new InvalidConfigException('Class "' . $classRef->getName() .'" implement "'. CustomInterface::class .'". An explicit definition of the key is required.');
             }
             $socialName = $classRef->getShortName();
             $attrs = $classRef->getAttributes(SocialName::class);
