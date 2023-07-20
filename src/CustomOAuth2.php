@@ -2,10 +2,11 @@
 
 namespace Celebron\social;
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\CustomInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
-
+#[WidgetSupport(true, true)]
 class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
