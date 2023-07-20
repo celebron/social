@@ -2,46 +2,69 @@
 
 namespace Celebron\social\socials;
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\GetUrlsTrait;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
+use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
-use Celebron\social\Social;
-use Celebron\social\WidgetSupport;
-use yii\base\InvalidConfigException;
-use yii\httpclient\Exception;
-use yii\web\BadRequestHttpException;
+
 
 /**
  * Oauth2 VK
+ *
+ * @property-read string $uriCode
+ * @property-read string $baseUrl
+ * @property-read string $uriInfo
+ * @property-read string $uriToken
  */
-#[WidgetSupport]
-class VK extends Social implements GetUrlsInterface, ToWidgetInterface
+#[WidgetSupport(true, true)]
+class VK extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
-    use ToWidgetTrait, GetUrlsTrait;
-    public string $clientUrl = 'https://oauth.vk.com';
-    public string $uriCode = 'authorize';
-    public string $uriToken = 'access_token';
+    use ToWidgetTrait;
+
+
     public string $display = 'page';
 
-    public string $icon = '';
-    public ?string $name;
-    public bool $visible = true;
+    private string $_icon = '';
+    private ?string $_name;
+    private bool $_visible = true;
 
     public function requestCode (RequestCode $request) : void
     {
         $request->data = [ 'display' => $this->display ];
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws BadRequestHttpException
-     */
+
     public function requestToken (RequestToken $request): void
     {
-        $this->id = $this->sendToField($request, 'user_id');
+
+    }
+
+    public function requestId (RequestId $request): \Celebron\social\Response
+    {
+        return $this->response('user_id', $request->getTokenData());
+    }
+
+    public function getBaseUrl (): string
+    {
+        return 'https://oauth.vk.com';
+    }
+
+    public function getUriCode (): string
+    {
+        return 'authorize';
+    }
+
+    public function getUriToken (): string
+    {
+        return 'access_token';
+    }
+
+    public function getUriInfo (): string
+    {
+        return '';
     }
 }

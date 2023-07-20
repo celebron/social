@@ -2,19 +2,16 @@
 
 namespace Celebron\social\socials;
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\GetUrlsTrait;
-use Celebron\social\interfaces\RequestIdInterface;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetLoginInterface;
-use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
-use Celebron\social\Social;
-use Celebron\social\WidgetSupport;
+use Celebron\social\Response;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -24,21 +21,22 @@ use Yiisoft\Http\Header;
 /**
  *
  *
+ *
+ * @property-read string $uriToken
+ * @property-read string $uriInfo
+ * @property-read string $baseUrl
+ * @property-read string $uriCode
+ * @property-write Request $fullUrl
  */
-#[WidgetSupport]
-class Discord extends Social
-    implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface, SetFullUrlInterface
+#[WidgetSupport(true, true)]
+class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
 {
-    use ToWidgetTrait, GetUrlsTrait;
-    public string $clientUrl = 'https://discord.com/api';
-    public string $uriToken = 'oauth2/token';
-    public string $uriCode = 'oauth2/authorize';
-    public string $uriInfo = 'oauth2/@me';
+    use ToWidgetTrait;
     public array $scope = [ 'identify' ];
 
-    public string $icon = '';
-    public ?string $name;
-    public bool $visible = true;
+    public string $_icon = '';
+    public ?string $_name;
+    public bool $_visible = true;
 
     public function requestCode (RequestCode $request) : void
     {
@@ -55,7 +53,7 @@ class Discord extends Social
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): mixed
+    public function requestId (RequestId $request): Response
     {
 
         $url = $request->get(
@@ -63,8 +61,7 @@ class Discord extends Social
             [ 'format'=>'json' ],
         );
 
-        return $this->sendToField($url, 'user.id');
-        //return $data->data['user']['id'];
+        return $this->sendResponse($url, 'user.id');
     }
 
     public function setFullUrl(Request $request) : string
@@ -92,7 +89,7 @@ class Discord extends Social
             } else {
                 $url .= '&';
             }
-            $url .= http_build_query($params, encoding_type: PHP_QUERY_RFC3986);
+            $url .= http_build_query($params, null,null, PHP_QUERY_RFC3986);
         }
 
         return $url;
@@ -100,7 +97,21 @@ class Discord extends Social
 
     public function getUriInfo (): string
     {
-        return $this->uriInfo;
+        return 'oauth2/@me';
     }
 
+    public function getBaseUrl (): string
+    {
+        return 'https://discord.com/api';
+    }
+
+    public function getUriCode (): string
+    {
+        return 'oauth2/authorize';
+    }
+
+    public function getUriToken (): string
+    {
+       return 'oauth2/token';
+    }
 }

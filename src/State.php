@@ -3,10 +3,15 @@
 namespace Celebron\social;
 
 use yii\base\Exception;
+use yii\base\UnknownMethodException;
 use yii\helpers\Json;
 
 class State implements \Stringable
 {
+
+    public const METHOD_LOGIN = 'login';
+    public const METHOD_REGISTER = 'register';
+    public const METHOD_DELETE = 'delete';
 
     public ?string $method = null;
     public string $random;
@@ -61,12 +66,32 @@ class State implements \Stringable
         return $this->random === $random;
     }
 
+    public function equalAction(string $action):bool
+    {
+        return $this->method === $action;
+    }
+
+    public function isLogin():bool
+    {
+        return $this->equalAction(self::METHOD_LOGIN);
+    }
+
+    public function isRegister():bool
+    {
+        return $this->equalAction(self::METHOD_REGISTER);
+    }
+
+    public function isDelete():bool
+    {
+        return $this->equalAction(self::METHOD_DELETE);
+    }
+
     public function __toString ()
     {
         return $this->encode();
     }
 
-    public static function create(string $method, string $state = null):self
+    public static function create(string $method, ?string $state = null):self
     {
         $obj = new self();
         $obj->method = strip_tags($method);
@@ -78,4 +103,14 @@ class State implements \Stringable
     {
         return (new self())->decode($stateBase64);
     }
+
+    public static function __callStatic ($name, $arguments)
+    {
+        if(str_starts_with($name, 'create')) {
+            $name = str_replace('create','', $name);
+            return static::create($name, $arguments[0] ?? null);
+        }
+        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$name()");
+    }
+
 }

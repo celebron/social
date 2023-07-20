@@ -8,7 +8,6 @@ interface SetFullUrlInterface
 {
     /**
      * @param Request $request
-     * @return mixed
      */
-    public function setFullUrl(Request $request);
+    public function setFullUrl(Request $request):string;
 }

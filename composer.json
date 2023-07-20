@@ -19,30 +19,32 @@
             "email": "celebron.ru@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/celebron/yii2-common.git"
         }
     ],
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "yiisoft/yii2-apidoc": "*",
-        "codeception/codeception": "^4.2",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0"
+        "roave/security-advisories": "dev-latest"
+
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
-        "bower-asset/bootstrap": "^5.1.0",
-        "php": "^8.2"
+        "php": "^8.2",
+        "celebron/yii2-celebron-common": "^1.0"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-main": "1.0.x-dev"
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

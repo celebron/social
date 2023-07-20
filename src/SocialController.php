@@ -2,27 +2,28 @@
 
 namespace Celebron\social;
 
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
+use Celebron\social\attrs\Request;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 /**
- * Контролер
+ *
+ * @property-read null|string $code
+ * @property-read State $state
  */
 class SocialController extends Controller
 {
-    /** @var SocialConfiguration - Конфигурация */
     public SocialConfiguration $config;
-
 
     public function getCode() : ?string
     {
-       return $this->request->get('code');
+        return $this->request->get('code');
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function getState() : State
     {
         $state = $this->request->get('state');
@@ -36,25 +37,59 @@ class SocialController extends Controller
     }
 
     /**
-     * @param string $social
-     * @return mixed|Response
-     * @throws NotFoundHttpException
+     * @throws BadRequestHttpException
      * @throws \Exception
      */
-    public function actionHandler(string $social)
+    private function handler(string $social, string $userClass, ?object $userObject)
     {
         \Yii::beginProfile("Social profiling", static::class);
-        $socialObj = $this->config->getSocial(strip_tags($social));
+        $object = $this->config->get($social);
+
         try {
-            if($socialObj === null) {
+            if($object === null) {
                 throw  throw new NotFoundHttpException("Social '{$social}' not registered");
             }
+            $userObject  =  $userObject ?? \Yii::createObject($userClass);
+            $methodName = 'social' . $this->getState()->normalizeMethod();
+            $methodRef = new \ReflectionMethod($userClass, $methodName);
 
-            return $socialObj->run($this);
+            $attributes = $methodRef->getAttributes(Request::class);
+            $requested = true;
+            if(isset($attributes[0])) {
+                /** @var Request $attr */
+                $attr = $attributes[0]->newInstance();
+                $requested = $attr->request;
+            }
 
+            if($requested) {
+                \Yii::info("Request to {$social} server", static::class);
+                $response = $object->request($this->code, $this->getState());
+            } else {
+                $response = new Response($object->socialName, null, null);
+            }
+
+            if($methodRef->invoke($userObject, $response, $object)) {
+                \Yii::info("Invoke method ({$methodRef->getShortName()}) successful", static::class);
+                return $object->success($this, $response);
+            }
+
+            \Yii::warning("Invoke method ({$methodRef->getShortName()}) failed", static::class);
+            return $object->failed($this, $response);
+        }
+        catch (\Exception $ex) {
+            \Yii::error($ex->getMessage(), static::class);
+            return AuthBase::ToException($object, $this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
-
     }
+
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function actionHandler($social)
+    {
+        return $this->handler($social, \Yii::$app->user->identityClass, \Yii::$app->user->identity);
+    }
+
 }

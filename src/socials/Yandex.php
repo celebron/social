@@ -4,19 +4,15 @@
 namespace Celebron\social\socials;
 
 
-use Celebron\social\interfaces\RequestIdInterface;
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\GetUrlsTrait;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2Request;
-use Celebron\social\Request;
+use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
-use Celebron\social\Social;
-use Celebron\social\SocialConfiguration;
-use Celebron\social\WidgetSupport;
+use Celebron\social\Response;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
@@ -25,23 +21,19 @@ use yii\web\BadRequestHttpException;
 
 /**
  *
+ * @property-read string $uriToken
+ * @property-read string $uriInfo
+ * @property-read string $uriCode
  * @property-read string $baseUrl
  */
-#[WidgetSupport]
-class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, RequestIdInterface
+#[WidgetSupport(true, true)]
+class Yandex extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
-    use ToWidgetTrait, GetUrlsTrait;
+    use ToWidgetTrait;
 
-    public const METHOD_MAILTOKEN = 'mailToken';
-    public string $clientUrl = "https://oauth.yandex.ru";
-    public string $uriCode = 'authorize';
-    public string $uriToken = 'token';
-    public string $uriInfo = 'https://login.yandex.ru/info';
-
-
-//    public string $icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
-//    public ?string $name;
-//    public bool $visible = true;
+    private string $_icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
+    private ?string $_name = null;
+    private bool $_visible = true;
 
     public ?string $fileName = null;
 
@@ -50,10 +42,10 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): mixed
+    public function requestId (RequestId $request): Response
     {
         $login = $request->getHeaderOauth(['format'=> 'json']);
-        return $this->sendToField($login, 'id');
+        return $this->sendResponse($login, 'id');
     }
 
     /**
@@ -72,23 +64,23 @@ class Yandex extends Social implements GetUrlsInterface, ToWidgetInterface, Requ
         $request->setAuthorizationBasic($this->clientId . ':' . $this->clientSecret);
     }
 
+    public function getBaseUrl (): string
+    {
+        return "https://oauth.yandex.ru";
+    }
+
+    public function getUriCode (): string
+    {
+        return 'authorize';
+    }
+
+    public function getUriToken (): string
+    {
+        return 'token';
+    }
+
     public function getUriInfo (): string
     {
-        return $this->uriInfo;
+        return 'https://login.yandex.ru/info';
     }
-
-    #[OAuth2Request]
-    public function actionMailtoken():bool
-    {
-        if($this->token !== null && $this->fileName !== null) {
-            return $this->token->create($this->fileName) !== false;
-        }
-        return false;
-    }
-
-    public static function urlMailToken(?string $state= null): string
-    {
-        return static::url(self::METHOD_MAILTOKEN, $state);
-    }
-
 }

@@ -2,17 +2,15 @@
 
 namespace Celebron\social\socials;
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\RequestIdInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetLoginInterface;
-use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
-use Celebron\social\Social;
-use Celebron\social\WidgetSupport;
+use Celebron\social\Response;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -28,18 +26,18 @@ use Yiisoft\Http\Header;
  * @property-read string $uriCode
  * @property-write string $configFile
  */
-#[WidgetSupport]
-class Google extends Social implements GetUrlsInterface, ToWidgetInterface
+#[WidgetSupport(true, true)]
+class Google extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
-    public string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
-    public string $tokenUrl = 'https://oauth2.googleapis.com/token';
-    public string $apiUrl = 'https://www.googleapis.com';
-    public string $uriInfo = 'oauth2/v2/userinfo?alt=json';
+    private string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
+    private string $tokenUrl = 'https://oauth2.googleapis.com/token';
+    private string $apiUrl = 'https://www.googleapis.com';
+    private string $uriInfo = 'oauth2/v2/userinfo?alt=json';
 
-    public string $icon = '';
-    public ?string $name;
-    public bool $visible = true;
+    public string $_icon = '';
+    public ?string $_name;
+    public bool $_visible = true;
 
     /**
      * Получения конфигурации из файла json
@@ -83,14 +81,13 @@ class Google extends Social implements GetUrlsInterface, ToWidgetInterface
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): mixed
+    public function requestId (RequestId $request): Response
     {
         $url = $request->get(
             [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
             [ 'format'=>'json' ],
         );
-        return $this->sendToField($url, 'id');
-        //return $d->data['id'];
+        return $this->sendResponse($url, 'id');
     }
 
     public function getBaseUrl (): string

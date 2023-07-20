@@ -2,20 +2,14 @@
 
 namespace Celebron\social\interfaces;
 
-use Celebron\social\Social;
+
+use Celebron\social\State;
 
 trait ToWidgetTrait
 {
-    public const METHOD_REGISTER = 'register';
-    public const METHOD_DELETE = 'delete';
-    public const METHOD_LOGIN = 'login';
-
-    private ?string $_name;
-    private string $_icon = '';
-    private bool $_visible = true;
     public function getName (): string
     {
-        return $this->_name  ?? static::socialName();
+        return $this->_name  ?? $this->socialName;
     }
 
     public function setName(?string $name):void
@@ -25,7 +19,7 @@ trait ToWidgetTrait
 
     public function getIcon (): string
     {
-        return $this->_icon;
+        return \Yii::getAlias($this->_icon);
     }
 
     public function setIcon(string $icon):void
@@ -43,19 +37,19 @@ trait ToWidgetTrait
         $this->_visible = $visible;
     }
 
-    public static function urlLogin(?string $state = null): string
+    public function urlLogin(?string $state = null): string
     {
-        return static::url(Social::METHOD_LOGIN, $state);
+        return $this->url(State::METHOD_LOGIN, $state);
     }
 
-    public static function urlRegister(?string $state= null): string
+    public function urlRegister(?string $state= null): string
     {
-        return static::url(Social::METHOD_REGISTER, $state);
+        return $this->url(State::METHOD_REGISTER, $state);
     }
 
-    public static function urlDelete(?string $state= null): string
+    public function urlDelete(?string $state= null): string
     {
-        return static::url(Social::METHOD_DELETE, $state);
+        return $this->url(State::METHOD_DELETE, $state);
     }
 
 }

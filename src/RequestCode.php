@@ -2,9 +2,9 @@
 
 namespace Celebron\social;
 
+use Celebron\social\args\DataEventArgs;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
-use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
 
@@ -23,18 +23,21 @@ class RequestCode extends BaseObject
 
 
     /**
-     * @throws Exception
      */
-    public function __construct (OAuth2 $social, public State $state, array $config = [])
+    public function __construct (protected OAuth2 $social, public State $state, array $config = [])
     {
         parent::__construct($config);
-        $this->uri = ($social instanceof  GetUrlsInterface) ? $social->getUriCode() : '';
-        $this->client_id = $social->clientId;
-        $this->redirect_uri = $social->redirectUrl;
+        $this->uri = ($this->social instanceof  GetUrlsInterface) ? $social->getUriCode() : '';
+        $this->client_id = $this->social->clientId;
+        $this->redirect_uri = $this->social->redirectUrl;
     }
 
     public function generateUri() : array
     {
+        $event = new DataEventArgs($this->data);
+        $this->social->trigger(OAuth2::EVENT_DATA_CODE, $event);
+        $this->data = $event->newData;
+
         $default = [
             0 => $this->uri,
             'response_type' => $this->response_type,
@@ -44,6 +47,4 @@ class RequestCode extends BaseObject
         ];
         return ArrayHelper::merge($default, $this->data);
     }
-
-
 }

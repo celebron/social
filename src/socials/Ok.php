@@ -2,40 +2,38 @@
 
 namespace Celebron\social\socials;
 
+use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\RequestIdInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetLoginInterface;
-use Celebron\social\interfaces\ToWidgetRegisterInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
-use Celebron\social\Social;
-use Celebron\social\WidgetSupport;
+use Celebron\social\Response;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
 
 /**
  * Oauth2 Ok
+ *
+ * @property-read string $uriCode
+ * @property-read string $baseUrl
+ * @property-read string $uriInfo
+ * @property-read string $uriToken
  */
-#[WidgetSupport]
-class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidgetInterface
+#[WidgetSupport(true, true)]
+class Ok extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     public string $scope = 'VALUABLE_ACCESS';
 
     public string $clientPublic;
 
-    public string $clientCodeUrl = 'https://connect.ok.ru/oauth/authorize';
-    public string $clientApiUrl = 'https://api.ok.ru';
-    public string $uriToken = 'oauth/token.do';
-    public string $uriInfo = 'api/users/getCurrentUser';
-
-    public string $icon = '';
-    public ?string $name;
-    public bool $visible = true;
+    private string $_icon = '';
+    private ?string $_name;
+    private bool $_visible = true;
 
     public function requestCode (RequestCode $request) : void
     {
@@ -47,7 +45,7 @@ class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidge
 
     }
 
-    protected function sig(array $params, $token)
+    protected function sig(array $params, $token):string
     {
         $secret = md5($token . $this->clientSecret);
         return md5(http_build_query($params,arg_separator: '') . $secret);
@@ -58,7 +56,7 @@ class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidge
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): mixed
+    public function requestId (RequestId $request): Response
     {
 
         $params = [
@@ -79,26 +77,26 @@ class Ok extends Social implements GetUrlsInterface, RequestIdInterface, ToWidge
             throw new BadRequestHttpException('[' . static::socialName() . "] E{$error['error_code']}.\n{$error['error_msg']}");
         }
 
-        return $dataInfo->data['uid'];
+        return $this->response('uid', $dataInfo->data); // $dataInfo->data['uid'];
     }
 
     public function getBaseUrl (): string
     {
-        return $this->clientApiUrl;
+        return  'https://api.ok.ru';
     }
 
     public function getUriCode (): string
     {
-        return $this->clientCodeUrl;
+        return 'https://connect.ok.ru/oauth/authorize';
     }
 
     public function getUriToken (): string
     {
-        return $this->uriToken;
+        return 'oauth/token.do';
     }
 
     public function getUriInfo (): string
     {
-        return $this->uriInfo;
+        return 'api/users/getCurrentUser';
     }
 }

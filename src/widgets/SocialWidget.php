@@ -2,11 +2,11 @@
 
 namespace Celebron\social\widgets;
 
+use Celebron\social\attrs\WidgetSupport;
+use Celebron\social\AuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\SocialAsset;
 use Celebron\social\SocialConfiguration;
-use Celebron\social\Social;
-use Celebron\social\WidgetSupport;
+use Celebron\social\State;
 use yii\base\NotSupportedException;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -19,11 +19,10 @@ use yii\web\NotFoundHttpException;
  */
 class SocialWidget extends Widget
 {
-    public const TYPE_LOGIN = 'login';
-    public const TYPE_REGISTER = 'register';
-
+    /** @var string Название социальной сети из конфига */
     public string $social;
-    public string $type = self::TYPE_LOGIN;
+
+    public string $type = State::METHOD_LOGIN;
     public ?bool $visible = null; //null -> $_social->visible
 
     public bool|string $icon = false;
@@ -35,19 +34,20 @@ class SocialWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
-    private null|ToWidgetInterface $_social = null;
+    private null|(AuthBase&ToWidgetInterface) $_social = null;
     private bool $_supportLogin = false;
     private bool $_supportRegister = false;
 
     /**
      * @throws \ReflectionException
      * @throws NotFoundHttpException
+     * @throws \Exception
      */
     public function init ()
     {
         parent::init();
         SocialAsset::register($this->view);
-        $this->_social = SocialConfiguration::socialStatic($this->social);
+        $this->_social = SocialConfiguration::social($this->social);
         $classRef = new \ReflectionClass($this->_social);
         $attributes = $classRef->getAttributes(WidgetSupport::class);
         if (isset($attributes[0])) {
@@ -68,9 +68,9 @@ class SocialWidget extends Widget
             $this->options['class'][] = "social-{$this->type}-block";
             $this->options['class'][] = "social_{$this->social}";
             $html .= Html::beginTag('div', $this->options) . PHP_EOL;
-            if(($this->type === self::TYPE_LOGIN) && $this->_supportLogin) {
+            if(($this->type === State::METHOD_LOGIN) && $this->_supportLogin) {
                 $html .= $this->getVisible() ? $this->runLogin() : $this->options['loginNoVisible'] ?? '';
-            } elseif(($this->type === self::TYPE_REGISTER) && $this->_supportRegister) {
+            } elseif(($this->type === State::METHOD_REGISTER) && $this->_supportRegister) {
                 $html .= $this->getVisible() ? $this->runRegister() : $this->options['registerNoVisible'] ?? '';
             }
             $html .= Html::endTag('div') . PHP_EOL;
@@ -89,16 +89,14 @@ class SocialWidget extends Widget
      */
     public function runLogin(): string
     {
-        /** @var Social $social */
-        $social = $this->_social::class;
         $alt = sprintf($this->loginText, $this->getName());
         $text = $this->getIcon(true) ?? $alt;
-        return "\t" . Html::a($text, $social::urlLogin(), $this->loginOptions) . PHP_EOL;
+        return "\t" . Html::a($text, $this->_social->urlLogin(), $this->loginOptions) . PHP_EOL;
     }
 
     public function getName() : string
     {
-        return  $this->_social->getName() ?? ($this->_social::class)::socialName();
+        return  $this->_social->getName();
     }
 
     /**
@@ -108,11 +106,8 @@ class SocialWidget extends Widget
      */
     public function getIcon(bool $html = false): bool|string|null
     {
-        /** @var ToWidgetInterface $social */
-        $social = $this->_social::class;
-
         if (is_bool($this->icon)) {
-            $icon = $this->icon && !empty( $social->getIcon()) ? \Yii::getAlias( $social->getIcon()) : null;
+            $icon = $this->icon && !empty( $this->_social->getIcon()) ? $this->_social->getIcon() : null;
         } else {
             $icon = \Yii::getAlias($this->icon);
         }
@@ -127,16 +122,14 @@ class SocialWidget extends Widget
      */
     public function runRegister(): string
     {
-        /** @var Social $social */
-        $social = $this->_social::class;
-
+        $user = \Yii::$app->user->identity;
         $socialId = $this->_social->getSocialId();
-        $idText = Html::a("<i class='bi bi-play'></i>",$social::urlRegister());
+        $idText = Html::a("<i class='bi bi-play'></i>",$this->_social->urlRegister());
         $idText .= $socialId;
-        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $social::urlDelete());
+        $toolText = Html::a("<i class='bi bi-toggle2-on'></i>", $this->_social->urlDelete());
         if($socialId === null) {
             $idText = "<i class='bi bi-stop'></i>";
-            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$social::urlRegister());
+            $toolText = Html::a("<i class='bi bi-toggle2-off'></i>",$this->_social->urlRegister());
         }
 
         $this->registerOptions['icon']['class'][] = 'social-icon-view';

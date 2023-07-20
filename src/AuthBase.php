@@ -2,187 +2,74 @@
 
 namespace Celebron\social;
 
-use Celebron\social\eventArgs\ErrorEventArgs;
-use Celebron\social\eventArgs\FindUserEventArgs;
-use Celebron\social\eventArgs\RequestArgs;
-use Celebron\social\eventArgs\ResultEventArgs;
-use Celebron\social\interfaces\AuthRequestInterface;
-use yii\base\InvalidConfigException;
-use yii\base\Model;
-use yii\db\ActiveRecord;
-use yii\di\Instance;
-use yii\di\NotInstantiableException;
-use yii\helpers\ArrayHelper;
-use yii\web\IdentityInterface;
+use Celebron\social\interfaces\SocialInterface;
+use Celebron\social\args\{ErrorEventArgs, ResultEventArgs};
+use yii\base\Component;
+use yii\base\Event;
+use yii\base\NotSupportedException;
+
 
 /**
  *
  * @property-read mixed $socialId
  */
-abstract class AuthBase extends Model
+abstract class AuthBase extends Component
 {
-    public const EVENT_ERROR = "error";
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
-    public const EVENT_FIND_USER = "findUser";
-    public bool $active = true;
-    public string $field;
+    public const EVENT_ERROR = 'error';
+    public bool $active = false;
 
-    public function __construct ($config = [])
-    {
-        parent::__construct($config);
-        $name = static::socialName();
-        //Генерация констант под каждую соц.сеть
-        $contName = 'SOCIAL_' . strtoupper($name);
-        if(!defined($contName)) {
-            define($contName, strtolower($name));
-        }
+    abstract public function request(?string $code, State $state):Response;
+
+    public function __construct (
+        public readonly string $socialName,
+        public readonly SocialConfiguration $config,
+        array $cfg = []
+    ){
+        parent::__construct($cfg);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function run(SocialController $controller): mixed
+    public function success(SocialController $action, Response $response): mixed
     {
-        $requestArgs = new RequestArgs(
-            $controller->config,
-            $controller->getCode(),
-            $controller->getState()
-        );
-
-        try {
-            $methodRef = new \ReflectionMethod($this, $requestArgs->actionMethod);
-            $requestArgs->requested = false;
-
-            //Выполнить запрос во внешию систему
-            if($this instanceof AuthRequestInterface) {
-                \Yii::debug('Released interface ' . AuthRequestInterface::class, static::class);
-                $this->request($methodRef, $requestArgs);
-                $requestArgs->requested = true;
-            }
-
-            if($methodRef->invoke($this, $requestArgs)) {
-                \Yii::debug("Method '{$requestArgs->actionMethod}' successful!", static::class);
-                return $this->success($controller, $requestArgs);
-            }
-            \Yii::debug("Method '{$requestArgs->actionMethod}' failed!", static::class);
-            return $this->failed($controller, $requestArgs);
-        } catch (\Exception $ex) {
-            \Yii::error($ex->getMessage(), static::class);
-            return $this->error($controller, $ex, $requestArgs);
-        }
-    }
-
-    protected function success(SocialController $action, RequestArgs $args): mixed
-    {
-        $eventArgs = new ResultEventArgs($action, $args);
+        $eventArgs = new ResultEventArgs($action, $response);
         $this->trigger(self::EVENT_SUCCESS, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
 
-    protected function failed(SocialController $action, RequestArgs $args): mixed
+    public function failed(SocialController $action, Response $response): mixed
     {
-        $eventArgs = new ResultEventArgs($action, $args);
+        $eventArgs = new ResultEventArgs($action, $response);
         $this->trigger(self::EVENT_FAILED, $eventArgs);
         return $eventArgs->result ?? $action->goBack();
     }
 
-    /**
-     * @throws \Exception
-     */
-    protected function error(SocialController $action, \Exception $ex, RequestArgs $args): mixed
+    public function response(string|\Closure|array|null $field, mixed $data) : Response
     {
-        $eventArgs = new ErrorEventArgs($action, $args, $ex);
-        $this->trigger(self::EVENT_ERROR, $eventArgs);
-        if($eventArgs->result === null) {
-            throw $eventArgs->exception;
-        }
-        return $eventArgs->result;
+        return new Response($this->socialName, $field,$data);
     }
 
-    final public static function socialName(): string
+    public function getSocialId():mixed
     {
-        $reflect = new \ReflectionClass(static::class);
-        $attributes = $reflect->getAttributes(SocialName::class);
-        $socialName = $reflect->getShortName();
-        if(count($attributes) > 0) {
-            $socialName = $attributes[0]->getArguments()[0];
-        }
-        return $socialName;
-    }
-
-
-    /**
-     * @throws InvalidConfigException
-     */
-    public function getSocialId(): mixed
-    {
-        $this->fieldValidator();
-        return \Yii::$app->user->identity->{$this->field};
-    }
-
-    /**
-     * Валидация поля аврторизации
-     * @return void
-     * @throws InvalidConfigException
-     */
-    final public function fieldValidator() : void
-    {
-        $class = \Yii::createObject(\Yii::$app->user->identityClass);
-        if(!($class instanceof ActiveRecord)) {
-            throw new NotInstantiableException(ActiveRecord::class, code: 0);
-        }
-        if(!ArrayHelper::isIn($this->field, $class->attributes())) {
-            throw new InvalidConfigException('Field ' . $this->field . ' not supported to class ' . $class::class, code: 1);
-        }
-    }
-
-    /**
-     * Модификация данных пользователя
-     * @param mixed $data - Значение поля field в пользовательской модели
-     * @return bool
-     * @throws InvalidConfigException
-     */
-    protected function modifiedUser(mixed $data) : bool
-    {
-        $this->fieldValidator();
-        /** @var ActiveRecord|IdentityInterface $user */
         $user = \Yii::$app->user->identity;
-        $field = $this->field;
-        $user->$field = $data;
-
-        if ($user->save()) {
-            \Yii::debug("Save field ['{$field}' = {$data}] to user {$user->getId()}", static::class);
-            return true;
+        if($user instanceof SocialInterface) {
+            return $user->getSocialId($this->socialName);
         }
-        \Yii::warning($user->getErrorSummary(true), static::class);
-        return false;
+        throw new NotSupportedException('Not released ' . SocialInterface::class);
     }
 
-    /**
-     * Поиск по полю в бд
-     * @return IdentityInterface|ActiveRecord
-     * @throws InvalidConfigException
-     */
-    protected function findUser(mixed $id): ?IdentityInterface
+    public static function ToException(?self $base, SocialController $controller, \Exception $ex)
     {
-        $this->fieldValidator();
-        $class = Instance::ensure(\Yii::$app->user->identityClass, ActiveRecord::class);
-        $query = $class::find()->andWhere([$this->field => $id]);
-        $findUserEventArgs = new FindUserEventArgs($query);
-        $this->trigger(self::EVENT_FIND_USER, $findUserEventArgs);
-        \Yii::debug($findUserEventArgs->user?->toArray(), static::class);
-        return $findUserEventArgs->user;
-    }
+        $error = new ErrorEventArgs($controller, $ex);
+        if(isset($base)) {
+            $base->trigger(self::EVENT_ERROR, $error);
+        } else {
+            Event::trigger(static::class, self::EVENT_ERROR, $error);
+        }
 
-    /**
-     * Ссылка на oauth2 авторизацию
-     * @param string $method
-     * @param string|null $state
-     * @return string
-     */
-    final public static function url(string $method, ?string $state = null) : string
-    {
-        return SocialConfiguration::url(static::socialName(), $method, $state);
+        if($error->result === null) {
+            throw $error->exception;
+        }
+        return $error->result;
     }
 }

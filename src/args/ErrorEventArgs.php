@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social\eventArgs;
+namespace Celebron\social\args;
 
 
 use Celebron\social\SocialController;
@@ -20,12 +20,10 @@ class ErrorEventArgs extends ResultEventArgs
      */
     public function __construct (
         SocialController $acton,
-        RequestArgs $args,
         public ?\Exception $exception,
-
         array $config = []
     ){
-        parent::__construct($acton, $args, $config);
+        parent::__construct($acton, null, $config);
     }
 
     /**
