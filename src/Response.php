@@ -2,6 +2,7 @@
 
 namespace Celebron\social;
 
+use Celebron\social\interfaces\SocialInterface;
 use yii\base\BaseObject;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
@@ -41,16 +42,10 @@ class Response extends BaseObject
      *
      * @throws \Exception
      */
-    public function saveModel(Model $model, bool $delete, ?string $field = null):bool
+    public function saveModel(Model&SocialInterface $model, bool $delete):bool
     {
-        if($field === null) {
-            $field = 'id_' . strtolower($this->social);
-        }
-        if($delete) {
-            $model->$field = null;
-        } else {
-            $model->$field = $this->getId();
-        }
+        $field = $model->getSocialField($this->social);
+        $model->$field = $delete ? null : $this->getId();
         if($model->save()) {
             return true;
         }

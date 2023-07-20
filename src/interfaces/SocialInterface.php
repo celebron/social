@@ -4,5 +4,5 @@ namespace Celebron\social\interfaces;
 
 interface SocialInterface
 {
-    public function getSocialId(string $social):mixed;
+    public function getSocialField(string $social):string;
 }

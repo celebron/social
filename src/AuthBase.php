@@ -53,7 +53,9 @@ abstract class AuthBase extends Component
     {
         $user = \Yii::$app->user->identity;
         if($user instanceof SocialInterface) {
-            return $user->getSocialId($this->socialName);
+            //return $user->getSocialId($this->socialName);
+            $field = $user->getSocialField($this->socialName);
+            return $user->$field;
         }
         throw new NotSupportedException('Not released ' . SocialInterface::class);
     }
