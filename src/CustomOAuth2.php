@@ -31,7 +31,7 @@ class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
      */
     public function requestCode (RequestCode $request): void
     {
-        if(isset($this->closureCode)) {
+        if($this->closureCode !== null) {
             call_user_func($this->closureCode, $request, $this);
         }
         throw new InvalidConfigException('Property $closureCode is null');
@@ -42,7 +42,7 @@ class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
      */
     public function requestToken (RequestToken $request): void
     {
-        if(isset($this->closureToken)) {
+        if($this->closureToken !== null) {
             call_user_func($this->closureToken, $request, $this);
         }
         throw new InvalidConfigException('Property $closureToken is null');
@@ -50,7 +50,7 @@ class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
 
     public function requestId (RequestId $request): \Celebron\social\Response
     {
-        if(isset($this->closureId)) {
+        if($this->closureId !== null) {
             return call_user_func($this->closureId, $request, $this);
         }
         throw new InvalidConfigException('Property $closureId is null');
