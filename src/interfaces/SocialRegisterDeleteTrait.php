@@ -4,8 +4,6 @@ namespace Celebron\social\interfaces;
 
 use Celebron\social\attrs\Request;
 use Celebron\social\Response;
-use yii\web\IdentityInterface;
-
 trait SocialRegisterDeleteTrait
 {
     /**

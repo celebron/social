@@ -4,7 +4,6 @@ namespace Celebron\social;
 
 use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\CustomInterface;
-use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
 use yii\base\InvalidConfigException;

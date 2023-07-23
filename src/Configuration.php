@@ -64,12 +64,12 @@ class Configuration extends Component implements BootstrapInterface
      * @throws InvalidConfigException
      * @throws \ReflectionException
      */
-    public function add(array $socialClassConfig, mixed $socialName): void
+    public function add(array $socialClassConfig, mixed $socialName = 0): void
     {
         if(is_numeric($socialName)) {
             $classRef = new \ReflectionClass($socialClassConfig['class']);
             if($classRef->isSubclassOf(CustomInterface::class)) {
-                throw new InvalidConfigException('An explicit definition of the key is required.');
+                throw new InvalidConfigException('An explicit definition of the key is required (not numeric).');
             }
             $socialName = $classRef->getShortName();
             $attrs = $classRef->getAttributes(SocialName::class);
