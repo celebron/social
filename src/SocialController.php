@@ -62,6 +62,7 @@ class SocialController extends Controller
 
             $methodName = 'social' . $this->getState()->normalizeMethod();
             $methodRef = new \ReflectionMethod(\Yii::$app->user->identityClass, $methodName);
+            $userObject  =  \Yii::$app->user->identity ?? \Yii::createObject(\Yii::$app->user->identityClass);
 
             //Обработка параметров
             $args = [];
@@ -89,7 +90,7 @@ class SocialController extends Controller
                 throw new \http\Exception\InvalidArgumentException();
             }
 
-            $response = $methodRef->invokeArgs(\Yii::$app->user->identity, $args);
+            $response = $methodRef->invokeArgs($userObject, $args);
             if(is_bool($response)) {
                 $response = new Response($response);
             }
