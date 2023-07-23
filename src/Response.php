@@ -19,10 +19,10 @@ class Response
     /**
      * @throws \Exception
      */
-    public static function saveModel(SocialResponse $response, ActiveRecord&SocialInterface $model, bool $delete):self
+    public static function saveModel(SocialResponse|AuthBase $response, ActiveRecord&SocialInterface $model, mixed $value = null):self
     {
-        $field = $model->getSocialField($response->social);
-        $model->$field = $delete ? null : $response->getId();
+        $field = $model->getSocialField($response->socialName);
+        $model->$field = ($response instanceof SocialResponse) ? $response->getId() : $value;
         $result = new self($model->save());
         $result->response = $model;
         return $result;

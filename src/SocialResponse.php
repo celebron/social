@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
 class SocialResponse extends BaseObject
 {
     public function __construct (
-        public readonly string                      $social,
+        public readonly string                      $socialName,
         private readonly string|\Closure|array|null $field,
         public readonly mixed                       $data,
         array                                       $config = []

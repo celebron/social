@@ -12,7 +12,7 @@ trait SocialRegisterDeleteTrait
      */
     public function socialRegister(SocialResponse $response):Response
     {
-        return Response::saveModel($response, $this, false);
+        return Response::saveModel($response, $this);
     }
 
     /**
@@ -20,7 +20,6 @@ trait SocialRegisterDeleteTrait
      */
     public function socialDelete(OAuth2 $social):Response
     {
-//        $social->getSocialId()
-//        return Response::saveModel($response, $this, true);
+        return Response::saveModel($social, $this);
     }
 }
