@@ -2,7 +2,7 @@
 
 namespace Celebron\social;
 
-use Celebron\social\interfaces\AuthInterface;
+use Celebron\social\interfaces\SocialAuthInterface;
 use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\args\{EventError, EventResult};
 use yii\base\Component;
@@ -14,7 +14,7 @@ use yii\base\NotSupportedException;
  *
  * @property-read mixed $socialId
  */
-abstract class AuthBase extends Component implements AuthInterface
+abstract class SocialAuthBase extends Component implements SocialAuthInterface
 {
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';

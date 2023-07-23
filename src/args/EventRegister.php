@@ -2,11 +2,11 @@
 
 namespace Celebron\social\args;
 
-use Celebron\social\AuthBase;
+use Celebron\social\SocialAuthBase;
 use yii\base\Event;
 
 class EventRegister extends Event
 {
     public bool $support = false;
-    public ?AuthBase $social = null;
+    public ?SocialAuthBase $social = null;
 }

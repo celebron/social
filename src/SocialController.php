@@ -4,9 +4,9 @@ namespace Celebron\social;
 
 use Celebron\social\args\EventResult;
 use Celebron\social\attrs\SocialRequest;
+use Celebron\social\interfaces\SocialAuthInterface;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidParamException;
-use yii\filters\auth\AuthInterface;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -70,7 +70,7 @@ class SocialController extends Controller
                 if ($parameter->hasType()) {
                     $type = (string)$parameter->getType();
                     $typeClassRef = new \ReflectionClass($type);
-                    if ($typeClassRef->implementsInterface(AuthInterface::class)) {
+                    if ($typeClassRef->implementsInterface(SocialAuthInterface::class)) {
                         $args[$key] = $object;
                     }
                     if ($type === self::class) {
@@ -105,7 +105,7 @@ class SocialController extends Controller
         }
         catch (\Exception $ex) {
             \Yii::error($ex->getMessage(), static::class);
-            return AuthBase::ToException($object, $this, $ex);
+            return SocialAuthBase::ToException($object, $this, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }

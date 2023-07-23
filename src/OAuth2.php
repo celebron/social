@@ -18,7 +18,7 @@ use yii\web\BadRequestHttpException;
  * @property string $redirectUrl
  * @property string $clientSecret
  */
-abstract class OAuth2 extends AuthBase
+abstract class OAuth2 extends SocialAuthBase
 {
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';

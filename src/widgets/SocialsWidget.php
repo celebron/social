@@ -2,7 +2,7 @@
 
 namespace Celebron\social\widgets;
 
-use Celebron\social\AuthBase;
+use Celebron\social\SocialAuthBase;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\Configuration;
 use Celebron\social\State;
@@ -26,7 +26,7 @@ class SocialsWidget extends Widget
     public array $registerOptions = [];
     public array $options = [];
 
-    /** @var AuthBase[]  */
+    /** @var SocialAuthBase[]  */
     private array $_socials = [];
 
     /**

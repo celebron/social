@@ -4,7 +4,7 @@ namespace Celebron\social;
 
 use Celebron\social\args\EventRegister;
 use Celebron\social\attrs\SocialName;
-use Celebron\social\interfaces\CustomInterface;
+use Celebron\social\interfaces\CustomInterfaceSocial;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -68,7 +68,7 @@ class Configuration extends Component implements BootstrapInterface
     {
         if(is_numeric($socialName)) {
             $classRef = new \ReflectionClass($socialClassConfig['class']);
-            if($classRef->isSubclassOf(CustomInterface::class)) {
+            if($classRef->isSubclassOf(CustomInterfaceSocial::class)) {
                 throw new InvalidConfigException('An explicit definition of the key is required (not numeric).');
             }
             $socialName = $classRef->getShortName();
@@ -86,16 +86,16 @@ class Configuration extends Component implements BootstrapInterface
         $registerEventArgs = new EventRegister();
         $object = \Yii::createObject($socialClassConfig, [ $socialName, $this ]);
         $registerEventArgs->support = false;
-        if($object instanceof AuthBase) {
+        if($object instanceof SocialAuthBase) {
             $registerEventArgs->social = $object;
             if($this->onSuccess !== null) {
-                $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess);
+                $object->on(SocialAuthBase::EVENT_SUCCESS, $this->onSuccess);
             }
             if($this->onFailed !== null) {
-                $object->on(AuthBase::EVENT_FAILED, $this->onFailed);
+                $object->on(SocialAuthBase::EVENT_FAILED, $this->onFailed);
             }
             if($this->onError !== null) {
-                $object->on(AuthBase::EVENT_ERROR, $this->onError);
+                $object->on(SocialAuthBase::EVENT_ERROR, $this->onError);
             }
             $registerEventArgs->support = true;
         }
@@ -142,10 +142,10 @@ class Configuration extends Component implements BootstrapInterface
     /**
      * @throws \Exception
      */
-    public function get(string $social, ...$interface): ?AuthBase
+    public function get(string $social, ...$interface): ?SocialAuthBase
     {
         $social =  strtolower(trim(strip_tags($social)));
-        /** @var AuthBase $object */
+        /** @var SocialAuthBase $object */
         $object = ArrayHelper::getValue($this->getSocials(...$interface), $social);
 
         if($object === null) {
@@ -174,17 +174,17 @@ class Configuration extends Component implements BootstrapInterface
      * Выводит Social класс по имени класса (static)
      * @param string $socialName
      * @param mixed ...$interfaces
-     * @return null|AuthBase
+     * @return null|SocialAuthBase
      * @throws \Exception
      */
-    public static function social(string $socialName, ...$interfaces) : ?AuthBase
+    public static function social(string $socialName, ...$interfaces) : ?SocialAuthBase
     {
         return  static::$config->get($socialName, ...$interfaces);
     }
 
     /**
      * Вывод Socials[] (static)
-     * @return AuthBase[]
+     * @return SocialAuthBase[]
      * @throws \ReflectionException
      */
     public static function socials(...$interfaces): array
