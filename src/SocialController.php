@@ -70,24 +70,28 @@ class SocialController extends Controller
                 if ($parameter->hasType()) {
                     $type = (string)$parameter->getType();
                     $typeClassRef = new \ReflectionClass($type);
+                    //Добавления объекта авторизации
                     if ($typeClassRef->implementsInterface(SocialAuthInterface::class)) {
                         $args[$key] = $object;
                     }
+                    //Добавление контролера
                     if ($type === self::class) {
                         $args[$key] = $this;
                     }
+                    //Добавление SocialResponse и выполнение request
                     if ($type === SocialResponse::class) {
                         $args[$key] = $object->request($this->getCode(), $this->getState());
                     }
                 } else {
-                    throw new InvalidArgumentException();
+                    throw new InvalidArgumentException('The type is not defined');
                 }
             }
 
+            //Проверка выводимого значения метода обработки
             if (!$methodRef->hasReturnType() ||
                 !((string)$methodRef->getReturnType() === 'bool' || (string)$methodRef->getReturnType() === Response::class)
             ) {
-                throw new \http\Exception\InvalidArgumentException();
+                throw new \http\Exception\InvalidArgumentException('ReturnType is not defined correctly');
             }
 
             $response = $methodRef->invokeArgs($userObject, $args);
