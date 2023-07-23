@@ -36,7 +36,7 @@ abstract class AuthBase extends Component implements AuthInterface
         return $eventArgs->result ?? $action->goBack();
     }
 
-    public function failed(SocialController $action, SocialResponse $response): mixed
+    public function failed(SocialController $action, Response $response): mixed
     {
         $eventArgs = new EventResult($action, $response);
         $this->trigger(self::EVENT_FAILED, $eventArgs);

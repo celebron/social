@@ -2,6 +2,7 @@
 
 namespace Celebron\social\interfaces;
 
+use Celebron\social\OAuth2;
 use Celebron\social\Response;
 use Celebron\social\SocialResponse;
 trait SocialRegisterDeleteTrait
@@ -17,8 +18,9 @@ trait SocialRegisterDeleteTrait
     /**
      * @throws \Exception
      */
-    public function socialDelete(SocialResponse $response):Response
+    public function socialDelete(OAuth2 $social):Response
     {
-        return Response::saveModel($response, $this, true);
+//        $social->getSocialId()
+//        return Response::saveModel($response, $this, true);
     }
 }
