@@ -19,7 +19,7 @@ class EventResult extends Event
 
     public function __construct (
         public SocialController $action,
-        public Response $response,
+        public ?Response $response,
         array $config = []
     )
     {
