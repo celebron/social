@@ -5,6 +5,7 @@ namespace Celebron\social;
 use Celebron\social\args\EventRegister;
 use Celebron\social\attrs\SocialName;
 use Celebron\social\interfaces\CustomInterface;
+use Celebron\social\interfaces\SocialAuthInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -116,8 +117,7 @@ class Configuration extends Component implements BootstrapInterface
                     throw new InvalidConfigException();
                 }
                 $classRef = new \ReflectionClass($className);
-                if($classRef->implementsInterface(CustomInterface::class))
-                {
+                if($classRef->implementsInterface(CustomInterface::class)) {
                     throw new InvalidConfigException("Key is numeric. The key must be alphabetical.");
                 }
                 $name = strtolower($classRef->getShortName());
@@ -148,7 +148,7 @@ class Configuration extends Component implements BootstrapInterface
     /**
      * @throws \Exception
      */
-    public function get(string $social, ...$interface): ?SocialAuthBase
+    public function get(string $social, ...$interface): ?SocialAuthInterface
     {
         $social =  strtolower(trim(strip_tags($social)));
         /** @var SocialAuthBase $object */

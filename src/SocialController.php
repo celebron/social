@@ -56,7 +56,7 @@ class SocialController extends Controller
             }
 
             //Если не активна
-            if (!$object->active) {
+            if (!$object->getActive()) {
                 throw new NotFoundHttpException("Social '$social' not active");
             }
 

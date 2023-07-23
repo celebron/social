@@ -7,11 +7,13 @@ use Celebron\social\interfaces\SocialInterface;
 use Celebron\social\args\{EventError, EventResult};
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 
 
 /**
  *
+ * @property bool $active
  * @property-read mixed $socialId
  */
 abstract class SocialAuthBase extends Component implements SocialAuthInterface
@@ -19,7 +21,7 @@ abstract class SocialAuthBase extends Component implements SocialAuthInterface
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
-    public bool $active = false;
+    public bool $_active = false;
 
     public function __construct (
         public readonly string        $socialName,
@@ -45,7 +47,7 @@ abstract class SocialAuthBase extends Component implements SocialAuthInterface
 
     public function response(string|\Closure|array|null $field, mixed $data) : SocialResponse
     {
-        return new SocialResponse($this->socialName, $field,$data);
+        return new SocialResponse($this->socialName, $field, $data);
     }
 
     public function getSocialId():mixed
@@ -71,5 +73,18 @@ abstract class SocialAuthBase extends Component implements SocialAuthInterface
             throw $error->exception;
         }
         return $error->result;
+    }
+
+    public function getActive (): bool
+    {
+        if (isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['active'])) {
+            return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['active'];
+        }
+        return $this->_active;
+    }
+
+    public function setActive (bool $value): void
+    {
+        $this->_active = $value;
     }
 }
