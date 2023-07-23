@@ -2,7 +2,7 @@
 
 namespace Celebron\social\interfaces;
 
-interface CustomInterface
+interface CustomInterface extends AuthInterface
 {
 
 }

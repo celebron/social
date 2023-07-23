@@ -10,7 +10,7 @@ class CustomAuth extends \Celebron\social\AuthBase
     /**
      * @throws InvalidConfigException
      */
-    public function request (?string $code, State $state): Response
+    public function request (?string $code, State $state): SocialResponse
     {
         if($this->handler !== null) {
            return call_user_func($this->handler, $code, $state, $this);

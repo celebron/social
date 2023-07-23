@@ -43,7 +43,7 @@ class VK extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
 
     }
 
-    public function requestId (RequestId $request): \Celebron\social\Response
+    public function requestId (RequestId $request): \Celebron\social\SocialResponse
     {
         return $this->response('user_id', $request->getTokenData());
     }

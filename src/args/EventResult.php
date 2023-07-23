@@ -4,6 +4,7 @@ namespace Celebron\social\args;
 
 
 use Celebron\social\Response;
+use Celebron\social\SocialResponse;
 use Celebron\social\SocialController;
 use yii\base\Event;
 use yii\helpers\ArrayHelper;
@@ -11,14 +12,14 @@ use yii\helpers\ArrayHelper;
 /**
  * Параметры для события registerSuccess и loginSuccess
  */
-class ResultEventArgs extends Event
+class EventResult extends Event
 {
     /** @var mixed|null - вывод */
     public mixed $result = null;
 
     public function __construct (
         public SocialController $action,
-        public readonly ?Response $response,
+        public Response $response,
         array $config = []
     )
     {

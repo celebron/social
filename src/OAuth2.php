@@ -43,7 +43,7 @@ abstract class OAuth2 extends AuthBase
      */
     abstract public function requestToken(RequestToken $request): void;
 
-    abstract public function requestId(RequestId $request): \Celebron\social\Response;
+    abstract public function requestId(RequestId $request): SocialResponse;
 
     public function __construct (
         string        $socialName,
@@ -96,13 +96,13 @@ abstract class OAuth2 extends AuthBase
     /**
      * @param string|null $code
      * @param State $state
-     * @return  \Celebron\social\Response
+     * @return  SocialResponse
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
      * @throws InvalidRouteException
      */
-    public function request(?string $code, State $state): \Celebron\social\Response
+    public function request(?string $code, State $state): SocialResponse
     {
         $session = \Yii::$app->session;
         if (!$session->isActive) {
@@ -187,7 +187,7 @@ abstract class OAuth2 extends AuthBase
      * @throws InvalidConfigException
      * @throws \Exception
      */
-    public function sendResponse(Request $sender, string|\Closure|array $field) : \Celebron\social\Response
+    public function sendResponse(Request $sender, string|\Closure|array $field) : SocialResponse
     {
         $response = $this->send($sender);
         return $this->response($field, $response->getData());

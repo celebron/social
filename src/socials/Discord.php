@@ -11,7 +11,7 @@ use Celebron\social\OAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
-use Celebron\social\Response;
+use Celebron\social\SocialResponse;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -53,7 +53,7 @@ class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface, T
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (RequestId $request): Response
+    public function requestId (RequestId $request): SocialResponse
     {
 
         $url = $request->get(

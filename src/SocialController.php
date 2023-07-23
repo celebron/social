@@ -2,7 +2,11 @@
 
 namespace Celebron\social;
 
-use Celebron\social\attrs\Request;
+use Celebron\social\args\EventResult;
+use Celebron\social\attrs\SocialRequest;
+use yii\base\InvalidArgumentException;
+use yii\base\InvalidParamException;
+use yii\filters\auth\AuthInterface;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -40,42 +44,57 @@ class SocialController extends Controller
      * @throws BadRequestHttpException
      * @throws \Exception
      */
-    private function handler(string $social, string $userClass, ?object $userObject)
+    public function actionHandler($social)
     {
         \Yii::beginProfile("Social profiling", static::class);
         $object = $this->config->get($social);
 
         try {
             //Если не поддерживается
-            if($object === null) {
+            if ($object === null) {
                 throw new NotFoundHttpException("Social '$social' not registered");
             }
 
             //Если не активна
-            if(!$object->active) {
+            if (!$object->active) {
                 throw new NotFoundHttpException("Social '$social' not active");
             }
 
-            $userObject  =  $userObject ?? \Yii::createObject($userClass);
             $methodName = 'social' . $this->getState()->normalizeMethod();
-            $methodRef = new \ReflectionMethod($userClass, $methodName);
+            $methodRef = new \ReflectionMethod(\Yii::$app->user->identity, $methodName);
 
-            $attributes = $methodRef->getAttributes(Request::class);
-            $requested = true;
-            if(isset($attributes[0])) {
-                /** @var Request $attr */
-                $attr = $attributes[0]->newInstance();
-                $requested = $attr->request;
+            //Обработка параметров
+            $args = [];
+            foreach ($methodRef->getParameters() as $key => $parameter) {
+                if ($parameter->hasType()) {
+                    $type = (string)$parameter->getType();
+                    $typeClassRef = new \ReflectionClass($type);
+                    if ($typeClassRef->implementsInterface(AuthInterface::class)) {
+                        $args[$key] = $object;
+                    }
+                    if ($type === self::class) {
+                        $args[$key] = $this;
+                    }
+                    if ($type === SocialResponse::class) {
+                        $args[$key] = $object->request($this->getCode(), $this->getState());
+                    }
+                } else {
+                    throw new InvalidArgumentException();
+                }
             }
 
-            if($requested) {
-                \Yii::info("Request to $social server", static::class);
-                $response = $object->request($this->code, $this->getState());
-            } else {
-                $response = new Response($object->socialName, null, null);
+            if (!$methodRef->hasReturnType() ||
+                !((string)$methodRef->getReturnType() === 'bool' || (string)$methodRef->getReturnType() === Response::class)
+            ) {
+                throw new \http\Exception\InvalidArgumentException();
             }
 
-            if($methodRef->invoke($userObject, $response, $object)) {
+            $response = $methodRef->invokeArgs(\Yii::$app->user->identity, $args);
+            if(is_bool($response)) {
+                $response = new Response($response);
+            }
+
+            if($response->success) {
                 \Yii::info("Invoke method ({$methodRef->getShortName()}) successful", static::class);
                 return $object->success($this, $response);
             }
@@ -89,14 +108,6 @@ class SocialController extends Controller
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
-    }
-
-    /**
-     * @throws BadRequestHttpException
-     */
-    public function actionHandler($social)
-    {
-        return $this->handler($social, \Yii::$app->user->identityClass, \Yii::$app->user->identity);
     }
 
 }

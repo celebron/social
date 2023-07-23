@@ -2,7 +2,7 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\DataEventArgs;
+use Celebron\social\args\EventData;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
@@ -54,7 +54,7 @@ class RequestToken extends BaseObject
 
     public function generateData(): array
     {
-        $event = new DataEventArgs($this->data);
+        $event = new EventData($this->data);
         $this->social->trigger(OAuth2::EVENT_DATA_TOKEN, $event);
         $this->data = $event->newData;
 

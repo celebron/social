@@ -2,14 +2,14 @@
 
 namespace Celebron\social\interfaces;
 
-use Celebron\social\attrs\Request;
-use Celebron\social\Response;
+use Celebron\social\attrs\SocialRequest;
+use Celebron\social\SocialResponse;
 trait SocialRegisterDeleteTrait
 {
     /**
      * @throws \Exception
      */
-    public function socialRegister(Response $response):bool
+    public function socialRegister(SocialResponse $response):bool
     {
         return $response->saveModel($this, false);
     }
@@ -17,8 +17,8 @@ trait SocialRegisterDeleteTrait
     /**
      * @throws \Exception
      */
-    #[Request(false)]
-    public function socialDelete(Response $response):bool
+    #[SocialRequest(false)]
+    public function socialDelete(SocialResponse $response):bool
     {
         return $response->saveModel($this, true);
     }

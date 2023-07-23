@@ -2,7 +2,7 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\RegisterEventArgs;
+use Celebron\social\args\EventRegister;
 use Celebron\social\attrs\SocialName;
 use Celebron\social\interfaces\CustomInterface;
 use yii\base\BootstrapInterface;
@@ -83,7 +83,7 @@ class Configuration extends Component implements BootstrapInterface
         if(ArrayHelper::keyExists($socialName, $this->_socials)) {
             throw new InvalidConfigException("Key $socialName not exists");
         }
-        $registerEventArgs = new RegisterEventArgs();
+        $registerEventArgs = new EventRegister();
         $object = \Yii::createObject($socialClassConfig, [ $socialName, $this ]);
         $registerEventArgs->support = false;
         if($object instanceof AuthBase) {

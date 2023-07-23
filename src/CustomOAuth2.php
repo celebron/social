@@ -49,7 +49,7 @@ class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
         }
     }
 
-    public function requestId (RequestId $request): \Celebron\social\Response
+    public function requestId (RequestId $request): \Celebron\social\SocialResponse
     {
         if($this->handleId !== null) {
             return call_user_func($this->handleId, $request, $this);
