@@ -61,7 +61,7 @@ class SocialController extends Controller
             }
 
             $methodName = 'social' . $this->getState()->normalizeMethod();
-            $methodRef = new \ReflectionMethod(\Yii::$app->user->identity, $methodName);
+            $methodRef = new \ReflectionMethod(\Yii::$app->user->identityClass, $methodName);
 
             //Обработка параметров
             $args = [];
