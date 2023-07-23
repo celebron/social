@@ -24,7 +24,7 @@ use yii\web\Application;
  * @method
  *
  */
-class Configuration extends Component implements BootstrapInterface
+class Configuration2 extends Component implements BootstrapInterface
 {
     public const EVENT_BEFORE_REGISTER = 'beforeRegister';
     public const EVENT_AFTER_REGISTER = 'afterRegister';
@@ -60,42 +60,53 @@ class Configuration extends Component implements BootstrapInterface
 
     }
 
+
+
     /**
      * @throws InvalidConfigException
+     * @throws \ReflectionException
      */
-    public function addConfig(string $name, array $classConfig)
+    public function add(array $socialClassConfig, mixed $socialName = 0): void
     {
-        /** @var SocialAuthBase $object */
-        $object = \Yii::createObject($classConfig, [ $name, $this ]);
-        $this->add($name, $object);
-    }
-
-    public function add(string $name, SocialAuthBase $object): void
-    {
-        if (ArrayHelper::keyExists($name, $this->_socials)) {
-            throw new InvalidConfigException("Key $name exists");
+        if(is_numeric($socialName)) {
+            $classRef = new \ReflectionClass($socialClassConfig['class']);
+            if($classRef->isSubclassOf(CustomInterface::class)) {
+                throw new InvalidConfigException('An explicit definition of the key is required (not numeric).');
+            }
+            $socialName = $classRef->getShortName();
+            $attrs = $classRef->getAttributes(SocialName::class);
+            if(isset($attrs[0])) {
+                /** @var SocialName $attr */
+                $attr = $attrs[0]->newInstance();
+                $socialName = $attr->name;
+            }
+            $socialName = strtolower(trim($socialName));
         }
-        $eventRegister = new EventRegister();
-        $eventRegister->support = false;
-        $eventRegister->social = $object;
-
-        if ($this->onSuccess !== null) {
-            $object->on(SocialAuthBase::EVENT_SUCCESS, $this->onSuccess);
+        if(ArrayHelper::keyExists($socialName, $this->_socials)) {
+            throw new InvalidConfigException("Key $socialName not exists");
         }
-        if ($this->onFailed !== null) {
-            $object->on(SocialAuthBase::EVENT_FAILED, $this->onFailed);
+        $registerEventArgs = new EventRegister();
+        $object = \Yii::createObject($socialClassConfig, [ $socialName, $this ]);
+        $registerEventArgs->support = false;
+        if($object instanceof SocialAuthBase) {
+            $registerEventArgs->social = $object;
+            if($this->onSuccess !== null) {
+                $object->on(SocialAuthBase::EVENT_SUCCESS, $this->onSuccess);
+            }
+            if($this->onFailed !== null) {
+                $object->on(SocialAuthBase::EVENT_FAILED, $this->onFailed);
+            }
+            if($this->onError !== null) {
+                $object->on(SocialAuthBase::EVENT_ERROR, $this->onError);
+            }
+            $registerEventArgs->support = true;
         }
-        if ($this->onError !== null) {
-            $object->on(SocialAuthBase::EVENT_ERROR, $this->onError);
-        }
-        $eventRegister->support = true;
-
-        $this->trigger(self::EVENT_REGISTER, $eventRegister);
-        if (!$eventRegister->support) {
-            \Yii::warning($object::class . ' not support', static::class);
+        $this->trigger(self::EVENT_REGISTER, $registerEventArgs);
+        if(!$registerEventArgs->support) {
+            \Yii::warning($object::class . ' not support',static::class);
         } else {
-            \Yii::info("$name registered...", static::class);
-            $this->_socials[$name] = $object;
+            \Yii::info("$socialName registered...", static::class);
+            $this->_socials[$socialName] = $object;
         }
     }
 
@@ -106,23 +117,8 @@ class Configuration extends Component implements BootstrapInterface
     public function setSocials(array $socials):void
     {
         $this->trigger(self::EVENT_BEFORE_REGISTER);
-        foreach ($socials as $name => $handler) {
-            if(is_numeric($name)) {
-                if(is_string($handler)) {
-                    $className = $handler;
-                } elseif(is_array($handler) && isset($handler['class'])) {
-                    $className = $handler['class'];
-                } else {
-                    throw new InvalidConfigException();
-                }
-                $classRef = new \ReflectionClass($className);
-                if($classRef->implementsInterface(CustomInterface::class))
-                {
-                    throw new InvalidConfigException("Key is numeric. The key must be alphabetical.");
-                }
-                $name = strtolower($classRef->getShortName());
-            }
-            $this->addConfig($name, $handler);
+        foreach ($socials as $key => $class) {
+            $this->add($class, $key);
         }
         $this->trigger(self::EVENT_AFTER_REGISTER);
     }

@@ -3,13 +3,13 @@
 namespace Celebron\social;
 
 use Celebron\social\attrs\WidgetSupport;
-use Celebron\social\interfaces\CustomInterfaceSocial;
+use Celebron\social\interfaces\CustomInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
 use yii\base\InvalidConfigException;
 
 #[WidgetSupport(true, true)]
-class CustomOAuth2 extends OAuth2 implements CustomInterfaceSocial, ToWidgetInterface
+class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
 
