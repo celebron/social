@@ -7,7 +7,7 @@ use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\SetFullUrlInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2;
+use Celebron\social\AbstractOAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
@@ -29,7 +29,7 @@ use Yiisoft\Http\Header;
  * @property-write Request $fullUrl
  */
 #[WidgetSupport(true, true)]
-class Discord extends OAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
+class Discord extends AbstractOAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     public array $scope = [ 'identify' ];

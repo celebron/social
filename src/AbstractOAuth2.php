@@ -3,8 +3,11 @@
 namespace Celebron\social;
 
 use Celebron\common\Token;
-use Celebron\social\interfaces\SetFullUrlInterface;
-use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\BaseUrlInterface;
+use Celebron\social\interfaces\OAuth2Interface;
+use Celebron\social\interfaces\SocialAuthTrait;
+use yii\base\Component;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;
@@ -16,46 +19,39 @@ use yii\web\BadRequestHttpException;
  *
  * @property string $clientId
  * @property string $redirectUrl
+ * @property-read string $uriToken
+ * @property-read string $uriRefreshToken
+ * @property bool $active
+ * @property-read string $uriInfo
+ * @property-read string $uriCode
  * @property string $clientSecret
  */
-abstract class OAuth2 extends SocialAuthBase
+abstract class AbstractOAuth2 extends Component implements OAuth2Interface
 {
+    use SocialAuthTrait;
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
 
     private ?string $_clientId = null;
-    private string $_clientSecret;
-    public string $redirectUrl;
+    private ?string $_clientSecret = null;
+    private ?string $_redirectUrl = null;
+    private bool $_active = false;
 
     public readonly Client $client;
-
     public ?Token $token = null;
 
-    /**
-     * @param RequestCode $request
-     * @return void
-     */
-    abstract public function requestCode(RequestCode $request):void;
-
-    /**
-     * @param RequestToken $request
-     * @return void
-     */
-    abstract public function requestToken(RequestToken $request): void;
-
-    abstract public function requestId(RequestId $request): SocialResponse;
-
     public function __construct (
-        string        $socialName,
-        Configuration $config,
-        array         $cfg = [])
+        protected readonly string $socialName,
+        protected readonly Configuration $configure,
+        array $config = []
+    )
     {
         $this->client = new Client();
         $this->client->transport = CurlTransport::class;
-        if($this instanceof GetUrlsInterface) {
+        if($this instanceof BaseUrlInterface) {
             $this->client->baseUrl = $this->getBaseUrl();
         }
-        parent::__construct($socialName, $config, $cfg);
+        parent::__construct($config);
     }
 
     /**
@@ -76,6 +72,7 @@ abstract class OAuth2 extends SocialAuthBase
     {
         $this->_clientId = $value;
     }
+
     public function getClientSecret() : string
     {
         if(empty($this->_clientSecret)) {
@@ -87,10 +84,22 @@ abstract class OAuth2 extends SocialAuthBase
 
         return $this->_clientSecret;
     }
-
     public function setClientSecret(string $value): void
     {
         $this->_clientSecret = $value;
+    }
+
+    public function getActive (): bool
+    {
+        if (isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['active'])) {
+            return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['active'];
+        }
+        return $this->_active;
+    }
+
+    public function setActive (bool $value): void
+    {
+        $this->_active = $value;
     }
 
     /**
@@ -101,6 +110,7 @@ abstract class OAuth2 extends SocialAuthBase
      * @throws Exception
      * @throws InvalidConfigException
      * @throws InvalidRouteException
+     * @throws \Exception
      */
     public function request(?string $code, State $state): SocialResponse
     {
@@ -141,7 +151,7 @@ abstract class OAuth2 extends SocialAuthBase
         $request = new RequestId($this);
         $response = $this->requestId($request);
 
-        \Yii::debug("Userid: {$response->id}.", static::class);
+        \Yii::debug("Userid: {$response->getId()}.", static::class);
         return  $response;
     }
 
@@ -200,5 +210,18 @@ abstract class OAuth2 extends SocialAuthBase
             'social' => $this->socialName,
             'state' => (string)State::create($method, $state),
         ], true);
+    }
+
+    public function getRedirectUrl (): string
+    {
+        if(isset($this->_redirectUrl)) {
+            return $this->_redirectUrl;
+        }
+        throw new InvalidArgumentException('RedirectUrl is null');
+    }
+
+    public function setRedirectUrl (string $url): void
+    {
+        $this->_redirectUrl = $url;
     }
 }

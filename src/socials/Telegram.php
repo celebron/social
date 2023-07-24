@@ -3,7 +3,7 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\attrs\WidgetSupport;
-use Celebron\social\SocialAuthBase;
+use Celebron\social\AuthBase;
 use Celebron\social\SocialResponse;
 use Celebron\social\State;
 use yii\web\BadRequestHttpException;
@@ -13,7 +13,7 @@ use yii\web\BadRequestHttpException;
  * @property-read mixed $data
  */
 #[WidgetSupport(false, true)]
-class Telegram extends SocialAuthBase
+class Telegram extends AuthBase
 {
     public string $clientSecret;
 

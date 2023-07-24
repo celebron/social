@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social\args;
+namespace Celebron\social\events;
 
 class EventData extends \yii\base\Event
 {

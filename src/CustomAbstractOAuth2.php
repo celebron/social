@@ -9,7 +9,7 @@ use Celebron\social\interfaces\ToWidgetTrait;
 use yii\base\InvalidConfigException;
 
 #[WidgetSupport(true, true)]
-class CustomOAuth2 extends OAuth2 implements CustomInterface, ToWidgetInterface
+class CustomAbstractOAuth2 extends AbstractOAuth2 implements CustomInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
 

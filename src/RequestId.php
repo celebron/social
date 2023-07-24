@@ -29,7 +29,7 @@ class RequestId extends BaseObject
     public readonly Token $token;
     private readonly Client $client;
 
-    public function __construct(OAuth2 $social, array $config = [])
+    public function __construct(AbstractOAuth2 $social, array $config = [])
     {
         parent::__construct($config);
         if ($social instanceof GetUrlsInterface) {

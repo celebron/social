@@ -6,7 +6,7 @@ use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2;
+use Celebron\social\AbstractOAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
@@ -27,7 +27,7 @@ use Yiisoft\Http\Header;
  * @property-write string $configFile
  */
 #[WidgetSupport(true, true)]
-class Google extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
+class Google extends AbstractOAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
     private string $authUrl = 'https://accounts.google.com/o/oauth2/auth';

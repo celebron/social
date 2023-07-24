@@ -2,7 +2,7 @@
 
 namespace Celebron\social;
 
-use Celebron\social\args\EventData;
+use Celebron\social\events\EventData;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
@@ -30,9 +30,9 @@ class RequestToken extends BaseObject
     public array $params = [];
     private readonly Client $client;
     public function __construct (
-        public readonly string $code,
-        protected OAuth2 $social,
-        array $config = []
+        public readonly string   $code,
+        protected AbstractOAuth2 $social,
+        array                    $config = []
     ) {
         parent::__construct($config);
         $this->uri = ($this->social instanceof GetUrlsInterface) ? $this->social->getUriToken():'';
@@ -55,7 +55,7 @@ class RequestToken extends BaseObject
     public function generateData(): array
     {
         $event = new EventData($this->data);
-        $this->social->trigger(OAuth2::EVENT_DATA_TOKEN, $event);
+        $this->social->trigger(AbstractOAuth2::EVENT_DATA_TOKEN, $event);
         $this->data = $event->newData;
 
         return ArrayHelper::merge([

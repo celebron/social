@@ -8,7 +8,7 @@ use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2;
+use Celebron\social\AbstractOAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
@@ -27,7 +27,7 @@ use yii\web\BadRequestHttpException;
  * @property-read string $baseUrl
  */
 #[WidgetSupport(true, true)]
-class Yandex extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
+class Yandex extends AbstractOAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
 

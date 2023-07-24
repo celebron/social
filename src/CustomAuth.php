@@ -3,7 +3,7 @@
 namespace Celebron\social;
 use yii\base\InvalidConfigException;
 
-class CustomAuth extends SocialAuthBase
+class CustomAuth extends AuthBase
 {
     public ?\Closure $handler = null;
 

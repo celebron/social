@@ -6,7 +6,7 @@ use Celebron\social\attrs\WidgetSupport;
 use Celebron\social\interfaces\GetUrlsInterface;
 use Celebron\social\interfaces\ToWidgetInterface;
 use Celebron\social\interfaces\ToWidgetTrait;
-use Celebron\social\OAuth2;
+use Celebron\social\AbstractOAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
 use Celebron\social\RequestToken;
@@ -21,7 +21,7 @@ use Celebron\social\RequestToken;
  * @property-read string $uriToken
  */
 #[WidgetSupport(true, true)]
-class VK extends OAuth2 implements GetUrlsInterface, ToWidgetInterface
+class VK extends AbstractOAuth2 implements GetUrlsInterface, ToWidgetInterface
 {
     use ToWidgetTrait;
 
