@@ -3,10 +3,7 @@
 namespace Celebron\social\socials;
 
 use Celebron\social\attrs\WidgetSupport;
-use Celebron\social\interfaces\GetUrlsInterface;
-use Celebron\social\interfaces\SetFullUrlInterface;
-use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetTrait;
+use Celebron\social\interfaces\FullUrlInterface;
 use Celebron\social\AbstractOAuth2;
 use Celebron\social\RequestCode;
 use Celebron\social\RequestId;
@@ -29,9 +26,8 @@ use Yiisoft\Http\Header;
  * @property-write Request $fullUrl
  */
 #[WidgetSupport(true, true)]
-class Discord extends AbstractOAuth2 implements GetUrlsInterface, SetFullUrlInterface, ToWidgetInterface
+class Discord extends AbstractOAuth2 implements FullUrlInterface//, ToWidgetInterface
 {
-    use ToWidgetTrait;
     public array $scope = [ 'identify' ];
 
     public string $_icon = '';
@@ -113,5 +109,10 @@ class Discord extends AbstractOAuth2 implements GetUrlsInterface, SetFullUrlInte
     public function getUriToken (): string
     {
        return 'oauth2/token';
+    }
+
+    public function getUriRefreshToken (): string
+    {
+        return '';
     }
 }

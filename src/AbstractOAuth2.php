@@ -5,12 +5,14 @@ namespace Celebron\social;
 use Celebron\common\Token;
 use Celebron\social\interfaces\BaseUrlInterface;
 use Celebron\social\interfaces\OAuth2Interface;
+use Celebron\social\interfaces\FullUrlInterface;
 use Celebron\social\interfaces\SocialAuthTrait;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;
+use yii\console\ExitCode;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 
@@ -125,13 +127,13 @@ abstract class AbstractOAuth2 extends Component implements OAuth2Interface
 
             $session['social_random'] = $request->state->random;
             $url = $this->client->get($request->generateUri());
-            if ($this instanceof SetFullUrlInterface) {
+            if ($this instanceof FullUrlInterface) {
                 $url->setFullUrl($this->setFullUrl($url));
             }
 
             //Перейти на соответсвующую страницу
             \Yii::$app->response->redirect($url->getFullUrl(), checkAjax: false)->send();
-            exit(0);
+            exit(ExitCode::OK);
         }
 
         $equalRandom = $state->equalRandom($session['social_random']);
