@@ -2,7 +2,6 @@
 
 namespace Celebron\social\dev\interfaces;
 
-interface CustomInterface
+class HandlerInterface
 {
-
 }

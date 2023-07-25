@@ -5,8 +5,7 @@
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
-            "Celebron\\social\\": "src/",
-            "Celebron\\social\\dev\\": "dev_src/"
+            "Celebron\\social\\": "src/"
         }
     },
     "authors": [
@@ -26,7 +25,8 @@
         }
     ],
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^10.2"
 
     },
     "require": {
