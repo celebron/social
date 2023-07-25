@@ -1,11 +1,11 @@
 {
-    "name": "celebron/yii2-social-auth",
+    "name": "celebron/yii2-social-auth-dev",
     "type": "yii2-extension",
     "keywords": ["yii2", "extension","celebron"],
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
-            "Celebron\\social\\": "src/"
+            "Celebron\\social\\dev\\": "src/"
         }
     },
     "authors": [
