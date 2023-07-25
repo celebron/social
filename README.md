@@ -22,7 +22,7 @@ Configuration
     'bootstrap' => [..., 'social' ],
     'components'=>[
         'social' => [
-            'class' => Celebron\social\Configuration::class,
+            'class' => Celebron\social\dev\Configuration::class,
             'socials' => [
                  [
                      'class' => Yandex::class, //Google::class и т.д.
