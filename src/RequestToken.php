@@ -3,6 +3,7 @@
 namespace Celebron\social;
 
 use Celebron\social\events\EventData;
+use Celebron\social\interfaces\AbstractOAuth2;
 use Celebron\social\interfaces\GetUrlsInterface;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;

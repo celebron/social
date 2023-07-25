@@ -19,7 +19,7 @@ class Response
     /**
      * @throws \Exception
      */
-    public static function saveModel(SocialResponse|AuthBase $response, ActiveRecord&SocialInterface $model, mixed $value = null):self
+    public static function saveModel(SocialResponse $response, ActiveRecord&SocialInterface $model, mixed $value = null):self
     {
         $field = $model->getSocialField($response->socialName);
         $model->$field = ($response instanceof SocialResponse) ? $response->getId() : $value;
@@ -27,5 +27,6 @@ class Response
         $result->response = $model;
         return $result;
     }
+
 
 }

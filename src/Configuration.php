@@ -2,16 +2,17 @@
 
 namespace Celebron\social;
 
+use Celebron\social\behaviors\ActiveBehavior;
+use Celebron\social\behaviors\OAuth2Behavior;
+use Celebron\social\behaviors\SocialViewBehavior;
 use Celebron\social\events\EventRegister;
-use Celebron\social\attrs\SocialName;
 use Celebron\social\interfaces\CustomInterface;
-use Celebron\social\interfaces\AuthInterface;
 use Celebron\social\interfaces\OAuth2Interface;
 use Celebron\social\interfaces\SocialAuthInterface;
+use Celebron\social\interfaces\SocialViewInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\UnknownMethodException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Application;
@@ -43,6 +44,12 @@ class Configuration extends Component implements BootstrapInterface
 
     public ?string $paramsGroup = null; // Группа в параметрах
 
+    public array $behaviors = [
+        SocialAuthInterface::class => ActiveBehavior::class,
+        OAuth2Interface::class => OAuth2Behavior::class,
+        SocialViewInterface::class => SocialViewBehavior::class,
+    ];
+
     /** @var array|SocialAuthInterface[]  */
     private array $_handlers;
 
@@ -71,6 +78,9 @@ class Configuration extends Component implements BootstrapInterface
         $this->addSocial($name, $object);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function addSocial(string $name, Component&SocialAuthInterface $object): void
     {
         if (ArrayHelper::keyExists($name, $this->_handlers)) {
@@ -79,13 +89,20 @@ class Configuration extends Component implements BootstrapInterface
         $eventRegister = new EventRegister($object);
 
         if ($this->onSuccess !== null) {
-            $object->on(AuthBase::EVENT_SUCCESS, $this->onSuccess);
+            $object->on(SocialAuthInterface::EVENT_SUCCESS, $this->onSuccess);
         }
         if ($this->onFailed !== null) {
-            $object->on(AuthBase::EVENT_FAILED, $this->onFailed);
+            $object->on(SocialAuthInterface::EVENT_FAILED, $this->onFailed);
         }
         if ($this->onError !== null) {
-            $object->on(AuthBase::EVENT_ERROR, $this->onError);
+            $object->on(SocialAuthInterface::EVENT_ERROR, $this->onError);
+        }
+
+        $classRef = new \ReflectionClass($object);
+        foreach ($this->behaviors as $interface => $behavior) {
+            if(class_exists($behavior) && $classRef->implementsInterface($interface)) {
+                $object->attachBehavior($interface, \Yii::createObject($behavior, [ $name, $this ]));
+            }
         }
 
         $this->trigger(self::EVENT_REGISTER, $eventRegister);
@@ -145,24 +162,14 @@ class Configuration extends Component implements BootstrapInterface
 
     /**
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function getSocial(string $name): ?SocialAuthInterface
     {
         $name =  strtolower(trim(strip_tags($name)));
         /** @var SocialAuthInterface $object */
         $object = ArrayHelper::getValue($this->getSocials(), $name);
-
-        if($object === null) {
-            return null;
-        }
-
-        if($object instanceof OAuth2Interface && \Yii::$app instanceof Application) {
-            $object->setRedirectUrl(Url::toRoute([
-                "{$this->route}/handler",
-                'social' => $name,
-            ], true));
-        }
-
         return $object;
     }
+
 }

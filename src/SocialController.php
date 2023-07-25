@@ -66,8 +66,7 @@ class SocialController extends Controller
             return $this->handleAuthUser($object);
         }
         catch (\Exception $ex) {
-            \Yii::error($ex->getMessage(), static::class);
-            return AuthBase::ToException($object, $this, $ex);
+            return $this->handleError($object, $ex);
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
@@ -115,6 +114,7 @@ class SocialController extends Controller
         }
 
         $response = $methodRef->invokeArgs($userObject, $args);
+
         if(is_bool($response)) {
             $response = new Response($response);
         }
@@ -128,8 +128,10 @@ class SocialController extends Controller
         return $object->failed($this, $response);
     }
 
+
     private function handleError(?SocialAuthInterface $object, \Exception $ex) : mixed
     {
+        \Yii::error($ex->getMessage(), static::class);
         $error = new EventError($this, $ex);
         $object?->trigger(SocialAuthInterface::EVENT_ERROR, $error);
         if($error->result === null) {

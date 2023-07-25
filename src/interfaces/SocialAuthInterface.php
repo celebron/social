@@ -13,7 +13,4 @@ interface SocialAuthInterface
 
     public function success(SocialController $controller, Response $response):mixed;
     public function failed(SocialController $controller, Response $response):mixed;
-
-    public function getActive():bool;
-    public function setActive(bool $value):void;
 }

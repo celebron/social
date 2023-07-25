@@ -1,113 +1,54 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\social\interfaces;
 
 use Celebron\common\Token;
-use Celebron\social\interfaces\BaseUrlInterface;
-use Celebron\social\interfaces\OAuth2Interface;
-use Celebron\social\interfaces\FullUrlInterface;
-use Celebron\social\interfaces\SocialAuthTrait;
-use yii\base\Component;
+use Celebron\social\Configuration;
+use Celebron\social\RequestCode;
+use Celebron\social\RequestId;
+use Celebron\social\RequestToken;
+use Celebron\social\SocialResponse;
+use Celebron\social\State;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\base\InvalidRouteException;
 use yii\console\ExitCode;
 use yii\helpers\Url;
+use yii\httpclient\{Client, CurlTransport, Exception, Request, Response};
 use yii\web\BadRequestHttpException;
 
-
 /**
- *
+ * @property bool $active
  * @property string $clientId
+ * @property string $clientSecret
  * @property string $redirectUrl
  * @property-read string $uriToken
  * @property-read string $uriRefreshToken
- * @property bool $active
  * @property-read string $uriInfo
  * @property-read string $uriCode
- * @property string $clientSecret
  */
-abstract class AbstractOAuth2 extends Component implements OAuth2Interface
+abstract class AbstractOAuth2 extends AbstractSocialAuth implements OAuth2Interface
 {
-    use SocialAuthTrait;
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
-
-    private ?string $_clientId = null;
-    private ?string $_clientSecret = null;
-    private ?string $_redirectUrl = null;
-    private bool $_active = false;
 
     public readonly Client $client;
     public ?Token $token = null;
 
-    public function __construct (
-        protected readonly string $socialName,
-        protected readonly Configuration $configure,
-        array $config = []
-    )
+    public function __construct (string $socialName, Configuration $configure, $config = [])
     {
         $this->client = new Client();
         $this->client->transport = CurlTransport::class;
-        if($this instanceof BaseUrlInterface) {
+        if($this instanceof UrlBaseInterface) {
             $this->client->baseUrl = $this->getBaseUrl();
         }
-        parent::__construct($config);
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    public function getClientId():string
-    {
-        if(empty($this->_clientId)) {
-            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientId'])) {
-               return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientId'];
-            }
-            throw new InvalidConfigException('Not param "clientId" to social "' . $this->socialName. '"');
-        }
-
-        return $this->_clientId;
-    }
-    public function setClientId(string $value): void
-    {
-        $this->_clientId = $value;
-    }
-
-    public function getClientSecret() : string
-    {
-        if(empty($this->_clientSecret)) {
-            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'])) {
-                return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'];
-            }
-            throw new InvalidConfigException('Not param "clientSecret" to social "' . $this->socialName. '"');
-        }
-
-        return $this->_clientSecret;
-    }
-    public function setClientSecret(string $value): void
-    {
-        $this->_clientSecret = $value;
-    }
-
-    public function getActive (): bool
-    {
-        if (isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['active'])) {
-            return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['active'];
-        }
-        return $this->_active;
-    }
-
-    public function setActive (bool $value): void
-    {
-        $this->_active = $value;
+        parent::__construct($socialName, $configure, $config);
     }
 
     /**
      * @param string|null $code
      * @param State $state
-     * @return  SocialResponse
+     * @return SocialResponse
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
@@ -208,22 +149,10 @@ abstract class AbstractOAuth2 extends Component implements OAuth2Interface
     public function url(string $method, ?string $state = null):string
     {
         return Url::toRoute([
-            0 => $this->config->route . '/handler',
+            0 => $this->configure->route . '/handler',
             'social' => $this->socialName,
             'state' => (string)State::create($method, $state),
         ], true);
     }
 
-    public function getRedirectUrl (): string
-    {
-        if(isset($this->_redirectUrl)) {
-            return $this->_redirectUrl;
-        }
-        throw new InvalidArgumentException('RedirectUrl is null');
-    }
-
-    public function setRedirectUrl (string $url): void
-    {
-        $this->_redirectUrl = $url;
-    }
 }

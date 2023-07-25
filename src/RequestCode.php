@@ -3,9 +3,10 @@
 namespace Celebron\social;
 
 use Celebron\social\events\EventData;
-use Celebron\social\interfaces\GetUrlsInterface;
+use Celebron\social\interfaces\AbstractOAuth2;
+use Celebron\social\interfaces\OAuth2Interface;
+use Celebron\social\interfaces\UrlsInterface;
 use yii\base\BaseObject;
-use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 
@@ -23,13 +24,13 @@ class RequestCode extends BaseObject
 
     public array $data = [];
 
-
-    /**
-     */
-    public function __construct (protected AbstractOAuth2 $social, public State $state, array $config = [])
+    public function __construct (
+        protected OAuth2Interface $social,
+        public State $state,
+        array $config = [])
     {
         parent::__construct($config);
-        $this->uri = ($this->social instanceof  GetUrlsInterface) ? $social->getUriCode() : '';
+        $this->uri = ($this->social instanceof UrlsInterface) ? $this->social->getUriCode() : '';
         $this->client_id = $this->social->clientId;
         $this->redirect_uri = $this->social->redirectUrl;
     }

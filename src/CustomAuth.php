@@ -1,9 +1,11 @@
 <?php
 
 namespace Celebron\social;
+use Celebron\social\interfaces\AbstractSocialAuth;
+use Celebron\social\interfaces\CustomInterface;
 use yii\base\InvalidConfigException;
 
-class CustomAuth extends AuthBase
+class CustomAuth extends AbstractSocialAuth implements CustomInterface
 {
     public ?\Closure $handler = null;
 

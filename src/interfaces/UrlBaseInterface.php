@@ -2,7 +2,7 @@
 
 namespace Celebron\social\interfaces;
 
-interface BaseUrlInterface
+interface UrlBaseInterface
 {
     public function getBaseUrl():string;
 }

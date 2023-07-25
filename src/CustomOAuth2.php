@@ -3,16 +3,13 @@
 namespace Celebron\social;
 
 use Celebron\social\attrs\WidgetSupport;
+use Celebron\social\interfaces\AbstractOAuth2;
 use Celebron\social\interfaces\CustomInterface;
-use Celebron\social\interfaces\ToWidgetInterface;
-use Celebron\social\interfaces\ToWidgetTrait;
 use yii\base\InvalidConfigException;
 
 #[WidgetSupport(true, true)]
-class CustomAbstractOAuth2 extends AbstractOAuth2 implements CustomInterface, ToWidgetInterface
+class CustomOAuth2 extends AbstractOAuth2 implements CustomInterface
 {
-    use ToWidgetTrait;
-
     private string $_icon = '';
     private ?string $_name;
     private bool $_visible = true;
