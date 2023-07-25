@@ -6,6 +6,7 @@ namespace Celebron\social\dev\socials;
 
 use Celebron\social\dev\attrs\WidgetSupport;
 use Celebron\social\dev\interfaces\AbstractOAuth2;
+use Celebron\social\dev\interfaces\UrlsInterface;
 use Celebron\social\dev\RequestCode;
 use Celebron\social\dev\RequestId;
 use Celebron\social\dev\RequestToken;
@@ -26,14 +27,9 @@ use yii\web\BadRequestHttpException;
  * @property-read string $uriCode
  * @property-read string $baseUrl
  */
-#[WidgetSupport(true, true)]
-class Yandex extends AbstractOAuth2 implements GetUrlsInterface, ToWidgetInterface
+class Yandex extends AbstractOAuth2 implements UrlsInterface
 {
-    use ToWidgetTrait;
-
     private string $_icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
-    private ?string $_name = null;
-    private bool $_visible = true;
 
     public ?string $fileName = null;
 

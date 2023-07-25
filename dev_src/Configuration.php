@@ -49,7 +49,7 @@ class Configuration extends Component implements BootstrapInterface
     ];
 
     /** @var array|SocialAuthInterface[]  */
-    private array $_handlers;
+    private array $_handlers = [];
 
     /**
      * @inheritDoc
