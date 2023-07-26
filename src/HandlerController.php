@@ -1,6 +1,6 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\socialSource;
 
 use yii\web\Controller;
 
