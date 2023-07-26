@@ -2,10 +2,13 @@
 
 namespace Celebron\socialSource\requests;
 
+use Celebron\socialSource\events\EventData;
 use Celebron\socialSource\interfaces\OAuth2Interface;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\OAuth2;
 use Celebron\socialSource\State;
+use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 
 class CodeRequest
 {
