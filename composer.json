@@ -6,7 +6,7 @@
     "autoload": {
         "psr-4": {
             "Celebron\\socialSource\\": "src/",
-            "Celebron\\social\\": "socials/"
+            "Celebron\\socials\\": "socials/"
         }
     },
     "authors": [

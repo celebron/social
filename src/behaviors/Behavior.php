@@ -3,14 +3,16 @@
 namespace Celebron\socialSource\behaviors;
 
 
+use Celebron\socialSource\Configuration;
+
 class Behavior extends \yii\base\Behavior
 {
     protected array $params = [];
 
     public function __construct (
-        protected readonly string                             $socialName,
-        protected readonly \Celebron\social\dev\Configuration $configure,
-        array                                                 $config = []
+        protected readonly string        $socialName,
+        protected readonly Configuration $configure,
+        array                            $config = []
     )
     {
         parent::__construct($config);
@@ -18,4 +20,6 @@ class Behavior extends \yii\base\Behavior
             $this->params = \Yii::$app->params[$this->configure->paramsGroup][$this->socialName];
         }
     }
+
+
 }
