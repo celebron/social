@@ -111,7 +111,7 @@ class Discord extends OAuth2 implements UrlsInterface, UrlFullInterface, ViewerI
        return 'oauth2/token';
     }
 
-    public function getSupportRegister (): bool
+    public function getSupportManagement (): bool
     {
         return true;
     }

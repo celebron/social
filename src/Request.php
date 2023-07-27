@@ -6,11 +6,13 @@ use Celebron\socialSource\behaviors\ActiveBehavior;
 use Celebron\socialSource\events\EventResult;
 use Celebron\socialSource\interfaces\RequestInterface;
 use Celebron\socialSource\interfaces\SocialInterface;
+use Celebron\socialSource\interfaces\SocialUserInterface;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 
 
 /**
+ * @property-read mixed $socialId
  * @property bool $active
  */
 abstract class Request extends Component implements RequestInterface
@@ -48,9 +50,22 @@ abstract class Request extends Component implements RequestInterface
         return $this->result ?? $controller->goBack();
     }
 
-    public function response(string|\Closure|array|null $field, mixed $data) : ResponseSocial
+    public function response (string|\Closure|array|null $field, mixed $data): ResponseSocial
     {
         return new ResponseSocial($this->socialName, $field, $data);
+    }
+
+    public function url (string $action, string $state = null): string
+    {
+        return $this->configure->url($this->socialName, $action, $state);
+    }
+
+    public function getSocialId (): mixed
+    {
+        /** @var SocialUserInterface $user */
+        $user = \Yii::$app->user->identity;
+        $field = $user->getSocialField($this->socialName);
+        return $user->$field;
     }
 
 }

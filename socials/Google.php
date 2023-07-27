@@ -109,9 +109,9 @@ class Google extends OAuth2 implements UrlsInterface, ViewerInterface
         return $this->uriInfo;
     }
 
-    public function getSupportRegister (): bool
+    public function getSupportManagement (): bool
     {
-       return true;
+        return true;
     }
 
     public function getSupportLogin (): bool

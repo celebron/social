@@ -65,7 +65,7 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
         return '';
     }
 
-    public function getSupportRegister (): bool
+    public function getSupportManagement (): bool
     {
         return true;
     }

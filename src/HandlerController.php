@@ -79,13 +79,14 @@ class HandlerController extends Controller
             \Yii::warning("User from social '$social' authorized failed", static::class);
             return $object->failed($this, $response);
         } catch (\Exception $ex) {
-            \Yii::error($ex->getMessage(), static::class);
+            \Yii::error("Erorr");
             $event = new EventError($this, $ex);
             $object?->trigger(Request::EVENT_ERROR, $event);
             if (empty($event->result)) {
                 throw $event->exception;
             }
-            return $event->result;
+            //return $event->result;
+            return $this->renderContent($ex->getMessage());
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }

@@ -37,7 +37,7 @@ class CustomRequest extends Request implements CustomRequestInterface, ViewerInt
        return true;
     }
 
-    public function getSupportRegister (): bool
+    public function getSupportManagement (): bool
     {
         return true;
     }

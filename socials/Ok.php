@@ -102,7 +102,7 @@ class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
         return 'api/users/getCurrentUser';
     }
 
-    public function getSupportRegister (): bool
+    public function getSupportManagement (): bool
     {
         return true;
     }

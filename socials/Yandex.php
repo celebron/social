@@ -81,7 +81,7 @@ class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
         return 'https://login.yandex.ru/info';
     }
 
-    public function getSupportRegister (): bool
+    public function getSupportManagement (): bool
     {
         return true;
     }

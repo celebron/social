@@ -7,6 +7,7 @@ use Celebron\socialSource\behaviors\Behavior;
 use Celebron\socialSource\events\EventRegister;
 use Celebron\socialSource\interfaces\CustomRequestInterface;
 use Celebron\socialSource\interfaces\SocialInterface;
+use Celebron\socialSource\interfaces\ViewerInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
@@ -15,6 +16,7 @@ use yii\base\UnknownMethodException;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 /**
  *
@@ -76,7 +78,7 @@ class Configuration extends Component implements BootstrapInterface
 
         $this->trigger(self::EVENT_REGISTER, $eventRegister);
 
-        if($eventRegister->support) {
+        if ($eventRegister->support) {
             \Yii::info("Social '$name' registered", static::class);
             $this->_socials[$name] = $object;
         } else {
@@ -85,14 +87,19 @@ class Configuration extends Component implements BootstrapInterface
 
     }
 
-    public function getSocials(...$interfaces):array
+    /**
+     * @param mixed ...$interfaces
+     * @return array|Request[]
+     * @throws \ReflectionException
+     */
+    public function getSocials (mixed ...$interfaces): array
     {
-        if(count($interfaces) > 0) {
+        if (count($interfaces) > 0) {
             $result = [];
-            foreach ($this->_socials as $social) {
+            foreach ($this->_socials as $key => $social) {
                 $classRef = new \ReflectionClass($social);
-                if(count(array_intersect($classRef->getInterfaceNames(), $interfaces)) > 0) {
-                    $result[] = $social;
+                if (count(array_intersect($classRef->getInterfaceNames(), $interfaces)) > 0) {
+                    $result[$key] = $social;
                 }
             }
             return $result;
@@ -124,9 +131,7 @@ class Configuration extends Component implements BootstrapInterface
 
     public function getSocial(string $name) : ?Request
     {
-        /** @var SocialInterface $object */
-        $object = ArrayHelper::getValue($this->getSocials(), $name);
-        return $object;
+        return ArrayHelper::getValue($this->getSocials(), $name);
     }
 
     public function bootstrap ($app)
@@ -141,14 +146,15 @@ class Configuration extends Component implements BootstrapInterface
         ];
     }
 
-    public static function url(string $social, string $action, ?state $state = null):string
+    public function url (string $social, string $action, ?state $state = null): string
     {
-        return \yii\helpers\Url::toRoute([
-            static::$configure->route . '/handler',
+        return Url::toRoute([
+            $this->route . '/handler',
             'social' => $social,
             'state' => (string)State::create($action, $state),
         ]);
     }
+
 
     public static function __callStatic ($methodName, $arguments)
     {
@@ -157,7 +163,7 @@ class Configuration extends Component implements BootstrapInterface
 
         if(StringHelper::startsWith($methodName, $prefix)) {
             $name = strtolower(substr($methodName, $prefixLen));
-            return static::url($name, $arguments[0], $arguments[1] ?? null);
+            return static::$configure->url($name, $arguments[0], $arguments[1] ?? null);
         }
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
     }

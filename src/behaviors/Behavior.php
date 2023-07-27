@@ -4,6 +4,7 @@ namespace Celebron\socialSource\behaviors;
 
 
 use Celebron\socialSource\Configuration;
+use yii\helpers\ArrayHelper;
 
 class Behavior extends \yii\base\Behavior
 {
@@ -16,9 +17,7 @@ class Behavior extends \yii\base\Behavior
     )
     {
         parent::__construct($config);
-        if (isset($this->configure->paramsGroup, \Yii::$app->params[$this->configure->paramsGroup][$this->socialName])) {
-            $this->params = \Yii::$app->params[$this->configure->paramsGroup][$this->socialName];
-        }
+        $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
     }
 
 

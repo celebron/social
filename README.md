@@ -51,7 +51,7 @@ Configuration
 
 ### [[OAuth2::class]]    (Google::class, Yandex::class, ...) 
     [optional] bool   $activate (false)      - активировать механизм
-    [optional] string $name                  - название для Widget
+    [optional] string $names                  - название для Widget
     [optional] $icon                         - иконка для Widget 
     [optional] $visible                      - отображение для Widget
     [required|optional] $clientId (null)     - OAuth clientId
