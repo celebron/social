@@ -19,18 +19,22 @@ $statusDeleted = Html::a("<i class='bi bi-toggle2-off'></i>", $social->url('regi
 
 
 ?>
-<div class="social-name"><?= $social->name ?></div>
+<td class="social-name">
+    <?= $social->name ?>
+</td>
 <?php if (empty($social->getSocialId())): ?>
-    <div class="social-id empty"><?= $statusStop ?></div>
-    <div class="social-manage empty">
+    <td class="social-id empty">
+        <?= $statusStop ?>
+    </td>
+    <td class="social-manage empty">
         <?= $statusDeleted ?>
-    </div>
+    </td>
 <?php else: ?>
-    <div class="social-id isset">
+    <td class="social-id isset">
         <?= $statusPlay ?>
         <?= $social->getSocialId() ?>
-    </div>
-    <div class="social-manage isset">
+    </td>
+    <td class="social-manage isset">
         <?= $statusRegistered ?>
-    </div>
+    </td>
 <?php endif; ?>

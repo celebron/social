@@ -14,10 +14,18 @@ SocialAsset::register($this);
 ?>
 
 
-<div class="social-management-block">
+<table>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+<table class="table social-management-block">
     <?php foreach ($socials as $social): if ($social->getSupportLogin() && $social->visible): ?>
-        <div class="social-management" id="social-<?= $social->socialName ?>">
+        <tr class="social-management" id="social-<?= $social->socialName ?>">
             <?= $this->render('managementOne', ['configure' => $configure, 'social' => $social]) ?>
-        </div>
+        </tr>
     <?php endif; endforeach; ?>
-</div>
+</table>
