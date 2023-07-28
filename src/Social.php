@@ -15,16 +15,16 @@ use yii\helpers\ArrayHelper;
  * @property-read mixed $socialId
  * @property bool $active
  */
-abstract class Request extends Component implements RequestInterface
+abstract class Social extends Component implements RequestInterface
 {
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
 
     public function __construct (
-        public readonly string $socialName,
+        public readonly string        $socialName,
         public readonly Configuration $configure,
-        $config = [])
+                                      $config = [])
     {
         parent::__construct($config);
     }

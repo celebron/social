@@ -81,7 +81,7 @@ class HandlerController extends Controller
         } catch (\Exception $ex) {
             \Yii::error("Erorr");
             $event = new EventError($this, $ex);
-            $object?->trigger(Request::EVENT_ERROR, $event);
+            $object?->trigger(Social::EVENT_ERROR, $event);
             if (empty($event->result)) {
                 throw $event->exception;
             }

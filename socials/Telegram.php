@@ -4,7 +4,7 @@ namespace Celebron\socials;
 
 
 use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\Request;
+use Celebron\socialSource\Social;
 use Celebron\socialSource\ResponseSocial;
 use Celebron\socialSource\State;
 use yii\web\BadRequestHttpException;
@@ -13,8 +13,7 @@ use yii\web\BadRequestHttpException;
  *
  * @property-read mixed $data
  */
-
-class Telegram extends Request
+class Telegram extends Social
 {
     public string $clientSecret;
 
@@ -23,7 +22,7 @@ class Telegram extends Request
     /**
      * @throws BadRequestHttpException
      */
-    public function getData():array
+    public function getData (): array
     {
         $auth_data = \Yii::$app->request->get();
         $check_hash = $auth_data['hash'];

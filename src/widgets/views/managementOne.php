@@ -4,12 +4,12 @@
 use Celebron\socialSource\behaviors\ViewerBehavior;
 use Celebron\socialSource\Configuration;
 use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\Request;
+use Celebron\socialSource\Social;
 use yii\helpers\Html;
 
 
 /* @var \yii\web\View $this */
-/* @var Request|ViewerInterface|ViewerBehavior $social */
+/* @var Social|ViewerInterface|ViewerBehavior $social */
 /* @var Configuration $configure */
 
 $statusPlay = Html::a("<i class='bi bi-play'></i>", $social->url('register'));
@@ -32,7 +32,7 @@ $statusDeleted = Html::a("<i class='bi bi-toggle2-off'></i>", $social->url('regi
 <?php else: ?>
     <td class="social-id isset">
         <?= $statusPlay ?>
-        <?= $social->getSocialId() ?>
+        <?= ($this->context->idView) ? $social->getSocialId() : '' ?>
     </td>
     <td class="social-manage isset">
         <?= $statusRegistered ?>

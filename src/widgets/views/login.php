@@ -2,11 +2,11 @@
 
 use Celebron\socialSource\Configuration;
 use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\Request;
+use Celebron\socialSource\Social;
 use yii\helpers\ArrayHelper;
 
 /* @var \yii\web\View $this */
-/* @var Request[]|ViewerInterface[]|\Celebron\socialSource\behaviors\ViewerBehavior[] $socials */
+/* @var Social[]|ViewerInterface[]|\Celebron\socialSource\behaviors\ViewerBehavior[] $socials */
 /* @var Configuration $configure */
 
 

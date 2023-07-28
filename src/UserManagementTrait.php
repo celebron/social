@@ -15,7 +15,7 @@ trait UserManagementTrait
     /**
      * @throws \Exception
      */
-    public function socialDelete (Request $social): Response
+    public function socialDelete (Social $social): Response
     {
         return Response::saveModel($social, $this);
     }

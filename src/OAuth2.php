@@ -29,7 +29,7 @@ use yii\web\BadRequestHttpException;
  * @property-read string $redirectUrl
  * @property bool $active
  */
-abstract class OAuth2 extends Request implements OAuth2Interface
+abstract class OAuth2 extends Social implements OAuth2Interface
 {
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
@@ -37,6 +37,7 @@ abstract class OAuth2 extends Request implements OAuth2Interface
     public Token $token;
 
     public readonly Client $client;
+
     public function __construct (string $socialName, Configuration $configure, $config = [])
     {
         $this->client = new Client();

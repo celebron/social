@@ -11,7 +11,7 @@ use yii\base\UnknownPropertyException;
  * @property-read bool $supportLogin
  * @property-read bool $supportRegister
  */
-class CustomRequest extends Request implements CustomRequestInterface, ViewerInterface
+class CustomSocial extends Social implements CustomRequestInterface, ViewerInterface
 {
 
     public ?\Closure $handler = null;

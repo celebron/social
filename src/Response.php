@@ -18,7 +18,7 @@ class Response
     /**
      * @throws \Exception
      */
-    public static function saveModel (ResponseSocial|Request $response, ActiveRecord&SocialUserInterface $model, mixed $value = null): self
+    public static function saveModel (ResponseSocial|Social $response, ActiveRecord&SocialUserInterface $model, mixed $value = null): self
     {
         $field = $model->getSocialField($response->socialName);
         $model->$field = ($response instanceof ResponseSocial) ? $response->getId() : $value;

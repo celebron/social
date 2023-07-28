@@ -17,6 +17,7 @@ use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\i18n\PhpMessageSource;
 
 /**
  *
@@ -49,18 +50,18 @@ class Configuration extends Component implements BootstrapInterface
      */
     public function addSocialConfig(string $name, array|string $objectConfig):void
     {
-        $object = \Yii::createObject($objectConfig, [ $name, $this ]);
-        /** @var Request $object */
-        $object = Instance::ensure($object, Request::class);
+        $object = \Yii::createObject($objectConfig, [$name, $this]);
+        /** @var Social $object */
+        $object = Instance::ensure($object, Social::class);
         $this->addSocial($name, $object);
     }
 
     /**
      * @throws InvalidConfigException
      */
-    public function addSocial(string $name, Request $object, bool $override = false):void
+    public function addSocial (string $name, Social $object, bool $override = false): void
     {
-        if(empty($name)) {
+        if (empty($name)) {
             throw new InvalidArgumentException("Key $name empty");
         }
 
@@ -89,7 +90,7 @@ class Configuration extends Component implements BootstrapInterface
 
     /**
      * @param mixed ...$interfaces
-     * @return array|Request[]
+     * @return array|Social[]
      * @throws \ReflectionException
      */
     public function getSocials (mixed ...$interfaces): array
@@ -129,7 +130,7 @@ class Configuration extends Component implements BootstrapInterface
 
     }
 
-    public function getSocial(string $name) : ?Request
+    public function getSocial (string $name): ?Social
     {
         return ArrayHelper::getValue($this->getSocials(), $name);
     }
@@ -143,6 +144,12 @@ class Configuration extends Component implements BootstrapInterface
         $app->controllerMap[$this->route] = [
             'class' => HandlerController::class,
             'configure' => $this,
+        ];
+
+        $app->i18n->translations['celebron/social'] = [
+            'class' => PhpMessageSource::class,
+            'sourceLanguage' => 'en-US',
+            'basePath' => '@Celebron/socialSource/messages',
         ];
     }
 

@@ -4,7 +4,7 @@ namespace Celebron\socialSource\widgets;
 
 use Celebron\socialSource\Configuration;
 use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\Request;
+use Celebron\socialSource\Social;
 use Celebron\socialSource\Response;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
@@ -33,7 +33,7 @@ class Login extends Widget
     }
 
     /**
-     * @return array|Request[]
+     * @return array|Social[]
      * @throws InvalidConfigException|\ReflectionException
      */
     public function getSocials (): array
@@ -53,7 +53,8 @@ class Login extends Widget
     {
         return $this->render($this->render, [
                 'configure' => $this->getConfigure(),
-                'socials' => $this->getSocials()]
+                'socials' => $this->getSocials()
+            ]
         );
     }
 
