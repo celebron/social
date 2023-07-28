@@ -37,10 +37,14 @@ class HandlerController extends Controller
         $object = $this->configure->getSocial($social);
         try {
             if (is_null($object)) {
-                throw new NotFoundHttpException("Social '$social' not found");
+                throw new NotFoundHttpException(\Yii::t('Social',"Social '{socialName}' not found",[
+                    'socialName' => $social,
+                ]));
             }
             if (!$object->active) {
-                throw new BadRequestHttpException("Social '$social' not active");
+                throw new BadRequestHttpException(\Yii::t('Social',"Social '{socialName}' not active",[
+                    'socialName' => $social,
+                ]));
             }
 
             $userObject = \Yii::$app->user->identity ?? \Yii::createObject(\Yii::$app->user->identityClass);
@@ -65,7 +69,6 @@ class HandlerController extends Controller
                     $args[$key] = $object;
                 }
             }
-
 
             $response = $methodRef->invokeArgs($userObject, $args);
             if (is_bool($response)) {

@@ -13,7 +13,7 @@ use yii\helpers\Html;
 /* @var Configuration $configure */
 
 $statusPlay = Html::a("<i class='bi bi-play'></i>", $social->url('register'));
-$statusStop = "<i class='bi bi-stop'></i>";
+$statusStop = "<i class='bi bi-stop'></i> " . \Yii::t('social', 'Not authorized');
 $statusRegistered = Html::a("<i class='bi bi-toggle2-on'></i>", $social->url('delete'));
 $statusDeleted = Html::a("<i class='bi bi-toggle2-off'></i>", $social->url('register'));
 
@@ -32,7 +32,7 @@ $statusDeleted = Html::a("<i class='bi bi-toggle2-off'></i>", $social->url('regi
 <?php else: ?>
     <td class="social-id isset">
         <?= $statusPlay ?>
-        <?= ($this->context->idView) ? $social->getSocialId() : '' ?>
+        <?= ($this->context->idView) ? $social->getSocialId() : \Yii::t('social', 'Authorized') ?>
     </td>
     <td class="social-manage isset">
         <?= $statusRegistered ?>
