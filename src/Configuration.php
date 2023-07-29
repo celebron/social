@@ -162,7 +162,6 @@ class Configuration extends Component implements BootstrapInterface
         ]);
     }
 
-
     public static function __callStatic ($methodName, $arguments)
     {
         $prefix = 'url';
@@ -172,6 +171,17 @@ class Configuration extends Component implements BootstrapInterface
             $name = strtolower(substr($methodName, $prefixLen));
             return static::$configure->url($name, $arguments[0], $arguments[1] ?? null);
         }
+
+        $suffix = 'Static';
+        $suffixLen = strlen($suffix);
+        if(StringHelper::endsWith($methodName, $suffix)) {
+            $name = strtolower(substr($methodName,0, -$suffixLen));
+            if($name === 'socials') {
+                return static::$configure->getSocials(...$arguments);
+            }
+            return static::$configure->getSocial($name);
+        }
+
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
     }
 }
