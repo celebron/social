@@ -9,6 +9,7 @@ use Celebron\socialSource\interfaces\SocialInterface;
 use Celebron\socialSource\interfaces\SocialUserInterface;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 
 
 /**
@@ -68,4 +69,23 @@ abstract class Social extends Component implements RequestInterface
         return $user->$field;
     }
 
+    public static function urlStatic(string $socialName, string $action,?string $state = null, string $socialComponent = 'social'):string
+    {
+        return (new static($socialName,  \Yii::$app->get($socialComponent)))->url($action, $state);
+    }
+
+    public function __call ($methodName, $params)
+    {
+        $prefix = 'url';
+        if(StringHelper::startsWith($methodName, $prefix)) {
+            $actionName = strtolower(substr($methodName, strlen($prefix)));
+            return $this->url($actionName, $params[0]??null);
+        }
+        return parent::__call($methodName, $params);
+    }
+
+    public static function __callStatic ($name, $arguments)
+    {
+        // TODO: Implement __callStatic() method.
+    }
 }

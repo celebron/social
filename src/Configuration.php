@@ -22,7 +22,9 @@ use yii\i18n\PhpMessageSource;
 /**
  *
  * @property-write array $socials
- * @method urlRegister(string $action, ?string $state = null):string
+ * @method socialsStatic(...$params) => static::$configure->getSocials(...$params)
+ * <social>Static() => static::$configure->getSocial(<social>)
+ * url<Social>(...) => static::$configure->url(<social>(...)
  */
 class Configuration extends Component implements BootstrapInterface
 {
@@ -164,14 +166,15 @@ class Configuration extends Component implements BootstrapInterface
 
     public static function __callStatic ($methodName, $arguments)
     {
+        //URLS
         $prefix = 'url';
         $prefixLen = strlen($prefix);
-
         if(StringHelper::startsWith($methodName, $prefix)) {
             $name = strtolower(substr($methodName, $prefixLen));
             return static::$configure->url($name, $arguments[0], $arguments[1] ?? null);
         }
 
+        ///SOCIALS
         $suffix = 'Static';
         $suffixLen = strlen($suffix);
         if(StringHelper::endsWith($methodName, $suffix)) {
