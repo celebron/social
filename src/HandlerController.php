@@ -37,12 +37,12 @@ class HandlerController extends Controller
         $object = $this->configure->getSocial($social);
         try {
             if (is_null($object)) {
-                throw new NotFoundHttpException(\Yii::t('Social',"Social '{socialName}' not found",[
+                throw new NotFoundHttpException(\Yii::t('social',"Social '{socialName}' not found",[
                     'socialName' => $social,
                 ]));
             }
             if (!$object->active) {
-                throw new BadRequestHttpException(\Yii::t('Social',"Social '{socialName}' not active",[
+                throw new BadRequestHttpException(\Yii::t('social',"Social '{socialName}' not active",[
                     'socialName' => $social,
                 ]));
             }
