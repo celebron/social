@@ -82,7 +82,7 @@ class HandlerController extends Controller
             \Yii::warning("User from social '$social' authorized failed", static::class);
             return $object->failed($this, $response);
         } catch (\Exception $ex) {
-            \Yii::error("Erorr");
+            \Yii::error((string)$ex, static::class);
             $event = new EventError($this, $ex);
             $object?->trigger(Social::EVENT_ERROR, $event);
             if (empty($event->result)) {
