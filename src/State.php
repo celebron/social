@@ -108,10 +108,8 @@ class State implements \Stringable
     public static function __callStatic ($methodName, $arguments)
     {
         $prefix = 'create';
-        $prefixLen = strlen($prefix);
-
         if(StringHelper::startsWith($methodName, $prefix)) {
-            $name = strtolower(substr($methodName, $prefixLen));
+            $name = strtolower(substr($methodName, strlen($prefix)));
             return static::create($name, $arguments[0] ?? null);
         }
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
@@ -120,9 +118,8 @@ class State implements \Stringable
     public function __call ($methodName, $arguments)
     {
         $isPrefix = 'is';
-        $isPrefixLen = strlen($isPrefix);
         if(StringHelper::startsWith($methodName, $isPrefix)) {
-            $name = strtolower(substr($methodName, $isPrefixLen));
+            $name = strtolower(substr($methodName, strlen($isPrefix)));
             return $this->equalAction($name);
         }
     }
