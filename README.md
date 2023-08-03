@@ -40,9 +40,7 @@ Configuration
 ### [[Configuration::class]]
     [optional] string       $route ('social')   - роут для OAuth redirect path   
     [optional] string|null  $paramsGroup (null) - ключ массива с настройками в \Yii::$app->params (null - не использовать)
-    [optional] Closure|null $onError (null)     - обработка всех ошибок socials
-    [optional] Closure|null $onSuccess (null)   - обработчик всех успешных выполнений (event)
-    [optional] Closure|null $onFailed (null)    - обработчик всех провальных выполнений (event)
+    [optional] array        $socialEvents       - массив событий ['название-события' => \Closure]
     [required] Social[]     $socials            - список всех соц. сетей ([ 'social" => AuthBase::class ])
    
 В массиве `$socials` ключ можно опускать, тогда при регистрации ключом будет имя класса или атрибут класса SocialName  
@@ -51,7 +49,7 @@ Configuration
 
 ### [[OAuth2::class]]    (Google::class, Yandex::class, ...) 
     [optional] bool   $activate (false)      - активировать механизм
-    [optional] string $names                  - название для Widget
+    [optional] string $name                  - название для Widget
     [optional] $icon                         - иконка для Widget 
     [optional] $visible                      - отображение для Widget
     [required|optional] $clientId (null)     - OAuth clientId
