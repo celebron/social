@@ -22,7 +22,7 @@ Configuration
     'bootstrap' => [..., 'social' ],
     'components'=>[
         'social' => [
-            'class' => Celebron\social\dev\Configuration::class,
+            'class' => Celebron\socialSource\Configuration::class,
             'socials' => [
                  [
                      'class' => Yandex::class, //Google::class и т.д.
@@ -47,7 +47,7 @@ Configuration
 
 Если указан `$paramsGroup` - тогда можно в настройках socials опускать `$clientId` и `$clientSecret` 
 
-### [[OAuth2::class]]    (Google::class, Yandex::class, ...) 
+### [[OAuth2::class]]    (Google::class, Yandex::class, ...) (Namespace Celebron\socials)
     [optional] bool   $activate (false)      - активировать механизм
     [optional] string $name                  - название для Widget
     [optional] $icon                         - иконка для Widget 
