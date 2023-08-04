@@ -63,5 +63,14 @@ class OAuth2Behavior extends Behavior
                 'social' => $this->socialName,
             ], true);
         }
+        if(!empty($this->_redirectUrl)) {
+            return $this->_redirectUrl;
+        }
+        throw new InvalidConfigException('Param "redirectUrl" to social "' . $this->socialName . '" empty');
+    }
+
+    public function setRedirectUrl(string $value): void
+    {
+        $this->_redirectUrl = $value;
     }
 }
