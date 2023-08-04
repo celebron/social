@@ -91,6 +91,16 @@ class State implements \Stringable
         return $obj;
     }
 
+    public static function createNull():self
+    {
+        return self::create(null);
+    }
+
+    public function isNull():bool
+    {
+        return empty($this->action);
+    }
+
     public static function open(string|\Stringable $stateBase64):self
     {
         return (new self())->decode($stateBase64);

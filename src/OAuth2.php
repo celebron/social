@@ -14,6 +14,7 @@ use Celebron\socialSource\requests\IdRequest;
 use Celebron\socialSource\requests\TokenRequest;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
+use yii\console\Application;
 use yii\console\ExitCode;
 use yii\helpers\Url;
 use yii\httpclient\Client;
@@ -67,11 +68,10 @@ abstract class OAuth2 extends Social implements OAuth2Interface
      */
     public function request (?string $code, State $state): ?ResponseSocial
     {
-        $session = \Yii::$app->session;
-        if (!$session->isActive) {
-            $session->open();
-        }
-
+            $session = \Yii::$app->session;
+            if (!$state->isNull() && !$session->isActive) {
+                $session->open();
+            }
         if ($code === null) {
             $request = new CodeRequest($this, $state);
             $this->requestCode($request);
@@ -86,9 +86,11 @@ abstract class OAuth2 extends Social implements OAuth2Interface
             exit(ExitCode::OK);
         }
 
-        $equalRandom = $state->equalRandom($session['social_random']);
-        \Yii::$app->session->remove('social_random');
-
+        $equalRandom = true;
+        if(!$state->isNull()) {
+            $equalRandom = $state->equalRandom($session['social_random']);
+            \Yii::$app->session->remove('social_random');
+        }
         if ($equalRandom) {
             $request = new TokenRequest($code, $this);
             $this->requestToken($request);
