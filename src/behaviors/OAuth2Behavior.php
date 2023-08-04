@@ -43,8 +43,8 @@ class OAuth2Behavior extends Behavior
     public function getClientSecret() : string
     {
         if(empty($this->_clientSecret)) {
-            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'])) {
-                return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'];
+            if(!empty($this->params['clientSecret'])) {
+                return $this->params['clientSecret'];
             }
             throw new InvalidConfigException('Param "clientSecret" to social "' . $this->socialName. '" empty');
         }
