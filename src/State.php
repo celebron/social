@@ -83,7 +83,7 @@ class State implements \Stringable
         return $this->encode();
     }
 
-    public static function create(string $action, ?string $state = null):self
+    public static function create(?string $action, ?string $state = null):self
     {
         $obj = new self();
         $obj->action = strip_tags($action);

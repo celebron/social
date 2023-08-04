@@ -68,10 +68,10 @@ abstract class OAuth2 extends Social implements OAuth2Interface
      */
     public function request (?string $code, State $state): ?ResponseSocial
     {
-            $session = \Yii::$app->session;
-            if (!$state->isNull() && !$session->isActive) {
-                $session->open();
-            }
+        $session = \Yii::$app->session;
+        if (!$state->isNull() && !$session->isActive) {
+            $session->open();
+        }
         if ($code === null) {
             $request = new CodeRequest($this, $state);
             $this->requestCode($request);
@@ -87,10 +87,11 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         }
 
         $equalRandom = true;
-        if(!$state->isNull()) {
+        if (!$state->isNull()) {
             $equalRandom = $state->equalRandom($session['social_random']);
             \Yii::$app->session->remove('social_random');
         }
+
         if ($equalRandom) {
             $request = new TokenRequest($code, $this);
             $this->requestToken($request);
@@ -106,7 +107,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         $response = $this->requestId($request);
 
         \Yii::debug("Userid: {$response->getId()}.", static::class);
-        return  $response;
+        return $response;
     }
 
     /**
