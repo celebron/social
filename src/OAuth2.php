@@ -23,6 +23,7 @@ use yii\httpclient\Exception;
 use yii\httpclient\Response as ClientResponse;
 use yii\httpclient\Request as ClientRequest;
 use yii\web\BadRequestHttpException;
+use yii\web\Session;
 
 /**
  * @property string $clientSecret
@@ -68,8 +69,8 @@ abstract class OAuth2 extends Social implements OAuth2Interface
      */
     public function request (?string $code, State $state): ?ResponseSocial
     {
-        $session = \Yii::$app->session;
-        if (!$state->isNull() && !$session->isActive) {
+        $session = \Yii::$app->get('session', false) ?? [];
+        if ($session instanceof  Session && !$session->isActive) {
             $session->open();
         }
         if ($code === null) {
@@ -87,7 +88,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         }
 
         $equalRandom = true;
-        if (!$state->isNull()) {
+        if ($session instanceof Session) {
             $equalRandom = $state->equalRandom($session['social_random']);
             \Yii::$app->session->remove('social_random');
         }
