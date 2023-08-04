@@ -25,10 +25,10 @@ class OAuth2Behavior extends Behavior
     public function getClientId():string
     {
         if(empty($this->_clientId)) {
-            if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientId'])) {
-                return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientId'];
+            if(!empty($this->params['clientId'])) {
+                return $this->params['clientId'];
             }
-            throw new InvalidConfigException('Not param "clientId" to social "' . $this->socialName . '"');
+            throw new InvalidConfigException('Param "clientId" to social "' . $this->socialName . '" empty');
         }
         return $this->_clientId;
     }
@@ -46,7 +46,7 @@ class OAuth2Behavior extends Behavior
             if(isset($this->config->paramsGroup, \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'])) {
                 return \Yii::$app->params[$this->config->paramsGroup][$this->socialName]['clientSecret'];
             }
-            throw new InvalidConfigException('Not param "clientSecret" to social "' . $this->socialName. '"');
+            throw new InvalidConfigException('Param "clientSecret" to social "' . $this->socialName. '" empty');
         }
         return $this->_clientSecret;
     }

@@ -19,6 +19,4 @@ class Behavior extends \yii\base\Behavior
         parent::__construct($config);
         $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
     }
-
-
 }
