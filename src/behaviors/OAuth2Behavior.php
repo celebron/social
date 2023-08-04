@@ -10,7 +10,7 @@ use yii\web\Application;
  *
  * @property string $clientSecret
  * @property string $clientId
- * @property-read string $redirectUrl
+ * @property string $redirectUrl
  * @property bool $active
  */
 class OAuth2Behavior extends Behavior

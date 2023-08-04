@@ -28,7 +28,7 @@ use yii\web\Session;
 /**
  * @property string $clientSecret
  * @property string $clientId
- * @property-read string $redirectUrl
+ * @property string $redirectUrl - устанавливать если используется консоль (в остальных случаях автогенерация)
  * @property bool $active
  */
 abstract class OAuth2 extends Social implements OAuth2Interface
