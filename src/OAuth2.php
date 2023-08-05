@@ -40,6 +40,10 @@ abstract class OAuth2 extends Social implements OAuth2Interface
 
     public readonly Client $client;
 
+    private ?string $_clientId = null;
+    private ?string $_clientSecret = null;
+    private ?string $_redirectUrl = null;
+
     public function __construct (string $socialName, Configuration $configure, $config = [])
     {
         $this->client = new Client();
@@ -53,7 +57,6 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public function behaviors ()
     {
         $behaviors = parent::behaviors();
-        $behaviors[OAuth2Interface::class] = new OAuth2Behavior($this->socialName, $this->configure);
         if($this instanceof ViewerInterface) {
             $behaviors[ViewerInterface::class] = new ViewerBehavior($this->socialName, $this->configure);
         }
@@ -163,12 +166,70 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         return $this->response($field, $response->getData());
     }
 
-    public function url(string $method, ?string $state = null):string
+    public function url(string $action, ?string $state = null):string
     {
         return Url::toRoute([
             0 => $this->configure->route . '/handler',
             'social' => $this->socialName,
-            'state' => (string)State::create($method, $state),
+            'state' => (string)State::create($action, $state),
         ], true);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getClientId():string
+    {
+        if(empty($this->_clientId)) {
+            if(!empty($this->params['clientId'])) {
+                return $this->params['clientId'];
+            }
+            throw new InvalidConfigException('Param "clientId" to social "' . $this->socialName . '" empty');
+        }
+        return $this->_clientId;
+    }
+    public function setClientId(string $value): void
+    {
+        $this->_clientId = $value;
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function getClientSecret() : string
+    {
+        if(empty($this->_clientSecret)) {
+            if(!empty($this->params['clientSecret'])) {
+                return $this->params['clientSecret'];
+            }
+            throw new InvalidConfigException('Param "clientSecret" to social "' . $this->socialName. '" empty');
+        }
+        return $this->_clientSecret;
+    }
+    public function setClientSecret(string $value): void
+    {
+        $this->_clientSecret = $value;
+    }
+
+    public function getRedirectUrl()  : string
+    {
+        if(\Yii::$app instanceof \yii\web\Application) {
+            return Url::toRoute([
+                "{$this->configure->route}/handler",
+                'social' => $this->socialName,
+            ], true);
+        }
+
+        return $this->_redirectUrl ?? $this->defaultRedirectUrl();
+    }
+
+    public function setRedirectUrl(string $value): void
+    {
+        $this->_redirectUrl = $value;
+    }
+
+    public function defaultRedirectUrl():string
+    {
+        throw new InvalidConfigException('Param "redirectUrl" to social "' . $this->socialName . '" empty');
     }
 }

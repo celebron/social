@@ -22,19 +22,29 @@ abstract class Social extends Component implements RequestInterface
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
 
+    protected readonly array $params;
+
     public function __construct (
         public readonly string        $socialName,
         public readonly Configuration $configure,
                                       $config = [])
     {
+        $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
         parent::__construct($config);
     }
 
-    public function behaviors()
+    private bool $_active = false;
+
+    /**
+     * @return bool
+     */
+    public function getActive (): bool
     {
-        return [
-          static::class => new ActiveBehavior($this->socialName, $this->configure),
-        ];
+        return $this->params['active'] ?? $this->_active;
+    }
+    public function setActive (bool $value): void
+    {
+        $this->_active = $value;
     }
 
     public function success (HandlerController $controller, Response $response): mixed
