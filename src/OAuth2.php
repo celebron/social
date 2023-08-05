@@ -61,6 +61,20 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     }
 
     /**
+     * @throws BadRequestHttpException
+     */
+    public function urlForCode(State $state):string
+    {
+        $request = new CodeRequest($this, $state);
+        $this->requestCode($request);
+        $url = $this->client->get($request->generateUri());
+        if ($this instanceof UrlFullInterface) {
+            $url->setFullUrl($this->fullUrl($url));
+        }
+        return $url->getFullUrl();
+    }
+
+    /**
      * @throws InvalidRouteException
      * @throws InvalidConfigException
      * @throws Exception
@@ -70,20 +84,13 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public function request (?string $code, State $state): ?ResponseSocial
     {
         $session = \Yii::$app->get('session', false) ?? [];
-        if ($session instanceof  Session && !$session->isActive) {
+        if ($session instanceof Session && !$session->isActive) {
             $session->open();
         }
+
         if ($code === null) {
-            $request = new CodeRequest($this, $state);
-            $this->requestCode($request);
-
-            $session['social_random'] = $request->state->random;
-            $url = $this->client->get($request->generateUri());
-            if ($this instanceof UrlFullInterface) {
-                $url->setFullUrl($this->fullUrl($url));
-            }
-
-            \Yii::$app->response->redirect($url->getFullUrl(), checkAjax: false)->send();
+            $session['social_random'] = $state->random;
+            \Yii::$app->response->redirect($this->urlForCode($state), checkAjax: false)->send();
             exit(ExitCode::OK);
         }
 
@@ -96,12 +103,11 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         if ($equalRandom) {
             $request = new TokenRequest($code, $this);
             $this->requestToken($request);
-
             if ($request->send) {
                 $this->token = $this->sendToken($request);
             }
         } else {
-            throw new BadRequestHttpException('Random not equal');
+            throw new BadRequestHttpException(\Yii::t('social','Random not equal'));
         }
 
         $request = new IdRequest($this);
