@@ -90,4 +90,9 @@ class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
     {
         return true;
     }
+
+    public function defaultRedirectUrl (): string
+    {
+        return "https://oauth.yandex.ru/verification_code";
+    }
 }
