@@ -132,7 +132,7 @@ class Configuration extends Component implements BootstrapInterface
 
     }
 
-    public function getSocial (string $name): ?Social
+    public function getSocial (string $name): Social|OAuth2|null
     {
         return ArrayHelper::getValue($this->getSocials(), $name);
     }
