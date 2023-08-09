@@ -164,13 +164,22 @@ class Configuration extends Component implements BootstrapInterface
         ]);
     }
 
+    public function __call ($name, $params)
+    {
+        $prefix = 'social';
+        if(StringHelper::startsWith($name, $prefix)) {
+            $socialName = strtolower(substr($name, strlen($prefix)));
+            return $this->getSocial($socialName);
+        }
+        return parent::__call($name, $params);
+    }
+
     public static function __callStatic ($methodName, $arguments)
     {
         //URLS
         $prefix = 'url';
-        $prefixLen = strlen($prefix);
         if(StringHelper::startsWith($methodName, $prefix)) {
-            $name = strtolower(substr($methodName, $prefixLen));
+            $name = strtolower(substr($methodName, strlen($prefix)));
             return static::$configure->url($name, $arguments[0], $arguments[1] ?? null);
         }
 
