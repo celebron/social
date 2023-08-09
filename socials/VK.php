@@ -74,4 +74,9 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
     {
         return true;
     }
+
+    public function defaultRedirectUrl (): string
+    {
+        return "https://oauth.vk.com/blank.html";
+    }
 }
