@@ -50,11 +50,11 @@ class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
      */
     public function requestCode (CodeRequest $request) : void
     {
-        $get = Yii::$app->request->get();
-        if (isset($get['error'])) {
-            throw new BadRequestHttpException("[Yandex]Error: {$get['error']}. {$get['error_description']}");
+        if (isset($_GET['error'], $_GET['error_description'])) {
+            throw new BadRequestHttpException("[Yandex]Error: {$_GET['error']}. {$_GET['error_description']}");
         }
     }
+
 
     public function requestToken (TokenRequest $request): void
     {
