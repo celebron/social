@@ -34,10 +34,10 @@ class IdData extends AbstractData
         public readonly Token $token,
         array $config = [])
     {
+        parent::__construct($social, $config);
         if ($social instanceof UrlsInterface) {
             $this->setUri($social->getUriInfo());
         }
-        parent::__construct($social, $config);
     }
 
     /**
