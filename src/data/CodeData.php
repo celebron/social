@@ -21,8 +21,8 @@ class CodeData extends AbstractData
      */
     public function __construct (OAuth2 $social, public State $state, array $config = [])
     {
-        $this->uri = ($this->social instanceof  UrlsInterface) ? $this->social->getUriCode() : '';
         parent::__construct($social, $config);
+        $this->uri = ($this->social instanceof  UrlsInterface) ? $this->social->getUriCode() : '';
     }
 
     public function generateData(array $data) : array
@@ -32,6 +32,7 @@ class CodeData extends AbstractData
         $data = $event->newData;
 
         $default = [
+            0 => $this->uri,
             'response_type' => $this->response_type,
             'client_id' => $this->client_id,
             'redirect_uri' => $this->redirect_uri,
@@ -40,14 +41,14 @@ class CodeData extends AbstractData
         return ArrayHelper::merge($default, $data);
     }
 
-    public function request(array $data = [], array $header = []):CodeRequest
+    public function request(array $data = [], array $headers = []):CodeRequest
     {
         if(empty($this->uri)) {
             throw new BadRequestHttpException(\Yii::t('social','[{request}] Property $uri empty.',[
                 'request' => 'requestCode'
             ]));
         }
-        $request = $this->client->get($this->uri, $this->generateData($data), $header);
+        $request = $this->client->get($this->generateData($data), headers: $headers);
         if ($this instanceof UrlFullInterface) {
             $request->setFullUrl($this->fullUrl($request));
         }
