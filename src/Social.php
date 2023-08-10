@@ -93,8 +93,8 @@ abstract class Social extends Component implements RequestInterface
         return parent::__call($methodName, $params);
     }
 
-    public static function __callStatic ($name, $arguments)
+    public function __toString ()
     {
-        // TODO: Implement __callStatic() method.
+        return $this->socialName;
     }
 }
