@@ -1,38 +1,33 @@
 <?php
 
-namespace Celebron\socialSource\requests;
+namespace Celebron\socialSource\data;
 
+use Celebron\common\Token;
 use Celebron\socialSource\events\EventData;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\OAuth2;
+use Celebron\socialSource\responses\TokenResponse;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
-class TokenRequest
+class TokenData extends AbstractData
 {
-    public array $data = [];
-    public string $redirect_uri;
     public string $grant_type = 'authorization_code';
-    public string $client_id;
     public string $client_secret;
-    public string $uri;
-
-    public bool $send = true;
     public array $header = [];
     public array $params = [];
-    private readonly Client $client;
+
     public function __construct (
         public readonly string $code,
-        protected OAuth2 $social,
+        OAuth2 $social,
+        array $config = []
     ) {
         $this->uri = ($this->social instanceof UrlsInterface) ? $this->social->getUriToken():'';
-        $this->client_id = $this->social->clientId;
-        $this->redirect_uri = $this->social->redirectUrl;
         $this->client_secret = $this->social->clientSecret;
-        $this->client = $this->social->client;
+        parent::__construct($social, $config);
     }
 
     public function setAuthorization(string $value) : void
@@ -45,11 +40,11 @@ class TokenRequest
         $this->setAuthorization('Basic ' . ($base64 ? base64_encode($value):$value));
     }
 
-    public function generateData(): array
+    public function generateData(array $data): array
     {
-        $event = new EventData($this->data);
+        $event = new EventData($data);
         $this->social->trigger(OAuth2::EVENT_DATA_TOKEN, $event);
-        $this->data = $event->newData;
+        $data = $event->newData;
 
         return ArrayHelper::merge([
             'redirect_uri' => $this->redirect_uri,
@@ -57,15 +52,18 @@ class TokenRequest
             'code' => $this->code,
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
-        ], $this->data);
+        ], $data);
     }
 
-    public function sender() : Request
+    public function responseToken(array $data = []):Token
     {
         if(empty($this->uri)) {
-            throw new BadRequestHttpException('[RequestToken] Property $uri empty.');
+            throw new BadRequestHttpException(\Yii::t('social','[{request}] Property $uri empty.',[
+                'request' => 'requestToken'
+            ]));
         }
-        return $this->client->post($this->uri, $this->generateData(), $this->header, $this->params);
+        $request = $this->client->post($this->uri, $this->generateData($data), $this->header, $this->params);
+        $response = $this->send($request);
+        return new Token($response->getData());
     }
-
 }

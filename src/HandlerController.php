@@ -5,11 +5,10 @@ namespace Celebron\socialSource;
 use Celebron\socialSource\events\EventError;
 use Celebron\socialSource\interfaces\SocialInterface;
 use Celebron\socialSource\interfaces\SocialUserInterface;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\NotSupportedException;
-use yii\base\UnknownClassException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 class HandlerController extends Controller
@@ -62,7 +61,7 @@ class HandlerController extends Controller
                 if ($type === self::class) {
                     $args[$key] = $this;
                 }
-                if ($type === ResponseSocial::class) {
+                if ($type === IdResponse::class) {
                     $args[$key] = $object->request($this->getCode(), $this->getState());
                 }
                 if ($typeClassRef->implementsInterface(SocialInterface::class)) {

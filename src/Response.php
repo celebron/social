@@ -3,6 +3,7 @@
 namespace Celebron\socialSource;
 
 use Celebron\socialSource\interfaces\SocialUserInterface;
+use Celebron\socialSource\responses\IdResponse;
 use yii\db\ActiveRecord;
 
 class Response
@@ -18,10 +19,10 @@ class Response
     /**
      * @throws \Exception
      */
-    public static function saveModel (ResponseSocial|Social $response, ActiveRecord&SocialUserInterface $model, mixed $value = null): self
+    public static function saveModel (IdResponse|Social $response, ActiveRecord&SocialUserInterface $model, mixed $value = null): self
     {
         $field = $model->getSocialField($response->socialName);
-        $model->$field = ($response instanceof ResponseSocial) ? $response->getId() : $value;
+        $model->$field = ($response instanceof IdResponse) ? $response->getId() : $value;
         $result = new self($model->save());
         $result->response = $model;
         return $result;

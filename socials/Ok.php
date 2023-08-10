@@ -2,15 +2,18 @@
 
 namespace Celebron\socials;
 
+use Celebron\common\Token;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\requests\CodeRequest;
-use Celebron\socialSource\requests\IdRequest;
-use Celebron\socialSource\requests\TokenRequest;
-use Celebron\socialSource\ResponseSocial;
+use Celebron\socialSource\data\CodeData;
+use Celebron\socialSource\data\IdData;
+use Celebron\socialSource\data\TokenData;
+use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
+use yii\httpclient\Response;
 use yii\web\BadRequestHttpException;
 
 /**
@@ -37,14 +40,17 @@ class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
     private ?string $_name;
     private bool $_visible = true;
 
-    public function requestCode (CodeRequest $request) : void
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function requestCode (CodeData $request) : CodeRequest
     {
-        $request->data['scope'] = $this->scope;
+        return $request->request(['scope' => $this->scope]);
     }
 
-    public function requestToken (TokenRequest $request): void
+    public function requestToken (TokenData $request): Token
     {
-
+        return $request->responseToken();
     }
 
     protected function sig(array $params, $token):string
@@ -58,7 +64,7 @@ class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (IdRequest $request): ResponseSocial
+    public function requestId (IdData $request): IdResponse
     {
 
         $params = [
@@ -72,14 +78,17 @@ class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
         $params['sig'] = $this->sig($params, $token);
         $params['access_token'] = $token;
 
-        $postInfo = $request->post($params);
-        $dataInfo = $this->send($postInfo);
-        if(isset($dataInfo->data['error_code'])) {
-            $error = $dataInfo->getData();
-            throw new BadRequestHttpException('[' . $this->socialName . "] E{$error['error_code']}.\n{$error['error_msg']}");
-        }
-
-        return $this->response('uid', $dataInfo->data); // $dataInfo->data['uid'];
+        $request->post($params);
+        return $request->responseId('uid', handler: function (Response $res) {
+            if(isset($res->data['error_code'], $res->data['error_msg'])) {
+                throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Error {error} E{statusCode}. {description}', [
+                    'socialName' => $this->socialName,
+                    'statusCode' => $res->data['error_code'],
+                    'description' => $res->data['error_msg'],
+                    'error' => '',
+                ]));
+            }
+        });
     }
 
     public function getBaseUrl (): string

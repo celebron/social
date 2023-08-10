@@ -2,14 +2,16 @@
 
 namespace Celebron\socials;
 
+use Celebron\common\Token;
 use Celebron\socialSource\interfaces\UrlFullInterface;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\requests\CodeRequest;
-use Celebron\socialSource\requests\IdRequest;
-use Celebron\socialSource\requests\TokenRequest;
-use Celebron\socialSource\ResponseSocial;
+use Celebron\socialSource\data\CodeData;
+use Celebron\socialSource\data\IdData;
+use Celebron\socialSource\data\TokenData;
+use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -28,36 +30,33 @@ use Yiisoft\Http\Header;
  * @property-read string $uriCode
  * @property-read bool $supportRegister
  * @property-read bool $supportLogin
+ * @property-read bool $supportManagement
  * @property-write Request $fullUrl
  */
 class Discord extends OAuth2 implements UrlsInterface, UrlFullInterface, ViewerInterface
 {
     public array $scope = [ 'identify' ];
 
-    public function requestCode (CodeRequest $request) : void
+    public function requestCode (CodeData $request) : CodeRequest
     {
-        $request->data = ['scope' => implode(' ', $this->scope)];
+        return $request->request(['scope' => implode(' ', $this->scope)]);
     }
 
-    public function requestToken (TokenRequest $request): void
+    public function requestToken (TokenData $request): Token
     {
-
+        return $request->responseToken();
     }
 
     /**
-     * @throws Exception
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (IdRequest $request): ResponseSocial
+    public function requestId (IdData $request): IdResponse
     {
-
-        $url = $request->get(
+        $request->get(
             [ Header::AUTHORIZATION => $request->getTokenTypeToken()],
             [ 'format'=>'json' ],
         );
-
-        return $this->sendResponse($url, 'user.id');
+        return $request->responseId('user.id');
     }
 
     public function fullUrl(Request $request) : string

@@ -9,19 +9,20 @@ use Celebron\socialSource\interfaces\OAuth2Interface;
 use Celebron\socialSource\interfaces\UrlFullInterface;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\requests\CodeRequest;
-use Celebron\socialSource\requests\IdRequest;
-use Celebron\socialSource\requests\TokenRequest;
+use Celebron\socialSource\data\CodeData;
+use Celebron\socialSource\data\IdData;
+use Celebron\socialSource\data\TokenData;
+use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
-use yii\console\Application;
 use yii\console\ExitCode;
 use yii\helpers\Url;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
 use yii\httpclient\Exception;
-use yii\httpclient\Response as ClientResponse;
 use yii\httpclient\Request as ClientRequest;
+use yii\httpclient\Response as ClientResponse;
 use yii\web\BadRequestHttpException;
 use yii\web\Session;
 
@@ -36,23 +37,9 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
 
-    public Token $token;
-
-    public readonly Client $client;
-
     private ?string $_clientId = null;
     private ?string $_clientSecret = null;
     private ?string $_redirectUrl = null;
-
-    public function __construct (string $socialName, Configuration $configure, $config = [])
-    {
-        $this->client = new Client();
-        $this->client->transport = CurlTransport::class;
-        if($this instanceof UrlsInterface) {
-            $this->client->baseUrl = $this->getBaseUrl();
-        }
-        parent::__construct($socialName, $configure, $config);
-    }
 
     public function behaviors ()
     {
@@ -66,15 +53,10 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     /**
      * @throws BadRequestHttpException
      */
-    public function urlForCode(State $state):string
+    public function responseCode(State $state):CodeRequest
     {
-        $request = new CodeRequest($this, $state);
-        $this->requestCode($request);
-        $url = $this->client->get($request->generateUri());
-        if ($this instanceof UrlFullInterface) {
-            $url->setFullUrl($this->fullUrl($url));
-        }
-        return $url->getFullUrl();
+        $request = new CodeData($this, $state);
+        return $this->requestCode($request);
     }
 
     /**
@@ -84,7 +66,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
      * @throws BadRequestHttpException
      * @throws \Exception
      */
-    public function request (?string $code, State $state): ?ResponseSocial
+    public function request (?string $code, State $state): ?IdResponse
     {
         $session = \Yii::$app->get('session', false) ?? [];
         if ($session instanceof Session && !$session->isActive) {
@@ -93,8 +75,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
 
         if ($code === null) {
             $session['social_random'] = $state->random;
-            \Yii::$app->response->redirect($this->urlForCode($state), checkAjax: false)->send();
-            exit(ExitCode::OK);
+            $this->responseCode($state)->redirect();
         }
 
         $equalRandom = true;
@@ -104,67 +85,19 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         }
 
         if ($equalRandom) {
-            $request = new TokenRequest($code, $this);
-            $this->requestToken($request);
-            if ($request->send) {
-                $this->token = $this->sendToken($request);
-            }
+            $request = new TokenData($code, $this);
+            $token = $this->requestToken($request);
         } else {
             throw new BadRequestHttpException(\Yii::t('social','Random not equal'));
         }
 
-        $request = new IdRequest($this);
+        $request = new IdData($this, $token);
         $response = $this->requestId($request);
 
         \Yii::debug("Userid: {$response->getId()}.", static::class);
         return $response;
     }
 
-    /**
-     * @throws InvalidConfigException
-     * @throws Exception
-     * @throws BadRequestHttpException
-     */
-    final protected function send(ClientRequest $sender) : ClientResponse
-    {
-        $response = $this->client->send($sender);
-        $data = $response->getData();
-        if ($response->isOk && !isset($data['error'])) {
-            return $response;
-        }
-
-        if (isset($data['error'], $data['error_description'])) {
-            throw new BadRequestHttpException('[' . $this->socialName . "]Error {$data['error']} (E{$response->getStatusCode()}). {$data['error_description']}");
-        }
-        throw new BadRequestHttpException('[' . $this->socialName . "]Response not correct. Code E{$response->getStatusCode()}");
-    }
-
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws BadRequestHttpException
-     */
-    final public function sendToken(TokenRequest $sender) : Token
-    {
-        $data = $this
-            ->send($sender->sender())
-            ->getData();
-        return new Token($data);
-    }
-
-    /**
-     * @param ClientRequest $sender
-     * @param string|\Closure|array $field
-     * @return mixed
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
-    public function sendResponse(ClientRequest $sender, string|\Closure|array $field) : ResponseSocial
-    {
-        $response = $this->send($sender);
-        return $this->response($field, $response->getData());
-    }
 
     public function url(string $action, ?string $state = null):string
     {

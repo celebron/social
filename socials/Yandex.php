@@ -3,14 +3,15 @@
 
 namespace Celebron\socials;
 
+use Celebron\common\Token;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\requests\CodeRequest;
-use Celebron\socialSource\requests\IdRequest;
-use Celebron\socialSource\requests\TokenRequest;
-use Celebron\socialSource\ResponseSocial;
-use Yii;
+use Celebron\socialSource\data\CodeData;
+use Celebron\socialSource\data\IdData;
+use Celebron\socialSource\data\TokenData;
+use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
@@ -34,31 +35,29 @@ class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
 
     public ?string $fileName = null;
 
+
     /**
-     * @throws Exception
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (IdRequest $request): ResponseSocial
+    public function requestId (IdData $request): IdResponse
     {
-        $login = $request->getHeaderOauth(['format'=> 'json']);
-        return $this->sendResponse($login, 'id');
+        $request->getHeaderOauth(['format'=>'json']);
+        return $request->responseId('id');
     }
 
     /**
      * @throws BadRequestHttpException
      */
-    public function requestCode (CodeRequest $request) : void
+    public function requestCode (CodeData $request) : CodeRequest
     {
-        if (isset($_GET['error'], $_GET['error_description'])) {
-            throw new BadRequestHttpException("[Yandex]Error: {$_GET['error']}. {$_GET['error_description']}");
-        }
+        return $request->request();
     }
 
 
-    public function requestToken (TokenRequest $request): void
+    public function requestToken (TokenData $request): Token
     {
         $request->setAuthorizationBasic($this->clientId . ':' . $this->clientSecret);
+        return $request->responseToken();
     }
 
     public function getBaseUrl (): string

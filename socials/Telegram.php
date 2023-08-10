@@ -3,9 +3,8 @@
 namespace Celebron\socials;
 
 
-use Celebron\socialSource\interfaces\ViewerInterface;
+use Celebron\socialSource\responses\IdResponse;
 use Celebron\socialSource\Social;
-use Celebron\socialSource\ResponseSocial;
 use Celebron\socialSource\State;
 use yii\web\BadRequestHttpException;
 
@@ -50,9 +49,9 @@ class Telegram extends Social
     /**
      * @throws BadRequestHttpException
      */
-    public function request(?string $code, State $state): ResponseSocial
+    public function request(?string $code, State $state): IdResponse
     {
-        return $this->response('id', $this->getData());
+        return $this->responseId('id', $this->getData());
     }
 
 }

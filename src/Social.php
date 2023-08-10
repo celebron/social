@@ -2,11 +2,10 @@
 
 namespace Celebron\socialSource;
 
-use Celebron\socialSource\behaviors\ActiveBehavior;
 use Celebron\socialSource\events\EventResult;
 use Celebron\socialSource\interfaces\RequestInterface;
-use Celebron\socialSource\interfaces\SocialInterface;
 use Celebron\socialSource\interfaces\SocialUserInterface;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
@@ -61,9 +60,9 @@ abstract class Social extends Component implements RequestInterface
         return $this->result ?? $controller->goBack();
     }
 
-    public function response (string|\Closure|array|null $field, mixed $data): ResponseSocial
+    public function responseId (string|\Closure|array|null $field, mixed $data): IdResponse
     {
-        return new ResponseSocial($this->socialName, $field, $data);
+        return new IdResponse($this, $field, $data);
     }
 
     public function url (string $action, string $state = null): string

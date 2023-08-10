@@ -5,10 +5,11 @@ namespace Celebron\socials;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\requests\CodeRequest;
-use Celebron\socialSource\requests\IdRequest;
-use Celebron\socialSource\requests\TokenRequest;
-use Celebron\socialSource\ResponseSocial;
+use Celebron\socialSource\data\CodeData;
+use Celebron\socialSource\data\IdData;
+use Celebron\socialSource\data\TokenData;
+use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\IdResponse;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -65,28 +66,26 @@ class Google extends OAuth2 implements UrlsInterface, ViewerInterface
 
     }
 
-    public function requestCode (CodeRequest $request) : void
+    public function requestCode (CodeData $request) : CodeRequest
     {
-        $request->data = ['access_type' => 'online', 'scope'=>'profile'];
+        return $request->request(['access_type' => 'online', 'scope'=>'profile']);
     }
 
-    public function requestToken (TokenRequest $request): void
+    public function requestToken (TokenData $request): \Celebron\common\Token
     {
-
+        return $request->responseToken();
     }
 
     /**
-     * @throws Exception
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
-    public function requestId (IdRequest $request): ResponseSocial
+    public function requestId (IdData $request): IdResponse
     {
-        $url = $request->get(
+        $request->get(
             [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
             [ 'format'=>'json' ],
         );
-        return $this->sendResponse($url, 'id');
+        return $request->responseId('id');
     }
 
     public function getBaseUrl (): string

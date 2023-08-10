@@ -3,13 +3,16 @@
 namespace Celebron\socials;
 
 
+use Celebron\common\Token;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\requests\CodeRequest;
-use Celebron\socialSource\requests\IdRequest;
-use Celebron\socialSource\requests\TokenRequest;
-use Celebron\socialSource\ResponseSocial;
+use Celebron\socialSource\data\CodeData;
+use Celebron\socialSource\data\IdData;
+use Celebron\socialSource\data\TokenData;
+use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\IdResponse;
+use yii\web\BadRequestHttpException;
 
 /**
  * Oauth2 VK
@@ -29,20 +32,29 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
 {
     public string $display = 'page';
 
-    public function requestCode (CodeRequest $request) : void
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function requestCode (CodeData $request) : CodeRequest
     {
-        $request->data = [ 'display' => $this->display ];
+        return $request->request([ 'display' => $this->display ]);
     }
 
 
-    public function requestToken (TokenRequest $request): void
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function requestToken (TokenData $request): Token
     {
-
+        return $request->responseToken();
     }
 
-    public function requestId (IdRequest $request): ResponseSocial
+    /**
+     * @throws BadRequestHttpException
+     */
+    public function requestId (IdData $request): IdResponse
     {
-        return $this->response('user_id', $request->getTokenData());
+        return $request->responseId('user_id');
     }
 
     public function getBaseUrl (): string
