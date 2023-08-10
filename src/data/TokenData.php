@@ -25,9 +25,9 @@ class TokenData extends AbstractData
         OAuth2 $social,
         array $config = []
     ) {
+        parent::__construct($social, $config);
         $this->uri = ($this->social instanceof UrlsInterface) ? $this->social->getUriToken():'';
         $this->client_secret = $this->social->clientSecret;
-        parent::__construct($social, $config);
     }
 
     public function setAuthorization(string $value) : void
