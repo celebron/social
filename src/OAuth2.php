@@ -88,7 +88,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
             $request = new TokenData($code, $this);
             $token = $this->requestToken($request);
         } else {
-            throw new BadRequestHttpException(\Yii::t('social','Random not equal'));
+            throw new BadRequestHttpException(\Yii::t('social','Random value does not match'));
         }
 
         $request = new IdData($this, $token);

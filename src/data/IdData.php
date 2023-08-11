@@ -46,7 +46,7 @@ class IdData extends AbstractData
     public function getUri():string
     {
         if(empty($this->_uri)) {
-            throw new BadRequestHttpException(\Yii::t('social','[{request}] Property $uri empty.',[
+            throw new BadRequestHttpException(\Yii::t('social','[{request}]Property $uri empty.',[
                 'request' => 'requestId'
             ]));
         }
@@ -131,7 +131,7 @@ class IdData extends AbstractData
     {
         $request = $this->_request
             ?? $request
-            ?? throw new BadRequestHttpException(\Yii::t('social','Not client request'));
+            ?? throw new BadRequestHttpException(\Yii::t('social','Сlient request is incorrect'));
         $response = $this->send($request, $handler);
         return $this->social->responseId($field, $response->getData());
     }

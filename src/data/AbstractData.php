@@ -49,7 +49,7 @@ abstract class AbstractData extends BaseObject
                 ]));
             }
 
-            throw new BadRequestHttpException(\Yii::t('social', '[{socialName]Response not correct. Code E{statusCode}', [
+            throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Response not correct. Code E{statusCode}', [
                 'socialName' => $this->social->socialName,
                 'statusCode' => $response->getStatusCode(),
             ]));

@@ -58,7 +58,7 @@ class TokenData extends AbstractData
     public function responseToken(array $data = []):Token
     {
         if(empty($this->uri)) {
-            throw new BadRequestHttpException(\Yii::t('social','[{request}] Property $uri empty.',[
+            throw new BadRequestHttpException(\Yii::t('social','[{request}]Property $uri empty.',[
                 'request' => 'requestToken'
             ]));
         }

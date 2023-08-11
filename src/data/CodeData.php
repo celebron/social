@@ -44,7 +44,7 @@ class CodeData extends AbstractData
     public function request(array $data = [], array $headers = []):CodeRequest
     {
         if(empty($this->uri)) {
-            throw new BadRequestHttpException(\Yii::t('social','[{request}] Property $uri empty.',[
+            throw new BadRequestHttpException(\Yii::t('social','[{request}]Property $uri empty.',[
                 'request' => 'requestCode'
             ]));
         }
