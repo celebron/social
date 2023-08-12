@@ -2,12 +2,9 @@
 
 namespace Celebron\socialSource;
 
-use Celebron\socialSource\behaviors\ActiveBehavior;
-use Celebron\socialSource\behaviors\Behavior;
+use Celebron\socials\{Google, Ok, VK, Yandex};
 use Celebron\socialSource\events\EventRegister;
 use Celebron\socialSource\interfaces\CustomRequestInterface;
-use Celebron\socialSource\interfaces\SocialInterface;
-use Celebron\socialSource\interfaces\ViewerInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
@@ -21,10 +18,17 @@ use yii\i18n\PhpMessageSource;
 
 /**
  *
- * @property-write array $socials
- * @method socialsStatic(...$params) => static::$configure->getSocials(...$params)
- * <social>Static() => static::$configure->getSocial(<social>)
- * url<Social>(...) => static::$configure->url(<social>(...)
+ * @property array $socials
+ * @property-read  Yandex $yandex
+ * @property-read  VK $vk
+ * @property-read Ok $ok
+ * @property-read Google $google
+ *
+ * @example
+ *      <social>Static() ==> static::$configure->getSocial(<social>)
+ *      <Social>Url(...) ==> static::$configure->url(<social>,...)
+ *      url<Social>(...) ==> $this->url(<social>,...)
+ *
  */
 class Configuration extends Component implements BootstrapInterface
 {
@@ -36,7 +40,6 @@ class Configuration extends Component implements BootstrapInterface
     public array $socialEvents = [
         //eventName => Closure
     ];
-
 
     private array $_socials = [];
     private static self $configure;
@@ -137,6 +140,11 @@ class Configuration extends Component implements BootstrapInterface
         return ArrayHelper::getValue($this->getSocials(), $name);
     }
 
+    public function hasSocial(string $name):bool
+    {
+        return ArrayHelper::keyExists($name, $this->getSocials());
+    }
+
     public function bootstrap ($app)
     {
         $app->urlManager->addRules([
@@ -164,12 +172,21 @@ class Configuration extends Component implements BootstrapInterface
         ]);
     }
 
+    public function __get ($name)
+    {
+        if($this->hasSocial($name)) {
+            return $this->getSocial($name);
+        }
+        return parent::__get($name);
+    }
+
     public function __call ($name, $params)
     {
-        $prefix = 'social';
+        //URLS
+        $prefix = 'url';
         if(StringHelper::startsWith($name, $prefix)) {
             $socialName = strtolower(substr($name, strlen($prefix)));
-            return $this->getSocial($socialName);
+            return $this->url($socialName, $params[0], $params[1]?? null);
         }
         return parent::__call($name, $params);
     }
@@ -177,17 +194,16 @@ class Configuration extends Component implements BootstrapInterface
     public static function __callStatic ($methodName, $arguments)
     {
         //URLS
-        $prefix = 'url';
-        if(StringHelper::startsWith($methodName, $prefix)) {
-            $name = strtolower(substr($methodName, strlen($prefix)));
+        $suffix = 'Url';
+        if(StringHelper::endsWith($methodName, $suffix)) {
+            $name = strtolower(substr($methodName,0, -strlen($suffix)));
             return static::$configure->url($name, $arguments[0], $arguments[1] ?? null);
         }
 
         ///SOCIALS
         $suffix = 'Static';
-        $suffixLen = strlen($suffix);
         if(StringHelper::endsWith($methodName, $suffix)) {
-            $name = strtolower(substr($methodName,0, -$suffixLen));
+            $name = strtolower(substr($methodName,0, -strlen($suffix)));
             if($name === 'socials') {
                 return static::$configure->getSocials(...$arguments);
             }
