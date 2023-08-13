@@ -36,7 +36,7 @@ class Configuration extends Component implements BootstrapInterface
 
     public string $route = 'social';
     public ?string $paramsGroup = null;
-    public ?\Closure $paramsHandler = null;
+    public null|\Closure|\ArrayAccess $paramsHandler = null;
 
     public array $socialEvents = [
         //eventName => Closure

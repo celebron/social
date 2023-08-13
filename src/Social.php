@@ -6,6 +6,7 @@ use Celebron\socialSource\events\EventResult;
 use Celebron\socialSource\interfaces\RequestInterface;
 use Celebron\socialSource\interfaces\SocialUserInterface;
 use Celebron\socialSource\responses\Id;
+use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
@@ -21,7 +22,7 @@ abstract class Social extends Component implements RequestInterface
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
 
-    protected readonly array $params;
+    protected readonly array|\ArrayAccess $params;
 
     public function __construct (
         public readonly string        $socialName,
@@ -29,7 +30,9 @@ abstract class Social extends Component implements RequestInterface
                                       $config = [])
     {
         parent::__construct($config);
-        if($this->configure->paramsHandler !== null) {
+        if($this->configure->paramsHandler instanceof \ArrayAccess) {
+            $this->params = $this->configure->paramsHandler;
+        } elseif($this->configure->paramsHandler instanceof \Closure) {
             $this->params = ($this->configure->paramsHandler)($this);
         } elseif($this->configure->paramsGroup !== null) {
             $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
