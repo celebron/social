@@ -14,7 +14,6 @@ use Celebron\socialSource\responses\Id;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
 use yii\helpers\Url;
-use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\Session;
 
@@ -148,12 +147,10 @@ abstract class OAuth2 extends Social implements OAuth2Interface
 
         return $this->_redirectUrl ?? $this->defaultRedirectUrl();
     }
-
     public function setRedirectUrl(string $value): void
     {
         $this->_redirectUrl = $value;
     }
-
     public function defaultRedirectUrl():string
     {
         throw new InvalidConfigException('Param "redirectUrl" to social "' . $this->socialName . '" empty');
