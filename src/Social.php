@@ -87,14 +87,14 @@ abstract class Social extends Component implements RequestInterface
         return (new static($socialName,  \Yii::$app->get($socialComponent)))->url($action, $state);
     }
 
-    public function __call ($methodName, $params)
+    public function __call ($name, $params)
     {
         $prefix = 'url';
-        if(StringHelper::startsWith($methodName, $prefix)) {
-            $actionName = strtolower(substr($methodName, strlen($prefix)));
+        if(StringHelper::startsWith($name, $prefix)) {
+            $actionName = strtolower(substr($name, strlen($prefix)));
             return $this->url($actionName, $params[0]??null);
         }
-        return parent::__call($methodName, $params);
+        return parent::__call($name, $params);
     }
 
     public function __toString ()

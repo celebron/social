@@ -2,6 +2,7 @@
 
 namespace Celebron\socialSource;
 
+use Celebron\common\TokenInterface;
 use Celebron\socialSource\events\EventError;
 use Celebron\socialSource\interfaces\SocialInterface;
 use Celebron\socialSource\interfaces\SocialUserInterface;
@@ -60,12 +61,12 @@ class HandlerController extends Controller
                 $typeClassRef = new \ReflectionClass($type);
                 if ($type === self::class) {
                     $args[$key] = $this;
-                }
-                if ($type === Id::class) {
+                } elseif ($type === Id::class) {
                     $args[$key] = $object->request($this->getCode(), $this->getState());
-                }
-                if ($typeClassRef->implementsInterface(SocialInterface::class)) {
+                } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
                     $args[$key] = $object;
+                } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
+                    $args[$key] = $object->handleToken($this->getCode());
                 }
             }
 
@@ -87,8 +88,7 @@ class HandlerController extends Controller
             if (empty($event->result)) {
                 throw $event->exception;
             }
-            //return $event->result;
-            return $this->renderContent($ex->getMessage());
+            return $event->result;
         } finally {
             \Yii::endProfile("Social profiling", static::class);
         }
