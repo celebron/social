@@ -50,7 +50,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public function handleToken(string $code):Token
     {
         $request = new TokenData($code, $this);
-        $token = $this->requestToken($request);
+        return $this->requestToken($request);
     }
 
     /**
