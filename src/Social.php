@@ -33,7 +33,7 @@ abstract class Social extends Component implements RequestInterface
         if($this->configure->paramsHandler instanceof \ArrayAccess) {
             $this->params = $this->configure->paramsHandler;
         } elseif($this->configure->paramsHandler instanceof \Closure) {
-            $this->params = ($this->configure->paramsHandler)($this);
+            $this->params = $this->configure->paramsHandler->call($this->configure, $this->socialName);
         } elseif($this->configure->paramsGroup !== null) {
             $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
         }
