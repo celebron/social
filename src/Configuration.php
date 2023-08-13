@@ -26,7 +26,7 @@ use yii\i18n\PhpMessageSource;
  *
  * @example
  *      <social>Static() ==> static::$configure->getSocial(<social>)
- *      <Social>Url(...) ==> static::$configure->url(<social>,...)
+ *      <social>Url(...) ==> static::$configure->url(<social>,...)
  *      url<Social>(...) ==> $this->url(<social>,...)
  *
  */
@@ -36,6 +36,7 @@ class Configuration extends Component implements BootstrapInterface
 
     public string $route = 'social';
     public ?string $paramsGroup = null;
+    public ?\Closure $paramsHandler = null;
 
     public array $socialEvents = [
         //eventName => Closure
@@ -62,7 +63,6 @@ class Configuration extends Component implements BootstrapInterface
     }
 
     /**
-     * @throws InvalidConfigException
      */
     public function addSocial (string $name, Social $object, bool $override = false): void
     {
@@ -132,7 +132,6 @@ class Configuration extends Component implements BootstrapInterface
             }
             $this->addSocialConfig($name, $handler);
         }
-
     }
 
     public function getSocial (string $name): Social|OAuth2|null
@@ -193,7 +192,7 @@ class Configuration extends Component implements BootstrapInterface
 
     public static function __callStatic ($methodName, $arguments)
     {
-        //URLS
+        ///URLS
         $suffix = 'Url';
         if(StringHelper::endsWith($methodName, $suffix)) {
             $name = strtolower(substr($methodName,0, -strlen($suffix)));

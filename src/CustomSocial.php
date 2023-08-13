@@ -3,7 +3,7 @@
 namespace Celebron\socialSource;
 use Celebron\socialSource\interfaces\CustomRequestInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Id;
 use yii\base\UnknownClassException;
 use yii\base\UnknownPropertyException;
 
@@ -21,14 +21,14 @@ class CustomSocial extends Social implements CustomRequestInterface, ViewerInter
      * @throws UnknownPropertyException
      * @throws UnknownClassException
      */
-    public function request (?string $code, State $state): ?IdResponse
+    public function request (?string $code, State $state): ?Id
     {
         if($this->handler !== null) {
             $result = $this->handler->call($this, $code, $state);
-            if($result instanceof IdResponse) {
+            if($result instanceof Id) {
                 return $result;
             }
-            throw new UnknownClassException('Class not extend ' . IdResponse::class);
+            throw new UnknownClassException('Class not extend ' . Id::class);
         }
         throw new UnknownPropertyException('Property $handler is null');
     }

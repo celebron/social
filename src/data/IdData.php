@@ -5,7 +5,7 @@ namespace Celebron\socialSource\data;
 use Celebron\common\Token;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Id;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
@@ -127,7 +127,7 @@ class IdData extends AbstractData
         return $this->_request = $this->client->delete($this->getUri(), $data, $header);
     }
 
-    public function responseId(string|\Closure|array $field, ?ClientRequest $request = null, ?\Closure $handler = null): IdResponse
+    public function responseId(string|\Closure|array $field, ?ClientRequest $request = null, ?\Closure $handler = null): Id
     {
         $request = $this->_request
             ?? $request

@@ -5,7 +5,7 @@ namespace Celebron\socialSource\responses;
 use Celebron\socialSource\Social;
 use yii\helpers\ArrayHelper;
 
-class IdResponse
+class Id
 {
     public function __construct (
         public readonly Social                      $social,

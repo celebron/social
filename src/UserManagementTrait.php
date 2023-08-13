@@ -2,7 +2,7 @@
 
 namespace Celebron\socialSource;
 
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Id;
 use yii\web\UnauthorizedHttpException;
 
 trait UserManagementTrait
@@ -10,7 +10,7 @@ trait UserManagementTrait
     abstract public static function fieldSearch (string $field, mixed $id): ?self;
     abstract public function getRememberTime():int;
 
-    public function socialLogin(IdResponse $response):bool
+    public function socialLogin(Id $response):bool
     {
         $field = $this->getSocialField($response->social->socialName);
         $login = $this::fieldSearch($field, $response->getId());
@@ -23,7 +23,7 @@ trait UserManagementTrait
     /**
      * @throws \Exception
      */
-    public function socialRegister (IdResponse $response): Response
+    public function socialRegister (Id $response): Response
     {
         return Response::saveModel($response, $this);
     }

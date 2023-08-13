@@ -10,8 +10,8 @@ use Celebron\socialSource\OAuth2;
 use Celebron\socialSource\data\CodeData;
 use Celebron\socialSource\data\IdData;
 use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\CodeRequest;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Code;
+use Celebron\socialSource\responses\Id;
 use yii\web\BadRequestHttpException;
 
 /**
@@ -35,7 +35,7 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
     /**
      * @throws BadRequestHttpException
      */
-    public function requestCode (CodeData $request) : CodeRequest
+    public function requestCode (CodeData $request) : Code
     {
         return $request->request([ 'display' => $this->display ]);
     }
@@ -52,7 +52,7 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
     /**
      * @throws BadRequestHttpException
      */
-    public function requestId (IdData $request): IdResponse
+    public function requestId (IdData $request): Id
     {
         return $request->responseId('user_id');
     }

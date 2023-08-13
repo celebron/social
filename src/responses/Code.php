@@ -16,7 +16,7 @@ use yii\web\BadRequestHttpException;
  *
  * @property-read string $url
  */
-class CodeRequest extends BaseObject
+class Code extends BaseObject
 {
     public function __construct (
         protected Request  $request,

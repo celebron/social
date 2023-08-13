@@ -5,7 +5,7 @@ namespace Celebron\socialSource;
 use Celebron\socialSource\events\EventResult;
 use Celebron\socialSource\interfaces\RequestInterface;
 use Celebron\socialSource\interfaces\SocialUserInterface;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Id;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
@@ -28,8 +28,12 @@ abstract class Social extends Component implements RequestInterface
         public readonly Configuration $configure,
                                       $config = [])
     {
-        $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
         parent::__construct($config);
+        if($this->configure->paramsHandler !== null) {
+            $this->params = ($this->configure->paramsHandler)($this);
+        } elseif($this->configure->paramsGroup !== null) {
+            $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
+        }
     }
 
     private bool $_active = false;
@@ -60,9 +64,9 @@ abstract class Social extends Component implements RequestInterface
         return $this->result ?? $controller->goBack();
     }
 
-    public function responseId (string|\Closure|array|null $field, mixed $data): IdResponse
+    public function responseId (string|\Closure|array|null $field, mixed $data): Id
     {
-        return new IdResponse($this, $field, $data);
+        return new Id($this, $field, $data);
     }
 
     public function url (string $action, string $state = null): string
@@ -78,7 +82,7 @@ abstract class Social extends Component implements RequestInterface
         return $user->$field;
     }
 
-    public static function urlStatic(string $socialName, string $action,?string $state = null, string $socialComponent = 'social'):string
+    public static function urlStatic(string $socialName, string $action, ?string $state = null, string $socialComponent = 'social'):string
     {
         return (new static($socialName,  \Yii::$app->get($socialComponent)))->url($action, $state);
     }

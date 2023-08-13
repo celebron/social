@@ -3,26 +3,18 @@
 namespace Celebron\socialSource;
 
 use Celebron\common\Token;
-use Celebron\socialSource\behaviors\OAuth2Behavior;
 use Celebron\socialSource\behaviors\ViewerBehavior;
 use Celebron\socialSource\interfaces\OAuth2Interface;
-use Celebron\socialSource\interfaces\UrlFullInterface;
-use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\interfaces\ViewerInterface;
 use Celebron\socialSource\data\CodeData;
 use Celebron\socialSource\data\IdData;
 use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\CodeRequest;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Code;
+use Celebron\socialSource\responses\Id;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
-use yii\console\ExitCode;
 use yii\helpers\Url;
-use yii\httpclient\Client;
-use yii\httpclient\CurlTransport;
 use yii\httpclient\Exception;
-use yii\httpclient\Request as ClientRequest;
-use yii\httpclient\Response as ClientResponse;
 use yii\web\BadRequestHttpException;
 use yii\web\Session;
 
@@ -50,23 +42,25 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         return $behaviors;
     }
 
-    /**
-     * @throws BadRequestHttpException
-     */
-    public function responseCode(State $state):CodeRequest
+    public function handleCode(State $state):Code
     {
         $request = new CodeData($this, $state);
         return $this->requestCode($request);
     }
 
+    public function handleToken(string $code):Token
+    {
+        $request = new TokenData($code, $this);
+        $token = $this->requestToken($request);
+    }
+
     /**
      * @throws InvalidRouteException
      * @throws InvalidConfigException
-     * @throws Exception
      * @throws BadRequestHttpException
      * @throws \Exception
      */
-    public function request (?string $code, State $state): ?IdResponse
+    public function request (?string $code, State $state, ...$args): ?Id
     {
         $session = \Yii::$app->get('session', false) ?? [];
         if ($session instanceof Session && !$session->isActive) {
@@ -75,7 +69,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
 
         if ($code === null) {
             $session['social_random'] = $state->random;
-            $this->responseCode($state)->redirect();
+            $this->handleCode($state)->redirect();
         }
 
         $equalRandom = true;
@@ -85,8 +79,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         }
 
         if ($equalRandom) {
-            $request = new TokenData($code, $this);
-            $token = $this->requestToken($request);
+            $token = $this->handleToken($code);
         } else {
             throw new BadRequestHttpException(\Yii::t('social','Random value does not match'));
         }

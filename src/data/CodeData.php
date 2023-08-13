@@ -6,7 +6,7 @@ use Celebron\socialSource\events\EventData;
 use Celebron\socialSource\interfaces\UrlFullInterface;
 use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\responses\CodeRequest;
+use Celebron\socialSource\responses\Code;
 use Celebron\socialSource\State;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Request as ClientRequest;
@@ -41,7 +41,7 @@ class CodeData extends AbstractData
         return ArrayHelper::merge($default, $data);
     }
 
-    public function request(array $data = [], array $headers = []):CodeRequest
+    public function request(array $data = [], array $headers = []):Code
     {
         if(empty($this->uri)) {
             throw new BadRequestHttpException(\Yii::t('social','[{request}]Property $uri empty.',[
@@ -52,7 +52,7 @@ class CodeData extends AbstractData
         if ($this instanceof UrlFullInterface) {
             $request->setFullUrl($this->fullUrl($request));
         }
-        return new CodeRequest($request, $this);
+        return new Code($request, $this);
     }
 
 }

@@ -10,8 +10,8 @@ use Celebron\socialSource\OAuth2;
 use Celebron\socialSource\data\CodeData;
 use Celebron\socialSource\data\IdData;
 use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\CodeRequest;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Code;
+use Celebron\socialSource\responses\Id;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -37,7 +37,7 @@ class Discord extends OAuth2 implements UrlsInterface, UrlFullInterface, ViewerI
 {
     public array $scope = [ 'identify' ];
 
-    public function requestCode (CodeData $request) : CodeRequest
+    public function requestCode (CodeData $request) : Code
     {
         return $request->request(['scope' => implode(' ', $this->scope)]);
     }
@@ -50,7 +50,7 @@ class Discord extends OAuth2 implements UrlsInterface, UrlFullInterface, ViewerI
     /**
      * @throws BadRequestHttpException
      */
-    public function requestId (IdData $request): IdResponse
+    public function requestId (IdData $request): Id
     {
         $request->get(
             [ Header::AUTHORIZATION => $request->getTokenTypeToken()],

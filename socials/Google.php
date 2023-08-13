@@ -8,8 +8,8 @@ use Celebron\socialSource\OAuth2;
 use Celebron\socialSource\data\CodeData;
 use Celebron\socialSource\data\IdData;
 use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\CodeRequest;
-use Celebron\socialSource\responses\IdResponse;
+use Celebron\socialSource\responses\Code;
+use Celebron\socialSource\responses\Id;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -66,7 +66,7 @@ class Google extends OAuth2 implements UrlsInterface, ViewerInterface
 
     }
 
-    public function requestCode (CodeData $request) : CodeRequest
+    public function requestCode (CodeData $request) : Code
     {
         return $request->request(['access_type' => 'online', 'scope'=>'profile']);
     }
@@ -79,7 +79,7 @@ class Google extends OAuth2 implements UrlsInterface, ViewerInterface
     /**
      * @throws BadRequestHttpException
      */
-    public function requestId (IdData $request): IdResponse
+    public function requestId (IdData $request): Id
     {
         $request->get(
             [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
