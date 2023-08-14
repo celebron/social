@@ -1,16 +1,18 @@
 <?php
 
-namespace Celebron\social\widgets;
+namespace Celebron\socialSource\widgets;
 
-use yii\web\AssetBundle;
-use yii\web\JqueryAsset;
+use yii\bootstrap5\BootstrapAsset;
 
-class SocialAsset extends AssetBundle
+class SocialAsset extends \yii\web\AssetBundle
 {
-    public $sourcePath = '@Celebron/social/widgets/public';
-    public $js = ['social.js'];
-    public $css = ['social.css'];
-    public $depends = [
-        JqueryAsset::class,
+    public $sourcePath = '@Celebron/socialSource/widgets/public';
+    public $css = [
+        'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css',
+        'social.css'
     ];
+    public $depends = [
+        BootstrapAsset::class,
+    ];
+
 }

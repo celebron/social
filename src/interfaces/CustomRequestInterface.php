@@ -2,8 +2,7 @@
 
 namespace Celebron\socialSource\interfaces;
 
-interface SocialInterface
+interface CustomRequestInterface
 {
-
 
 }

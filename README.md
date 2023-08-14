@@ -22,7 +22,7 @@ Configuration
     'bootstrap' => [..., 'social' ],
     'components'=>[
         'social' => [
-            'class' => Celebron\social\SocialConfiguration::class,
+            'class' => Celebron\socialSource\Configuration::class,
             'socials' => [
                  [
                      'class' => Yandex::class, //Google::class и т.д.
@@ -36,28 +36,39 @@ Configuration
     ],
 ...
 ```
-Необходимо подключить компонент <i>SocialConfiguration</i> в <i>bootstrap</i>, как приведено в примере
-### [[SocialConfiguration::class]]
+Необходимо подключить компонент <i>Configuration::class</i> в <i>bootstrap</i>, как приведено в примере
+### [[Configuration::class]]
     [optional] string       $route ('social')   - роут для OAuth redirect path   
-    [optional] Closure|null $onError (null)     - обработка всех ошибок socials
-    [optional] Closure|null $onSuccess (null)   - обработчик всех успешных выполнений (event)
-    [optional] Closure|null $onFailed (null)    - обработчик всех провальных выполнений (event)
-    [required] Social[]     $socials            - список всех соц. сетей ([ 'ключ" => AuthBase::class ])
+    [optional] string|null  $paramsGroup (null) - ключ массива с настройками в \Yii::$app->params (null - не использовать)
+    [optional] array        $socialEvents       - массив событий ['название-события' => \Closure]
+    [required] Social[]     $socials            - список всех соц. сетей ([ 'social" => AuthBase::class ])
    
+В массиве `$socials` ключ можно опускать, тогда при регистрации ключом будет имя класса или атрибут класса SocialName  
 
-### [[OAuth2::class]]    (Google::class, Yandex::class, ...) 
-    [optional] bool   $activate (false) - активировать механизм
-    [optional] string $name             - название для Widget
-    [optional] $icon                    - иконка для Widget 
-    [optional] $visible                 - отображение для Widget
-    [required|optional] $clientId       - OAuth clientId
-    [required|optional] $clientSecret   - OAuth clientSecret
-    [optional] $clientUrl               - OAuth api url
+Если указан `$paramsGroup` - тогда можно в настройках socials опускать `$clientId` и `$clientSecret` 
+
+### [[OAuth2::class]]    (Google::class, Yandex::class, ...) (Namespace Celebron\socials)
+    [optional] bool   $activate (false)      - активировать механизм
+    [optional] string $name                  - название для Widget
+    [optional] $icon                         - иконка для Widget 
+    [optional] $visible                      - отображение для Widget
+    [required|optional] $clientId (null)     - OAuth clientId
+    [required|optional] $clientSecret (null) - OAuth clientSecret
+    [optional] $clientUrl                    - OAuth api url
     
+Если `$clientId` и `$clientSecret` null, то будут использоваться параметры 
+``[{paramsGroup}][{social}]['clientId']`` и ``[{paramsGroup}][{social}]['clientSecret']`` соответственно. 
+В противном случае будет вызвано исключение.
+
     
 Ссылка redirect в консолях соц.сетей (oauth2 и прочее)
 -------------
 
-    https://сайт.ru/social/<social> 
-    
-    <social> - название социальной сети (google, yandex и т.п.). Индекс массива $socials [[SocialConfiguration]]
+    https://сайт.ru/{route}/{social} 
+
+
+Легенда
+------------
+    {social}      - название социальной сети (google, yandex и т.п.). Индекс массива $socials [[SocialConfiguration]]
+    {route}       - Настройка в классе Configuration
+    {paramsGroup} - Настройка в классе Configuration

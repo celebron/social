@@ -1,39 +1,30 @@
 <?php
 
-namespace Celebron\social;
+namespace Celebron\socialSource;
 
-use yii\base\BaseObject;
-use yii\helpers\ArrayHelper;
+use Celebron\socialSource\interfaces\SocialUserInterface;
+use Celebron\socialSource\responses\Id;
+use yii\db\ActiveRecord;
 
-/**
- *
- * @property-read mixed $id
- */
-class Response extends BaseObject
+class Response
 {
-    //### Передача в success или failed ###//
-    public mixed $response = null;
+    public mixed $response; //Передача в success или failed
 
     public function __construct (
-        public readonly string                      $social,
-        private readonly string|\Closure|array|null $field,
-        public readonly mixed                       $data,
-        array                                       $config = []
-    ){
-        parent::__construct($config);
+        public bool $success
+    )
+    {
     }
 
     /**
      * @throws \Exception
      */
-    public function getId():mixed
+    public static function saveModel (Id|Social $response, ActiveRecord&SocialUserInterface $model, mixed $value = null): self
     {
-        return ArrayHelper::getValue($this->data, $this->field);
+        $field = $model->getSocialField($response->social->socialName);
+        $model->$field = ($response instanceof Id) ? $response->getId() : $value;
+        $result = new self($model->save());
+        $result->response = $model;
+        return $result;
     }
-
-    public function isRequested():bool
-    {
-        return $this->field !== null && $this->data !== null;
-    }
-
 }

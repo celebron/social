@@ -5,12 +5,8 @@
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
-            "Celebron\\social\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Celebron\\social\\tests\\": "tests/"
+            "Celebron\\socialSource\\": "src/",
+            "Celebron\\socials\\": "socials/"
         }
     },
     "authors": [
@@ -30,7 +26,8 @@
         }
     ],
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^10.2"
 
     },
     "require": {
@@ -38,7 +35,8 @@
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
         "php": "^8.2",
-        "celebron/yii2-celebron-common": "^1.0"
+        "celebron/yii2-celebron-common": "^1.1",
+        "yiisoft/yii2-bootstrap5": "^2.0"
     },
     "config": {
         "allow-plugins": {
