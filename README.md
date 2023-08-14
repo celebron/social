@@ -38,11 +38,12 @@ Configuration
 ```
 Необходимо подключить компонент <i>Configuration::class</i> в <i>bootstrap</i>, как приведено в примере
 ### [[Configuration::class]]
-    [optional] string       $route ('social')   - роут для OAuth redirect path   
-    [optional] string|null  $paramsGroup (null) - ключ массива с настройками в \Yii::$app->params (null - не использовать)
-    [optional] array        $socialEvents       - массив событий ['название-события' => \Closure]
-    [required] Social[]     $socials            - список всех соц. сетей ([ 'social" => AuthBase::class ])
-   
+    [optional] string      $route ('social')   - роут для OAuth redirect path   
+    [optional] string|null $paramsGroup (null) - ключ массива с настройками в \Yii::$app->params (null - не использовать)
+    [optional] array       $socialEvents       - массив событий ['название-события' => \Closure]
+    [required] Social[]    $socials            - список всех соц. сетей ([ 'social" => AuthBase::class ])
+    [optional] null|Closure|ArrayAccess $paramsHandler - настройка $params в Social классах     
+
 В массиве `$socials` ключ можно опускать, тогда при регистрации ключом будет имя класса или атрибут класса SocialName  
 
 Если указан `$paramsGroup` - тогда можно в настройках socials опускать `$clientId` и `$clientSecret` 
@@ -54,10 +55,9 @@ Configuration
     [optional] $visible                      - отображение для Widget
     [required|optional] $clientId (null)     - OAuth clientId
     [required|optional] $clientSecret (null) - OAuth clientSecret
-    [optional] $clientUrl                    - OAuth api url
     
 Если `$clientId` и `$clientSecret` null, то будут использоваться параметры 
-``[{paramsGroup}][{social}]['clientId']`` и ``[{paramsGroup}][{social}]['clientSecret']`` соответственно. 
+``$params['clientId']`` и ``$params['clientSecret']`` соответственно. 
 В противном случае будет вызвано исключение.
 
     
