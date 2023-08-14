@@ -19,10 +19,6 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "github",
-            "url": "https://github.com/celebron/yii2-common.git"
         }
     ],
     "require-dev": {
@@ -35,7 +31,7 @@
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
         "php": "^8.2",
-        "celebron/yii2-celebron-common": "^1.1",
+        "celebron/yii2-celebron-common": "^1.2",
         "yiisoft/yii2-bootstrap5": "^2.0"
     },
     "config": {
