@@ -2,7 +2,7 @@
     "name": "celebron/yii2-social-auth",
     "type": "yii2-extension",
     "keywords": ["yii2", "extension","celebron"],
-    "license": "Apache-2.0",
+    "license": "BSD-3-Clause",
     "autoload": {
         "psr-4": {
             "Celebron\\socialSource\\": "src/",
@@ -12,7 +12,8 @@
     "authors": [
         {
             "name": "Aleksey Shatalin (celebron)",
-            "email": "celebron.ru@gmail.com"
+            "email": "celebron.ru@gmail.com",
+            "homepage": "https://cerebron.ru/"
         }
     ],
     "repositories": [
