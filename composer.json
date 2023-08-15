@@ -1,8 +1,13 @@
 {
-    "name": "celebron/yii2-social-auth",
+    "name": "celebron/yii2-oauth2-social",
     "type": "yii2-extension",
-    "keywords": ["yii2", "extension","celebron"],
-    "license": "Apache-2.0",
+    "keywords": ["yii2", "extension", "celebron"],
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/celebron/Yii2-oauth2-social/issues?state=open",
+        "forum": "https://cerebron.ru/forum/",
+        "source": "https://github.com/celebron/Yii2-oauth2-social"
+    },
     "autoload": {
         "psr-4": {
             "Celebron\\social\\": "src/"
@@ -11,29 +16,25 @@
     "authors": [
         {
             "name": "Aleksey Shatalin (celebron)",
-            "email": "celebron.ru@gmail.com"
+            "email": "celebron.ru@yandex.ru",
+            "homepage": "https://cerebron.ru/"
         }
     ],
     "repositories": [
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "github",
-            "url": "https://github.com/celebron/yii2-common.git"
         }
     ],
     "require-dev": {
         "roave/security-advisories": "dev-latest"
-
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
         "yiisoft/yii2": "^2.0",
         "yiisoft/http": "^1.2",
         "php": "^8.2",
-        "celebron/yii2-celebron-common": "^1.0"
+        "celebron/yii2-celebron-common": "^1.2"
     },
     "config": {
         "allow-plugins": {
