@@ -35,15 +35,13 @@ __Файл `frontend/config/main.php`, пример:__
             ],  
         ],
     ],
-...
+    ...
 ```
-
 __Необходимо:__
-
-- подключить компонент `Configuration::class` в `bootstrap`, как приведено в примере
-- в компоненте `social` установить переменную `$socials` список всех соц.сетей по правилам `Yii::createObject()`
-- реализовать интерфейс `SocialUserInterface` и `IdentityInterface` и подключить к компоненту `user`
-    - подключить трейт `UserManagementTrait` (по необходимости)
+- подключить компонент `Configuration::class` в `bootstrap`, как приведено в примере;
+- в компоненте `social` установить переменную `$socials` список всех соц. сетей по правилам `Yii::createObject()`;
+- реализовать интерфейс `SocialUserInterface` и `IdentityInterface` и подключить к компоненту `user`;
+    - подключить трейт `UserManagementTrait` (по необходимости).
 
 ## Configuration::class
 
@@ -58,30 +56,27 @@ __Необходимо:__
 - Если `$paramsGroup` установлен, то настройки `clientId` и `clientSecret` могут браться из \Yii::$app->params[$paramsGroup][{socialName}]
 - Если `$paramsHandler` установлен, то настройки `clientId` и `clientSecret` могут браться из callback-function
 ```php 
-function($$socialName):array { /** @var Configure $this */ }
+function($socialName):array { /** @var Configure $this */ }
 ```
 
 ## Классы авторизации
-
 __OAuth2::class__ (_Google::class, Yandex::class, ..._)
 
 namespace __Celebron\socials__
 
-    [optional] bool   $activate (false)      - активировать механизм
-    [optional] string $name                  - название для Widget
-    [optional] $icon                         - иконка для Widget
-    [optional] $visible                      - отображение для Widget
+    [optional] bool     $activate (false)    - активировать механизм
+    [optional] string   $name                - название для Widget
+    [optional] string   $icon                - иконка для Widget
+    [optional] bool     $visible             - отображение для Widget
     [required|optional] $clientId (null)     - OAuth clientId
     [required|optional] $clientSecret (null) - OAuth clientSecret
 
 Если `$clientId` и `$clientSecret` не определены, то будут использоваться параметры
-`$params['clientId']` и `$params['clientSecret']` соответственно.
-В противном случае будет вызвано исключение.
+`$params['clientId']` и `$params['clientSecret']` соответственно, в противном случае будет вызвано исключение.
 Зависит от настроек `Configure::$paramsGroup` и `Configure::$paramsHandler`
 
-## Ссылка redirect в консолях соц.сетей (oauth2 и прочее)
+## Ссылка redirect в консолях соц. сетей (oauth2 и прочее)
     https://сайт.ru/{route}/{social}
 ## Легенда
-
-{social}      - название социальной сети (google, yandex и т.п.). Индекс массива $socials [[SocialConfiguration]]
-{route}       - Настройка в классе Configuration
+    {social} - название социальной сети (google, yandex и т.п.). Индекс массива Сonfigutation::$socials.
+    {route}  - Настройка в классе Configuration

@@ -1,7 +1,7 @@
 {
     "name": "celebron/yii2-oauth2-social",
     "type": "yii2-extension",
-    "keywords": ["yii2", "extension","celebron"],
+    "keywords": ["yii2", "extension", "celebron"],
     "license": "BSD-3-Clause",
     "autoload": {
         "psr-4": {
