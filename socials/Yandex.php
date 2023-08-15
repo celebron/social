@@ -1,5 +1,6 @@
-<?php /** @noinspection MissedFieldInspection */
-
+<?php /*
+ * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
+ */
 
 namespace Celebron\socials;
 

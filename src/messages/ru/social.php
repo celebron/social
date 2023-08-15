@@ -1,4 +1,8 @@
 <?php
+/*
+ * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
+ */
+
 return  [
     "Social '{socialName}' not found" => "Соц. сеть '{socialName}' не зарегистрирована в системе",
     "Social '{socialName}' not active" => "Соц. сеть '{socialName}' деактивирована",
