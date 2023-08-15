@@ -9,7 +9,7 @@
 This extension provides the HTTP client for the [Yii framework 2.0](http://www.yiiframework.com).
 
 ## Installation
-
+ composer require celebron/yii2-oauth2-social
 ## Configuration
 
 __Файл `frontend/config/main.php`, пример:__
