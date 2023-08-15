@@ -52,7 +52,7 @@ class Telegram extends Social
     /**
      * @throws BadRequestHttpException
      */
-    public function request(?string $code, State $state): Id
+    public function request(?string $code, State $state, ...$args): Id
     {
         return $this->responseId('id', $this->getData());
     }
