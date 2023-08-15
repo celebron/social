@@ -23,9 +23,7 @@
         }
     ],
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "phpunit/phpunit": "^10.2"
-
+        "roave/security-advisories": "dev-latest"
     },
     "require": {
         "yiisoft/yii2-httpclient": "^2.0",
