@@ -17,7 +17,7 @@ trait SetterTrait
         $methodName = 'get' . $name;
         $refThis = new \ReflectionClass($this);
         if($refThis->hasProperty($propertyName)  && $refThis->hasMethod($methodName)
-            && !$refThis->getProperty($propertyName)->isPublic()
+            && $refThis->getProperty($propertyName)->isProtected()
             && $refThis->getMethod($methodName)->isPublic()
         ) {
             $refThis->getProperty($propertyName)->setValue($this, $value);
