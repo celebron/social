@@ -5,8 +5,8 @@
 
 namespace Celebron\source\social;
 
-use Celebron\source\social\behaviors\Behavior;
-use Celebron\source\social\behaviors\ViewerBehavior;
+use Celebron\source\social\traits\Behavior;
+use Celebron\source\social\traits\ViewerBehavior;
 use Celebron\source\social\events\EventResult;
 use Celebron\source\social\interfaces\RequestInterface;
 use Celebron\source\social\interfaces\SocialUserInterface;
@@ -31,8 +31,6 @@ abstract class Social extends Model implements RequestInterface
 
     public bool $active = false;
 
-    protected array $params = [];
-
     public function __construct (
         public readonly string        $socialName,
         public readonly Configuration $configure,
@@ -46,17 +44,6 @@ abstract class Social extends Model implements RequestInterface
         }
 
 
-    }
-
-    public function behaviors ()
-    {
-        $behaviors = parent::behaviors();
-        foreach ($this->configure->behaviorToSocial as $interfaceName => $behaviorName) {
-            if(is_a($this, $interfaceName)) {
-                $behaviors[$interfaceName] = $behaviorName;
-            }
-        }
-        return $behaviors;
     }
 
     public function success (HandlerController $controller, Response $response): mixed

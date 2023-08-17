@@ -13,6 +13,7 @@ use Celebron\source\social\data\IdData;
 use Celebron\source\social\data\TokenData;
 use Celebron\source\social\responses\Code;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\traits\ViewerTrait;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -33,10 +34,13 @@ use Yiisoft\Http\Header;
  * @property-read string $uriCode
  * @property-read bool $supportRegister
  * @property-read bool $supportLogin
+ * @property-read bool $supportManagement
  * @property-write string $configFile
  */
 class Google extends OAuth2 implements UrlsInterface, ViewerInterface
 {
+    use ViewerTrait;
+
     private string $authUrl = 'https://accounts.google.com/o/oauth2/auth';
     private string $tokenUrl = 'https://oauth2.googleapis.com/token';
     private string $apiUrl = 'https://www.googleapis.com';

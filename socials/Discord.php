@@ -15,6 +15,7 @@ use Celebron\source\social\data\IdData;
 use Celebron\source\social\data\TokenData;
 use Celebron\source\social\responses\Code;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\traits\ViewerTrait;
 use yii\httpclient\Request;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
@@ -36,6 +37,8 @@ use Yiisoft\Http\Header;
  */
 class Discord extends OAuth2 implements UrlsInterface, UrlFullInterface, ViewerInterface
 {
+    use ViewerTrait;
+
     public array $scope = [ 'identify' ];
 
     public function requestCode (CodeData $request) : Code

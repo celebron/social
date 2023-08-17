@@ -15,6 +15,7 @@ use Celebron\source\social\data\IdData;
 use Celebron\source\social\data\TokenData;
 use Celebron\source\social\responses\Code;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\traits\ViewerTrait;
 use yii\web\BadRequestHttpException;
 
 /**
@@ -33,6 +34,7 @@ use yii\web\BadRequestHttpException;
  */
 class VK extends OAuth2 implements UrlsInterface, ViewerInterface
 {
+    use ViewerTrait;
     public string $display = 'page';
 
     /**

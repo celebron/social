@@ -5,6 +5,8 @@
 
 namespace Celebron\source\social\interfaces;
 
+use yii\web\View;
+
 interface ViewerInterface
 {
     public const VIEW_LOGIN = 'login';
@@ -13,4 +15,8 @@ interface ViewerInterface
     public function getSupportManagement (): bool;
 
     public function getSupportLogin (): bool;
+
+    public function getName():string;
+    public function getVisible():bool;
+    public function getIcon():string;
 }

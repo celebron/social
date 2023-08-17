@@ -47,7 +47,7 @@ __Необходимо:__
 
       [optional] string       $route ('social')   - роут для OAuth redirect path
       [optional] string|null  $paramsGroup (null) - ключ массива с настройками в \Yii::$app->params (null - не использовать)
-      [optional] array        $socialEvents       - массив событий ['название-события' => \Closure]
+      [optional] array        $eventToSocial       - массив событий ['название-события' => \Closure]
       [required] Social[]     $socials            - список всех соц. сетей (Правило формирования \Yii::createObject())
       [optional] \Closure|null $paramsHandler      - настройка $params в Social классах
 

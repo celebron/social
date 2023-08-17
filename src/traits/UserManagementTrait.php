@@ -3,9 +3,11 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\source\social;
+namespace Celebron\source\social\traits;
 
+use Celebron\source\social\Response;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\Social;
 use yii\web\UnauthorizedHttpException;
 
 /**

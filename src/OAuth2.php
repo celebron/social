@@ -6,7 +6,7 @@
 namespace Celebron\source\social;
 
 use Celebron\common\Token;
-use Celebron\source\social\behaviors\ViewerBehavior;
+use Celebron\source\social\traits\ViewerBehavior;
 use Celebron\source\social\interfaces\OAuth2Interface;
 use Celebron\source\social\interfaces\ViewerInterface;
 use Celebron\source\social\data\CodeData;

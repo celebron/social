@@ -14,6 +14,7 @@ use Celebron\source\social\data\IdData;
 use Celebron\source\social\data\TokenData;
 use Celebron\source\social\responses\Code;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\traits\ViewerTrait;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Response;
@@ -35,13 +36,11 @@ use yii\web\BadRequestHttpException;
  */
 class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
 {
+    use ViewerTrait;
+
     public string $scope = 'VALUABLE_ACCESS';
 
     public string $clientPublic;
-
-    private string $_icon = '';
-    private ?string $_name;
-    private bool $_visible = true;
 
     /**
      * @throws BadRequestHttpException

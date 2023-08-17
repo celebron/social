@@ -5,7 +5,7 @@
 
 namespace Celebron\source\social;
 
-use Celebron\source\social\behaviors\ViewerBehavior;
+use Celebron\source\social\traits\ViewerBehavior;
 use Celebron\source\social\interfaces\ViewerInterface;
 use Celebron\socials\{Google, Ok, VK, Yandex};
 use Celebron\source\social\events\EventRegister;
@@ -43,14 +43,11 @@ class Configuration extends Component implements BootstrapInterface
     public ?string $paramsGroup = null;
     public null|\Closure $paramsHandler = null;
 
-    public array $socialEvents = [
+    public array $eventToSocial = [
         //eventName => Closure
     ];
 
-    public array $behaviorToSocial = [
-        //Interface => Behavior
-        ViewerInterface::class => ViewerBehavior::class
-    ];
+    public string $defaultIcon = '@public/icon.png';
 
     private array $_socials = [];
     private static self $configure;
@@ -88,7 +85,7 @@ class Configuration extends Component implements BootstrapInterface
         $eventRegister = new EventRegister($object);
 
         //Добавляем обработчики событий
-        foreach ($this->socialEvents as $event=>$closure) {
+        foreach ($this->eventToSocial as $event=> $closure) {
             $object->on($event, $closure);
         }
 
