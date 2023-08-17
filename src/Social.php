@@ -11,6 +11,7 @@ use Celebron\source\social\interfaces\SocialUserInterface;
 use Celebron\source\social\responses\Id;
 use yii\base\Arrayable;
 use yii\base\Component;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -19,13 +20,16 @@ use yii\helpers\StringHelper;
  * @property-read mixed $socialId
  * @property bool $active
  */
-abstract class Social extends Component implements RequestInterface
+abstract class Social extends Model implements RequestInterface
 {
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
 
-    protected readonly array|\ArrayAccess $params;
+
+    public bool $active = false;
+
+    protected array $params = [];
 
     public function __construct (
         public readonly string        $socialName,
@@ -33,28 +37,13 @@ abstract class Social extends Component implements RequestInterface
                                       $config = [])
     {
         parent::__construct($config);
-        if($this->configure->paramsHandler instanceof \ArrayAccess) {
-            $this->params = $this->configure->paramsHandler;
-        } elseif($this->configure->paramsHandler instanceof \Closure) {
-            $this->params = $this->configure->paramsHandler->call($this->configure, $this->socialName);
+        if($this->configure->paramsHandler instanceof \Closure) {
+            $this->attributes = $this->configure->paramsHandler->call($this->configure, $this->socialName);
         } elseif($this->configure->paramsGroup !== null) {
-            $this->params = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
+            $this->attributes = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
         }
     }
 
-    private bool $_active = false;
-
-    /**
-     * @return bool
-     */
-    public function getActive (): bool
-    {
-        return $this->params['active'] ?? $this->_active;
-    }
-    public function setActive (bool $value): void
-    {
-        $this->_active = $value;
-    }
 
     public function success (HandlerController $controller, Response $response): mixed
     {
@@ -92,6 +81,7 @@ abstract class Social extends Component implements RequestInterface
     {
         return (new static($socialName,  \Yii::$app->get($socialComponent)))->url($action, $state);
     }
+
 
     public function __call ($name, $params)
     {
