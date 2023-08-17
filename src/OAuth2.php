@@ -31,8 +31,8 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
 
-    public string $clientId;
-    public string $clientSecret;
+    public ?string $clientId = null;
+    public ?string $clientSecret = null;
     private ?string $_redirectUrl = null;
 
     public function handleCode(State $state):Code
