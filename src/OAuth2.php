@@ -32,17 +32,11 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
 
-    public ?string $clientId = null;
-    public ?string $clientSecret = null;
+    private ?string $_clientId = null;
+    private ?string $_clientSecret = null;
     private ?string $_redirectUrl = null;
 
-    public function rules ()
-    {
-        return ArrayHelper::merge(parent::rules() ,[
-            [['clientSecret', 'clientId'], 'required'],
-            [['clientSecret', 'clientId'], 'string'],
-        ]);
-    }
+
 
     public function handleCode(State $state):Code
     {
@@ -114,12 +108,19 @@ abstract class OAuth2 extends Social implements OAuth2Interface
 
         return $this->_redirectUrl ?? $this->defaultRedirectUrl();
     }
-    public function setRedirectUrl(string $value): void
-    {
-        $this->_redirectUrl = $value;
-    }
+
     public function defaultRedirectUrl():string
     {
         throw new InvalidConfigException('Param "redirectUrl" to social "' . $this->socialName . '" empty');
+    }
+
+    public function getClientId (): string
+    {
+        return $this->_clientId;
+    }
+
+    public function getClientSecret (): string
+    {
+        return $this->_clientSecret;
     }
 }

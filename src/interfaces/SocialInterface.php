@@ -7,6 +7,6 @@ namespace Celebron\source\social\interfaces;
 
 interface SocialInterface
 {
-
+    public function getActive():bool;
 
 }

@@ -5,31 +5,28 @@
 
 namespace Celebron\source\social;
 
-use Celebron\source\social\traits\Behavior;
+use Celebron\source\social\traits\SetterTrait;
 use Celebron\source\social\traits\ViewerBehavior;
 use Celebron\source\social\events\EventResult;
 use Celebron\source\social\interfaces\RequestInterface;
 use Celebron\source\social\interfaces\SocialUserInterface;
-use Celebron\source\social\interfaces\ViewerInterface;
 use Celebron\source\social\responses\Id;
-use yii\base\Arrayable;
 use yii\base\Component;
-use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
 
 /**
  * @property-read mixed $socialId
+ * @property-write array $attributes
  * @property bool $active
  */
-abstract class Social extends Model implements RequestInterface
+abstract class Social extends Component implements RequestInterface
 {
+    use SetterTrait;
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
-
-    public bool $active = false;
 
     public function __construct (
         public readonly string        $socialName,
@@ -37,20 +34,24 @@ abstract class Social extends Model implements RequestInterface
                                       $config = [])
     {
         parent::__construct($config);
+        $attrs = [];
         if($this->configure->paramsHandler instanceof \Closure) {
-            $this->attributes = $this->configure->paramsHandler->call($this->configure, $this->socialName);
+            $attrs = $this->configure->paramsHandler->call($this->configure, $this->socialName);
         } elseif($this->configure->paramsGroup !== null) {
-            $this->attributes = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
+            $attrs = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
         }
-
+        $this->setAttributes($attrs);
 
     }
 
-    public function rules()
+    public function setAttributes(array $values): void
     {
-        return [
-            ['active', 'required']
-        ];
+        foreach ($values as $key => $value) {
+            $name = '_' . $key;
+            if(property_exists($this, $name)) {
+                $this->$name = $value;
+            }
+        }
     }
 
     public function success (HandlerController $controller, Response $response): mixed
@@ -104,5 +105,12 @@ abstract class Social extends Model implements RequestInterface
     public function __toString ()
     {
         return $this->socialName;
+    }
+
+
+    public bool $_active = false;
+    public function getActive (): bool
+    {
+        return $this->_active;
     }
 }

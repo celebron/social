@@ -18,4 +18,8 @@ interface OAuth2Interface extends SocialInterface
     public function requestToken(TokenData $request):Token;
     public function requestId(IdData $request):Id;
 //    public function requestRefreshToken(RefreshTokenRequest $request):void;
+
+    public function getClientId():string;
+    public function getClientSecret():string;
+    public function getRedirectUrl():string;
 }
