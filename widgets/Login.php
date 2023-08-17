@@ -30,8 +30,7 @@ class Login extends Widget
     public function init ()
     {
         parent::init();
-        $asset = SocialAsset::register($this->view);
-        \Yii::setAlias('@public', $asset->baseUrl);
+        SocialAsset::register($this->view);
     }
 
     /**

@@ -17,4 +17,10 @@ class SocialAsset extends \yii\web\AssetBundle
     public $depends = [
         BootstrapAsset::class,
     ];
+
+    public function publish ($am)
+    {
+        parent::publish($am);
+        \Yii::setAlias("@public", $this->baseUrl);
+    }
 }

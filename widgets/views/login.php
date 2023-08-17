@@ -18,8 +18,12 @@ use yii\web\View;
 
 <div class="social-login-block">
     <?php foreach ($socials as $key => $social): if ($social->getSupportLogin() && $social->getVisible()): ?>
-        <div class="social-login" id="social-$key">
-
+        <div class="social-login" id="social-<?= $key ?>">
+            <a href="<?= $social->url(ViewerInterface::VIEW_LOGIN) ?>">
+            <?=
+                $this->context->useIcon ? Html::img($social->getIcon(), ['alt' => $social->getName()]) : $social->getName()
+            ?>
+            </a>
         </div>
     <?php endif; endforeach; ?>
 </div>
