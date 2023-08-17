@@ -3,7 +3,7 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\interfaces;
+namespace Celebron\source\social\interfaces;
 
 interface SocialUserInterface
 {

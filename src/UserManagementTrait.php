@@ -3,16 +3,23 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
+namespace Celebron\source\social;
 
-use Celebron\socialSource\responses\Id;
+use Celebron\source\social\responses\Id;
 use yii\web\UnauthorizedHttpException;
 
+/**
+ * @method getSocialField(string $socialName)
+ */
 trait UserManagementTrait
 {
     abstract public static function fieldSearch (string $field, mixed $id): ?self;
     abstract public function getRememberTime():int;
 
+    /**
+     * @throws UnauthorizedHttpException
+     * @throws \Exception
+     */
     public function socialLogin(Id $response):bool
     {
         $field = $this->getSocialField($response->social->socialName);

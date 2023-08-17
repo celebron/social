@@ -3,7 +3,7 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\widgets;
+namespace Celebron\widgets\social;
 
 use yii\bootstrap5\BootstrapAsset;
 

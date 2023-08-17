@@ -3,7 +3,7 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
+namespace Celebron\source\social;
 
 use yii\base\Exception;
 use yii\base\InvalidArgumentException;
@@ -128,13 +128,14 @@ class State implements \Stringable
         throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
     }
 
-    public function __call ($methodName, $arguments)
+    public function __call ($name, $arguments)
     {
         $isPrefix = 'is';
-        if(StringHelper::startsWith($methodName, $isPrefix)) {
-            $name = strtolower(substr($methodName, strlen($isPrefix)));
-            return $this->equalAction($name);
+        if(StringHelper::startsWith($name, $isPrefix)) {
+            $actionName = strtolower(substr($name, strlen($isPrefix)));
+            return $this->equalAction($actionName);
         }
+        throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
     }
 
 }

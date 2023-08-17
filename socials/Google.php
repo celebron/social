@@ -5,14 +5,14 @@
 
 namespace Celebron\socials;
 
-use Celebron\socialSource\interfaces\UrlsInterface;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\data\CodeData;
-use Celebron\socialSource\data\IdData;
-use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\Code;
-use Celebron\socialSource\responses\Id;
+use Celebron\source\social\interfaces\UrlsInterface;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\OAuth2;
+use Celebron\source\social\data\CodeData;
+use Celebron\source\social\data\IdData;
+use Celebron\source\social\data\TokenData;
+use Celebron\source\social\responses\Code;
+use Celebron\source\social\responses\Id;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
@@ -23,6 +23,7 @@ use Yiisoft\Http\Header;
 
 /**
  * oauth2 Google
+ * @deprecated Не тестировалось в новых версиях
  * @property null|string $icon
  * @property string $name
  * @property bool $visible

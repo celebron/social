@@ -3,10 +3,10 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\interfaces;
+namespace Celebron\source\social\interfaces;
 
-use Celebron\socialSource\responses\Id;
-use Celebron\socialSource\State;
+use Celebron\source\social\responses\Id;
+use Celebron\source\social\State;
 
 interface RequestInterface extends SocialInterface
 {

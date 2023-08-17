@@ -3,14 +3,14 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\data;
+namespace Celebron\source\social\data;
 
-use Celebron\socialSource\events\EventData;
-use Celebron\socialSource\interfaces\UrlFullInterface;
-use Celebron\socialSource\interfaces\UrlsInterface;
-use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\responses\Code;
-use Celebron\socialSource\State;
+use Celebron\source\social\events\EventData;
+use Celebron\source\social\interfaces\UrlFullInterface;
+use Celebron\source\social\interfaces\UrlsInterface;
+use Celebron\source\social\OAuth2;
+use Celebron\source\social\responses\Code;
+use Celebron\source\social\State;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Request as ClientRequest;
 use yii\httpclient\Response as ClientResponse;

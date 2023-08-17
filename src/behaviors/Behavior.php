@@ -3,10 +3,10 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\behaviors;
+namespace Celebron\source\social\behaviors;
 
 
-use Celebron\socialSource\Configuration;
+use Celebron\source\social\Configuration;
 use yii\helpers\ArrayHelper;
 
 class Behavior extends \yii\base\Behavior

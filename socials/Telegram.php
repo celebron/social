@@ -6,9 +6,9 @@
 namespace Celebron\socials;
 
 
-use Celebron\socialSource\responses\Id;
-use Celebron\socialSource\Social;
-use Celebron\socialSource\State;
+use Celebron\source\social\responses\Id;
+use Celebron\source\social\Social;
+use Celebron\source\social\State;
 use yii\web\BadRequestHttpException;
 
 /**

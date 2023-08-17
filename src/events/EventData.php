@@ -1,6 +1,9 @@
 <?php
+/*
+ * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
+ */
 
-namespace Celebron\socialSource\events;
+namespace Celebron\source\social\events;
 
 class EventData extends \yii\base\Event
 {

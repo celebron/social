@@ -3,7 +3,7 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\behaviors;
+namespace Celebron\source\social\behaviors;
 
 /**
  *
@@ -34,12 +34,20 @@ class ViewerBehavior extends Behavior
     }
 
     private ?string $_icon = null;
-    public function getIcon():?string
+    public function getIcon():string
     {
-        return $this->_icon ?? '';
+        if($this->_icon === null) {
+            if($this->owner->hasMethod('defaultIcon')) {
+                return $this->owner->defaultIcon();
+            }
+            $this->_icon = '';
+        }
+
+        return \Yii::getAlias($this->_icon);
     }
     public function setIcon(string $value):void
     {
         $this->_icon = $value;
     }
+
 }

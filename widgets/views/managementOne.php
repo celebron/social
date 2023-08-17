@@ -1,10 +1,12 @@
 <?php
+/*
+ * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
+ */
 
-
-use Celebron\socialSource\behaviors\ViewerBehavior;
-use Celebron\socialSource\Configuration;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\Social;
+use Celebron\source\social\behaviors\ViewerBehavior;
+use Celebron\source\social\Configuration;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\Social;
 use yii\helpers\Html;
 
 

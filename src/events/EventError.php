@@ -3,10 +3,10 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\events;
+namespace Celebron\source\social\events;
 
-use Celebron\socialSource\HandlerController;
-use Celebron\socialSource\Response;
+use Celebron\source\social\HandlerController;
+use Celebron\source\social\Response;
 
 class EventError extends EventResult
 {

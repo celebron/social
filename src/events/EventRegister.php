@@ -3,9 +3,9 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\events;
+namespace Celebron\source\social\events;
 
-use Celebron\socialSource\interfaces\SocialInterface;
+use Celebron\source\social\interfaces\SocialInterface;
 use yii\base\Component;
 use yii\base\Event;
 

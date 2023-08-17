@@ -3,11 +3,11 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
+namespace Celebron\source\social;
 
 use Celebron\socials\{Google, Ok, VK, Yandex};
-use Celebron\socialSource\events\EventRegister;
-use Celebron\socialSource\interfaces\CustomRequestInterface;
+use Celebron\source\social\events\EventRegister;
+use Celebron\source\social\interfaces\CustomRequestInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;

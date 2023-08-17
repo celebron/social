@@ -3,12 +3,11 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\widgets;
+namespace Celebron\widgets\social;
 
-use Celebron\socialSource\Configuration;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\Social;
-use Celebron\socialSource\Response;
+use Celebron\source\social\Configuration;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\Social;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
@@ -25,7 +24,15 @@ class Login extends Widget
     //false - управление через Configuration
     public false|array $names = false;
     public string $componentName = 'social';
+    public bool $useIcon = true;
     public string $render = ViewerInterface::VIEW_LOGIN;
+
+    public function init ()
+    {
+        parent::init();
+        $asset = SocialAsset::register($this->view);
+        \Yii::setAlias('@public', "@web/$asset->baseUrl");
+    }
 
     /**
      * @throws InvalidConfigException

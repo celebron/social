@@ -3,10 +3,10 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
+namespace Celebron\source\social;
 
-use Celebron\socialSource\interfaces\SocialUserInterface;
-use Celebron\socialSource\responses\Id;
+use Celebron\source\social\interfaces\SocialUserInterface;
+use Celebron\source\social\responses\Id;
 use yii\db\ActiveRecord;
 
 class Response

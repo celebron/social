@@ -3,10 +3,10 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
-use Celebron\socialSource\interfaces\CustomRequestInterface;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\responses\Id;
+namespace Celebron\source\social;
+use Celebron\source\social\interfaces\CustomRequestInterface;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\responses\Id;
 use yii\base\UnknownClassException;
 use yii\base\UnknownPropertyException;
 
@@ -24,7 +24,7 @@ class CustomSocial extends Social implements CustomRequestInterface, ViewerInter
      * @throws UnknownPropertyException
      * @throws UnknownClassException
      */
-    public function request (?string $code, State $state): ?Id
+    public function request (?string $code, State $state, ...$args): ?Id
     {
         if($this->handler !== null) {
             $result = $this->handler->call($this, $code, $state);

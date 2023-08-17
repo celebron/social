@@ -5,16 +5,14 @@
 namespace Celebron\socials;
 
 use Celebron\common\Token;
-use Celebron\socialSource\interfaces\UrlsInterface;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\data\CodeData;
-use Celebron\socialSource\data\IdData;
-use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\Code;
-use Celebron\socialSource\responses\Id;
-use yii\base\InvalidConfigException;
-use yii\httpclient\Exception;
+use Celebron\source\social\interfaces\UrlsInterface;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\OAuth2;
+use Celebron\source\social\data\CodeData;
+use Celebron\source\social\data\IdData;
+use Celebron\source\social\data\TokenData;
+use Celebron\source\social\responses\Code;
+use Celebron\source\social\responses\Id;
 use yii\web\BadRequestHttpException;
 
 
@@ -28,12 +26,11 @@ use yii\web\BadRequestHttpException;
  * @property-read string $uriCode
  * @property-read bool $supportRegister
  * @property-read bool $supportLogin
+ * @property-read bool $supportManagement
  * @property-read string $baseUrl
  */
 class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
 {
-    private string $_icon = 'https://yastatic.net/s3/doc-binary/freeze/ru/id/228a1baa2a03e757cdee24712f4cc6b2e75636f2.svg';
-
     public ?string $fileName = null;
 
 
@@ -44,6 +41,11 @@ class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
     {
         $request->getHeaderOauth(['format'=>'json']);
         return $request->responseId('id');
+    }
+
+    public function defaultIcon():string
+    {
+        return "@public/yandex.png";
     }
 
     /**

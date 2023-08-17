@@ -3,14 +3,14 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\interfaces;
+namespace Celebron\source\social\interfaces;
 
 use Celebron\common\Token;
-use Celebron\socialSource\data\CodeData;
-use Celebron\socialSource\data\IdData;
-use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\Code;
-use Celebron\socialSource\responses\Id;
+use Celebron\source\social\data\CodeData;
+use Celebron\source\social\data\IdData;
+use Celebron\source\social\data\TokenData;
+use Celebron\source\social\responses\Code;
+use Celebron\source\social\responses\Id;
 
 interface OAuth2Interface extends SocialInterface
 {

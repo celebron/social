@@ -3,12 +3,12 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
+namespace Celebron\source\social;
 
-use Celebron\socialSource\events\EventResult;
-use Celebron\socialSource\interfaces\RequestInterface;
-use Celebron\socialSource\interfaces\SocialUserInterface;
-use Celebron\socialSource\responses\Id;
+use Celebron\source\social\events\EventResult;
+use Celebron\source\social\interfaces\RequestInterface;
+use Celebron\source\social\interfaces\SocialUserInterface;
+use Celebron\source\social\responses\Id;
 use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;

@@ -14,7 +14,7 @@ This extension provides the HTTP client for the [Yii framework 2.0](http://www.y
 
 __Файл `frontend/config/main.php`, пример:__
 
-```php
+```
     ...,
     'bootstrap' => [..., 'social' ],
     'components'=>[
@@ -23,7 +23,7 @@ __Файл `frontend/config/main.php`, пример:__
             ...
         ],
         'social' => [
-            'class' => Celebron\socialSource\Configuration::class,
+            'class' => Celebron\source\social\Configuration::class,
             'socials' => [
                  [
                      'class' => Yandex::class, //Google::class и т.д.

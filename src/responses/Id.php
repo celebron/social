@@ -3,9 +3,9 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\responses;
+namespace Celebron\source\social\responses;
 
-use Celebron\socialSource\Social;
+use Celebron\source\social\Social;
 use yii\helpers\ArrayHelper;
 
 class Id

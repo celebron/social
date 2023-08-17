@@ -3,9 +3,9 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\responses;
+namespace Celebron\source\social\responses;
 
-use Celebron\socialSource\data\CodeData;
+use Celebron\source\social\data\CodeData;
 use yii\base\BaseObject;
 use yii\base\InvalidRouteException;
 use yii\console\ExitCode;

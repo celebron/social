@@ -3,10 +3,9 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\widgets;
+namespace Celebron\widgets\social;
 
-use Celebron\socialSource\Configuration;
-use Celebron\socialSource\interfaces\ViewerInterface;
+use Celebron\source\social\interfaces\ViewerInterface;
 
 class Management extends Login
 {

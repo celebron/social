@@ -3,17 +3,17 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource;
+namespace Celebron\source\social;
 
 use Celebron\common\Token;
-use Celebron\socialSource\behaviors\ViewerBehavior;
-use Celebron\socialSource\interfaces\OAuth2Interface;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\data\CodeData;
-use Celebron\socialSource\data\IdData;
-use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\Code;
-use Celebron\socialSource\responses\Id;
+use Celebron\source\social\behaviors\ViewerBehavior;
+use Celebron\source\social\interfaces\OAuth2Interface;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\data\CodeData;
+use Celebron\source\social\data\IdData;
+use Celebron\source\social\data\TokenData;
+use Celebron\source\social\responses\Code;
+use Celebron\source\social\responses\Id;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
 use yii\helpers\Url;

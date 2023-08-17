@@ -3,19 +3,21 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\data;
+namespace Celebron\source\social\data;
 
 use Celebron\common\Token;
-use Celebron\socialSource\events\EventData;
-use Celebron\socialSource\interfaces\UrlsInterface;
-use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\responses\TokenResponse;
+use Celebron\source\social\events\EventData;
+use Celebron\source\social\interfaces\UrlsInterface;
+use Celebron\source\social\OAuth2;
 use yii\helpers\ArrayHelper;
-use yii\httpclient\Client;
-use yii\httpclient\Request;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
+/**
+ *
+ * @property-write string $authorization
+ * @property-write string $authorizationBasic
+ */
 class TokenData extends AbstractData
 {
     public string $grant_type = 'authorization_code';

@@ -3,10 +3,10 @@
  * Copyright (c) 2023.  Aleksey Shatalin (celebron) <celebron.ru@yandex.ru>
  */
 
-namespace Celebron\socialSource\data;
+namespace Celebron\source\social\data;
 
-use Celebron\socialSource\interfaces\UrlsInterface;
-use Celebron\socialSource\OAuth2;
+use Celebron\source\social\interfaces\UrlsInterface;
+use Celebron\source\social\OAuth2;
 use yii\base\BaseObject;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;

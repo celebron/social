@@ -6,17 +6,15 @@
 namespace Celebron\socials;
 
 use Celebron\common\Token;
-use Celebron\socialSource\interfaces\UrlFullInterface;
-use Celebron\socialSource\interfaces\UrlsInterface;
-use Celebron\socialSource\interfaces\ViewerInterface;
-use Celebron\socialSource\OAuth2;
-use Celebron\socialSource\data\CodeData;
-use Celebron\socialSource\data\IdData;
-use Celebron\socialSource\data\TokenData;
-use Celebron\socialSource\responses\Code;
-use Celebron\socialSource\responses\Id;
-use yii\base\InvalidConfigException;
-use yii\httpclient\Exception;
+use Celebron\source\social\interfaces\UrlFullInterface;
+use Celebron\source\social\interfaces\UrlsInterface;
+use Celebron\source\social\interfaces\ViewerInterface;
+use Celebron\source\social\OAuth2;
+use Celebron\source\social\data\CodeData;
+use Celebron\source\social\data\IdData;
+use Celebron\source\social\data\TokenData;
+use Celebron\source\social\responses\Code;
+use Celebron\source\social\responses\Id;
 use yii\httpclient\Request;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
