@@ -161,7 +161,7 @@ class Configuration extends Component implements BootstrapInterface
         $app->i18n->translations['social*'] = [
             'class' => PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
-            'basePath' => '@Celebron/socialSource/messages',
+            'basePath' => '@Celebron/source/social/messages',
         ];
     }
 

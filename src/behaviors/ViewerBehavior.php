@@ -50,4 +50,9 @@ class ViewerBehavior extends Behavior
         $this->_icon = $value;
     }
 
+    public function hasIcon():bool
+    {
+        return !empty($this->_icon);
+    }
+
 }
