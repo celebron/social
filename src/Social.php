@@ -5,9 +5,12 @@
 
 namespace Celebron\source\social;
 
+use Celebron\source\social\behaviors\Behavior;
+use Celebron\source\social\behaviors\ViewerBehavior;
 use Celebron\source\social\events\EventResult;
 use Celebron\source\social\interfaces\RequestInterface;
 use Celebron\source\social\interfaces\SocialUserInterface;
+use Celebron\source\social\interfaces\ViewerInterface;
 use Celebron\source\social\responses\Id;
 use yii\base\Arrayable;
 use yii\base\Component;
@@ -26,7 +29,6 @@ abstract class Social extends Model implements RequestInterface
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
 
-
     public bool $active = false;
 
     protected array $params = [];
@@ -42,8 +44,20 @@ abstract class Social extends Model implements RequestInterface
         } elseif($this->configure->paramsGroup !== null) {
             $this->attributes = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
         }
+
+
     }
 
+    public function behaviors ()
+    {
+        $behaviors = parent::behaviors();
+        foreach ($this->configure->behaviorToSocial as $interfaceName => $behaviorName) {
+            if(is_a($this, $interfaceName)) {
+                $behaviors[$interfaceName] = $behaviorName;
+            }
+        }
+        return $behaviors;
+    }
 
     public function success (HandlerController $controller, Response $response): mixed
     {

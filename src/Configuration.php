@@ -5,6 +5,8 @@
 
 namespace Celebron\source\social;
 
+use Celebron\source\social\behaviors\ViewerBehavior;
+use Celebron\source\social\interfaces\ViewerInterface;
 use Celebron\socials\{Google, Ok, VK, Yandex};
 use Celebron\source\social\events\EventRegister;
 use Celebron\source\social\interfaces\CustomRequestInterface;
@@ -43,6 +45,11 @@ class Configuration extends Component implements BootstrapInterface
 
     public array $socialEvents = [
         //eventName => Closure
+    ];
+
+    public array $behaviorToSocial = [
+        //Interface => Behavior
+        ViewerInterface::class => ViewerBehavior::class
     ];
 
     private array $_socials = [];

@@ -31,18 +31,9 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public const EVENT_DATA_CODE = 'dataCode';
     public const EVENT_DATA_TOKEN = 'dataToken';
 
-    private ?string $_clientId = null;
-    private ?string $_clientSecret = null;
+    public string $clientId;
+    public string $clientSecret;
     private ?string $_redirectUrl = null;
-
-    public function behaviors ()
-    {
-        $behaviors = parent::behaviors();
-        if($this instanceof ViewerInterface) {
-            $behaviors[ViewerInterface::class] = new ViewerBehavior($this->socialName, $this->configure);
-        }
-        return $behaviors;
-    }
 
     public function handleCode(State $state):Code
     {
@@ -93,7 +84,6 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         return $response;
     }
 
-
     public function url(string $action, ?string $state = null):string
     {
         return Url::toRoute([
@@ -103,41 +93,6 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         ], true);
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function getClientId():string
-    {
-        if(empty($this->_clientId)) {
-            if(!empty($this->params['clientId'])) {
-                return $this->params['clientId'];
-            }
-            throw new InvalidConfigException('Param "clientId" to social "' . $this->socialName . '" empty');
-        }
-        return $this->_clientId;
-    }
-    public function setClientId(string $value): void
-    {
-        $this->_clientId = $value;
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    public function getClientSecret() : string
-    {
-        if(empty($this->_clientSecret)) {
-            if(!empty($this->params['clientSecret'])) {
-                return $this->params['clientSecret'];
-            }
-            throw new InvalidConfigException('Param "clientSecret" to social "' . $this->socialName. '" empty');
-        }
-        return $this->_clientSecret;
-    }
-    public function setClientSecret(string $value): void
-    {
-        $this->_clientSecret = $value;
-    }
 
     public function getRedirectUrl()  : string
     {
