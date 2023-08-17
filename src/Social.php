@@ -108,7 +108,7 @@ abstract class Social extends Component implements RequestInterface
     }
 
 
-    public bool $_active = false;
+    private bool $_active = false;
     public function getActive (): bool
     {
         return $this->_active;
