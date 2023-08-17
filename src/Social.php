@@ -46,6 +46,13 @@ abstract class Social extends Model implements RequestInterface
 
     }
 
+    public function rules()
+    {
+        return [
+            ['active', 'required']
+        ];
+    }
+
     public function success (HandlerController $controller, Response $response): mixed
     {
        $event = new EventResult($controller, $response);

@@ -16,6 +16,7 @@ use Celebron\source\social\responses\Code;
 use Celebron\source\social\responses\Id;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Session;
@@ -34,6 +35,14 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     public ?string $clientId = null;
     public ?string $clientSecret = null;
     private ?string $_redirectUrl = null;
+
+    public function rules ()
+    {
+        return ArrayHelper::merge(parent::rules() ,[
+            [['clientSecret', 'clientId'], 'required'],
+            [['clientSecret', 'clientId'], 'string'],
+        ]);
+    }
 
     public function handleCode(State $state):Code
     {
