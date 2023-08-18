@@ -40,8 +40,8 @@ class Configuration extends Component implements BootstrapInterface
     public const EVENT_REGISTER = 'register';
 
     public string $route = 'social';
-    public ?string $paramsGroup = null;
-    public null|\Closure $paramsHandler = null;
+
+    public ?\Closure $paramsHandler = null;
 
     public array $eventToSocial = [
         //eventName => Closure
@@ -63,7 +63,18 @@ class Configuration extends Component implements BootstrapInterface
      */
     public function addSocialConfig(string $name, array|string $objectConfig):void
     {
+        if(is_string($objectConfig)) {
+            $objectConfig = ['class' => $objectConfig];
+        }
+
+        $paramsConfig = [];
+        if($this->paramsHandler !== null) {
+            $paramsConfig = $this->paramsHandler->call($this, $name);
+        }
+
+        $objectConfig = ArrayHelper::merge($objectConfig, $paramsConfig);
         $object = \Yii::createObject($objectConfig, [$name, $this]);
+
         /** @var Social $object */
         $object = Instance::ensure($object, Social::class);
         $this->addSocial($name, $object);
@@ -85,7 +96,7 @@ class Configuration extends Component implements BootstrapInterface
         $eventRegister = new EventRegister($object);
 
         //Добавляем обработчики событий
-        foreach ($this->eventToSocial as $event=> $closure) {
+        foreach ($this->eventToSocial as $event => $closure) {
             $object->on($event, $closure);
         }
 

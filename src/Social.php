@@ -23,35 +23,31 @@ use yii\helpers\StringHelper;
  */
 abstract class Social extends Component implements RequestInterface
 {
-    use SetterTrait;
     public const EVENT_SUCCESS = 'success';
     public const EVENT_FAILED = 'failed';
     public const EVENT_ERROR = 'error';
+
+    protected readonly \ReflectionClass $refThis;
 
     public function __construct (
         public readonly string        $socialName,
         public readonly Configuration $configure,
                                       $config = [])
     {
-        parent::__construct($config);
-        $attrs = [];
-        if($this->configure->paramsHandler instanceof \Closure) {
-            $attrs = $this->configure->paramsHandler->call($this->configure, $this->socialName);
-        } elseif($this->configure->paramsGroup !== null) {
-            $attrs = ArrayHelper::getValue(\Yii::$app->params, [$this->configure->paramsGroup, $this->socialName], []);
-        }
-        $this->setAttributes($attrs);
-
-    }
-
-    public function setAttributes(array $values): void
-    {
-        foreach ($values as $key => $value) {
-            $name = '_' . $key;
-            if(property_exists($this, $name)) {
-                $this->$name = $value;
+        $this->refThis = new \ReflectionClass($this);
+        foreach ($config as $key=>$value) {
+            $propertyName = '_' . $key;
+            $methodName = 'get' . $key;
+            if($this->refThis->hasProperty($propertyName) && $this->refThis->hasMethod($methodName)
+                && ($refProperty = $this->refThis->getProperty($propertyName))->isProtected()
+                && $this->refThis->getMethod($methodName)->isPublic()
+            ) {
+                $refProperty->setValue($this, $value);
+                unset($config[$key]);
             }
         }
+
+        parent::__construct($config);
     }
 
     public function success (HandlerController $controller, Response $response): mixed
@@ -86,9 +82,19 @@ abstract class Social extends Component implements RequestInterface
         return $user->$field;
     }
 
-    public static function urlStatic(string $socialName, string $action, ?string $state = null, string $socialComponent = 'social'):string
+    public static function urlStatic(
+        string $action,
+        ?string $state = null,
+        ?string $socialName = null,
+        string $socialComponent = 'social'
+    ):string
     {
-        return (new static($socialName,  \Yii::$app->get($socialComponent)))->url($action, $state);
+        if($socialName === null) {
+            $socialName = strtolower( (new \ReflectionClass(static::class))->getShortName() );
+        }
+        /** @var Configuration $configure */
+        $configure = \Yii::$app->get($socialComponent);
+        return $configure->getSocial($socialName);
     }
 
 
