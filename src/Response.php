@@ -24,8 +24,13 @@ class Response
      */
     public static function saveModel (Id|Social $response, ActiveRecord&SocialUserInterface $model, mixed $value = null): self
     {
-        $field = $model->getSocialField($response->social->socialName);
-        $model->$field = ($response instanceof Id) ? $response->getId() : $value;
+        if($response instanceof Id) {
+            $value = $response->getId();
+            $response = $response->social;
+        }
+
+        $field = $model->getSocialField($response->socialName);
+        $model->$field = $value;
         $result = new self($model->save());
         $result->response = $model;
         return $result;
