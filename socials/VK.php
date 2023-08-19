@@ -29,6 +29,7 @@ use yii\web\BadRequestHttpException;
  * @property-read string $uriInfo
  * @property-read bool $supportRegister
  * @property-read bool $supportLogin
+ * @property-read bool $supportManagement
  * @property-read string $uriToken
  */
 class VK extends OAuth2 implements UrlsInterface, ViewerInterface
@@ -57,7 +58,7 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
      */
     public function requestId (IdData $request): Id
     {
-        return $request->responseId('user_id');
+        return $this->responseId('user_id', $request->token->data);
     }
 
     public function getBaseUrl (): string

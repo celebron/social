@@ -64,22 +64,22 @@ class IdData extends AbstractData
 
     public function getAccessToken() : ?string
     {
-        return $this->token->accessToken;
+        return $this->token->getAccessToken();
     }
 
     public function getExpiresIn(): ?int
     {
-        return $this->token->expiresIn;
+        return $this->token->getExpireIn();
     }
 
     public function getRefreshToken():?string
     {
-        return $this->token->expiresIn;
+        return $this->token->getRefreshToken();
     }
 
     public function getTokenType():?string
     {
-        return $this->token->tokenType;
+        return $this->token->getTokenType();
     }
 
     public function getTokenTypeToken():string
@@ -106,13 +106,12 @@ class IdData extends AbstractData
         return $this->get($header, $data);
     }
 
-
     public function post(array $data = [], array $header = []): ClientRequest
     {
         return $this->_request = $this->client->post($this->getUri(), $data, $header);
     }
 
-    public function postHeaderOauth(array $data = [], array $header = [])
+    public function postHeaderOauth(array $data = [], array $header = []): ClientRequest
     {
         $header = ArrayHelper::merge([
             Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()
@@ -130,12 +129,15 @@ class IdData extends AbstractData
         return $this->_request = $this->client->delete($this->getUri(), $data, $header);
     }
 
-    public function responseId(string|\Closure|array $field, ?ClientRequest $request = null, ?\Closure $handler = null): Id
-    {
-        $request = $this->_request
-            ?? $request
-            ?? throw new BadRequestHttpException(\Yii::t('social','Сlient request is incorrect'));
-        $response = $this->send($request, $handler);
-        return $this->social->responseId($field, $response->getData());
+    public function responseId(
+        string|\Closure|array $fieldFromSocial,
+        ?ClientRequest        $clientRequestToSend = null,
+        ?\Closure             $handlerToSend = null
+    ): Id {
+        $clientRequestToSend = $this->_request
+            ?? $clientRequestToSend
+                ?? throw new BadRequestHttpException(\Yii::t('social','Сlient request is incorrect'));
+        $response = $this->send($clientRequestToSend, $handlerToSend);
+        return $this->social->responseId($fieldFromSocial, $response->getData());
     }
 }
