@@ -70,9 +70,9 @@ abstract class Social extends Component implements RequestInterface
         return $this->result ?? $controller->goBack();
     }
 
-    public function responseId (string|\Closure|array|null $field, mixed $data): Id
+    public function responseId (string|\Closure|array $field, array|object $data): Id
     {
-        return new Id($this, $field, $data);
+        return (new Id($this, $data))->fieldToId($field);
     }
 
     public function url (string $action, string $state = null): string
