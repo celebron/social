@@ -58,6 +58,7 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
      */
     public function requestId (IdData $request): Id
     {
+        return $this->responseId('id_vk', $request->token->data['user_id']);
         return $request->responseId('user_id');
     }
 

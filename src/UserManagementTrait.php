@@ -16,7 +16,7 @@ trait UserManagementTrait
     public function socialLogin(Id $response):bool
     {
         $field = $this->getSocialField($response->social->socialName);
-        $login = $this::fieldSearch($field, $response->getId());
+        $login = static::fieldSearch($field, $response->getId());
         if ($login === null) {
             throw new UnauthorizedHttpException(\Yii::t('social', 'Not authorized'));
         }
