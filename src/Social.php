@@ -5,14 +5,13 @@
 
 namespace Celebron\source\social;
 
-use Celebron\source\social\traits\SetterTrait;
 use Celebron\source\social\traits\ViewerBehavior;
 use Celebron\source\social\events\EventResult;
 use Celebron\source\social\interfaces\RequestInterface;
 use Celebron\source\social\interfaces\SocialUserInterface;
 use Celebron\source\social\responses\Id;
 use yii\base\Component;
-use yii\helpers\ArrayHelper;
+use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
 
 
@@ -118,5 +117,10 @@ abstract class Social extends Component implements RequestInterface
     public function getActive (): bool
     {
         return $this->_active;
+    }
+
+    public function setActive(bool $value):void
+    {
+        throw new InvalidConfigException('Write configuration only');
     }
 }

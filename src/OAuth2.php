@@ -123,4 +123,13 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     {
         return $this->_clientSecret;
     }
+
+    public function setClientId(string $value):void
+    {
+        throw new InvalidConfigException('Write configuration only');
+    }
+    public function setClientSecret(string $value):void
+    {
+        throw new InvalidConfigException('Write configuration only');
+    }
 }
