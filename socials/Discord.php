@@ -57,7 +57,7 @@ class Discord extends OAuth2 implements UrlsInterface, UrlFullInterface, ViewerI
     public function requestId (IdData $request): Id
     {
         $request->get(
-            [ Header::AUTHORIZATION => $request->getTokenTypeToken()],
+            [ Header::AUTHORIZATION => $request->getTypedToken()],
             [ 'format'=>'json' ],
         );
         return $request->responseId('user.id');

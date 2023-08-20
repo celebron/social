@@ -15,9 +15,7 @@ use Celebron\source\social\responses\Code;
 use Celebron\source\social\responses\Id;
 use Celebron\source\social\traits\ViewerTrait;
 use yii\base\InvalidArgumentException;
-use yii\base\InvalidConfigException;
 use yii\helpers\Json;
-use yii\httpclient\Exception;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
 
@@ -90,7 +88,7 @@ class Google extends OAuth2 implements UrlsInterface, ViewerInterface
     public function requestId (IdData $request): Id
     {
         $request->get(
-            [ Header::AUTHORIZATION => $request->getTokenTypeToken() ],
+            [ Header::AUTHORIZATION => $request->getTypedToken() ],
             [ 'format'=>'json' ],
         );
         return $request->responseId('id');

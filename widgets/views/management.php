@@ -10,15 +10,13 @@ use Celebron\source\social\Social;
 use Celebron\widgets\social\SocialAsset;
 
 /* @var \yii\web\View $this */
-/* @var Social[]|ViewerInterface[]|ViewerBehavior[] $socials */
+/* @var Social[]|ViewerInterface[] $socials */
 /* @var Configuration $configure */
-
-SocialAsset::register($this);
 ?>
 
 <table class="table social-management-block">
-    <?php foreach ($socials as $social): if ($social->getSupportLogin() && $social->visible): ?>
-        <tr class="social-management" id="social-<?= $social->socialName ?>">
+    <?php foreach ($socials as $key=>$social): if ($social->getSupportLogin() && $social->getVisible()): ?>
+        <tr class="social-management" id="social-<?= $key ?>">
             <?= $this->render('managementOne', ['configure' => $configure, 'social' => $social], $this->context) ?>
         </tr>
     <?php endif; endforeach; ?>

@@ -61,7 +61,7 @@ class Yandex extends OAuth2 implements UrlsInterface, ViewerInterface
 
     public function requestToken (TokenData $request): Token
     {
-        $request->setAuthorizationBasic($this->clientId . ':' . $this->clientSecret);
+        $request->setHeaderAuthorizationBasic($this->clientId . ':' . $this->clientSecret);
         return $request->responseToken();
     }
 

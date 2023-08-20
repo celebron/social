@@ -12,9 +12,7 @@ use yii\base\Event;
 class EventRegister extends Event
 {
     public bool $support = true;
-    public function __construct (
-        public Component&SocialInterface $object,
-                                         $config = [])
+    public function __construct (public Component&SocialInterface $object, $config = [])
     {
         parent::__construct($config);
     }

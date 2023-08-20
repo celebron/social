@@ -6,15 +6,12 @@
 namespace Celebron\source\social;
 
 use Celebron\source\social\traits\ViewerBehavior;
-use Celebron\source\social\interfaces\ViewerInterface;
+use Closure;
 use Celebron\socials\{Google, Ok, VK, Yandex};
 use Celebron\source\social\events\EventRegister;
-use Celebron\source\social\interfaces\CustomRequestInterface;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\UnknownMethodException;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
@@ -23,7 +20,7 @@ use yii\i18n\PhpMessageSource;
 
 /**
  *
- * @property array $socials
+ * @property-write array $socials
  * @property-read  Yandex $yandex
  * @property-read  VK $vk
  * @property-read Ok $ok
@@ -41,7 +38,7 @@ class Configuration extends Component implements BootstrapInterface
 
     public string $route = 'social';
 
-    public ?\Closure $paramsHandler = null;
+    public ?Closure $paramsHandler = null;
 
     public array $eventToSocial = [
         //eventName => Closure
@@ -50,52 +47,38 @@ class Configuration extends Component implements BootstrapInterface
     public string $defaultIcon = '@public/icon.png';
 
     private array $_socials = [];
-    private static self $configure;
-
-    public function __construct ($config = [])
-    {
-        parent::__construct($config);
-        self::$configure = $this;
-    }
 
     /**
      * @throws InvalidConfigException
      */
-    public function addSocialConfig(string $name, array|string $objectConfig):void
+    public function addSocialConfig(string $name, array|string $objectSetting):void
     {
-        if(is_string($objectConfig)) {
-            $objectConfig = ['class' => $objectConfig];
+        if(is_string($objectSetting)) {
+            $objectSetting = [ 'class' => $objectSetting ];
         }
+
+        $objectSetting['name'] = $name;
 
         $paramsConfig = [];
         if($this->paramsHandler !== null) {
             $paramsConfig = $this->paramsHandler->call($this, $name);
         }
 
-        $objectConfig = ArrayHelper::merge($objectConfig, $paramsConfig);
-        $object = \Yii::createObject($objectConfig, [$name, $this]);
+        $objectSetting = ArrayHelper::merge($objectSetting, $paramsConfig);
+        $object = \Yii::createObject($objectSetting, [$this]);
 
         /** @var Social $object */
         $object = Instance::ensure($object, Social::class);
-        $this->addSocial($name, $object);
+        $this->addSocial($object);
     }
 
     /**
      */
-    public function addSocial (string $name, Social $object, bool $override = false): void
+    public function add(Social $object): void
     {
-        if (empty($name)) {
-            throw new InvalidArgumentException("Key $name empty");
-        }
-
-        //Проверяем на существования ключа (если переопределение невозможно)
-        if (!$override && ArrayHelper::keyExists($name, $this->_socials)) {
-            throw new InvalidArgumentException("Key $name exists");
-        }
-
         $eventRegister = new EventRegister($object);
 
-        //Добавляем обработчики событий
+        //Добавляем обработчики событий social (на глобальном уровне)
         foreach ($this->eventToSocial as $event => $closure) {
             $object->on($event, $closure);
         }
@@ -103,70 +86,79 @@ class Configuration extends Component implements BootstrapInterface
         $this->trigger(self::EVENT_REGISTER, $eventRegister);
 
         if ($eventRegister->support) {
-            \Yii::info("Social '$name' registered", static::class);
-            $this->_socials[$name] = $object;
+            \Yii::info("Social '$object->name' registered", static::class);
+            $this->_socials[$object->name] = $object;
         } else {
-            \Yii::warning("Social '$name' not supported", static::class);
+            \Yii::warning("Social '$object->name' not supported", static::class);
         }
-
     }
 
     /**
-     * @param mixed ...$interfaces
-     * @return array|Social[]
-     * @throws \ReflectionException
+     * @throws InvalidConfigException
      */
-    public function getSocials (mixed ...$interfaces): array
-    {
-        if (count($interfaces) > 0) {
-            $result = [];
-            foreach ($this->_socials as $key => $social) {
-                $classRef = new \ReflectionClass($social);
-                if (count(array_intersect($classRef->getInterfaceNames(), $interfaces)) > 0) {
-                    $result[$key] = $social;
-                }
-            }
-            return $result;
-        }
-        return $this->_socials;
-    }
-
     public function setSocials(array $socials):void
     {
         foreach ($socials as $name => $handler) {
-            if(is_numeric($name)) {
-                if(is_string($handler)) {
-                    $className = $handler;
-                } elseif(is_array($handler) && isset($handler['class'])) {
-                    $className = $handler['class'];
-                } else {
-                    throw new InvalidConfigException();
-                }
-                $classRef = new \ReflectionClass($className);
-                if($classRef->implementsInterface(CustomRequestInterface::class)) {
-                    throw new InvalidConfigException("Key is numeric. The key must be alphabetical.");
-                }
-                $name = strtolower($classRef->getShortName());
-            }
             $this->addSocialConfig($name, $handler);
         }
     }
 
-    public function getSocial (string $name): Social|OAuth2|null
+    /**
+     * @param string|array|null $name
+     * @param bool $interface
+     * @return Social[]|Social|null
+     * @throws \ReflectionException
+     */
+    public function get(string|array|null $name = null, bool $interface=false):array|Social|null
     {
-        return ArrayHelper::getValue($this->getSocials(), $name);
+        $filter = array_filter($this->_socials, function ($object, $key) use ($name, $interface) {
+            //Если $name = null, то выводим все значения
+            if ($name === null) {
+                return true;
+            }
+
+            if (is_string($name)) {
+                $name = [$name];
+            }
+
+            //Проверяем интерфейсы
+            if ($interface) {
+                $ref = new \ReflectionClass($object);
+                return !empty(array_diff($name, $ref->getInterfaceNames()));
+            }
+
+            //Проверяем ключи
+            if(in_array($key, $name, true)) {
+                return true;
+            }
+
+            return false;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        if($name === null || $interface || is_array($name)) {
+            return $filter;
+        }
+
+        $values = array_values($filter);
+        return empty($values) ? null : $values[0];
     }
 
-    public function hasSocial(string $name):bool
+
+    public function has(string $name):bool
     {
-        return ArrayHelper::keyExists($name, $this->getSocials());
+        return ArrayHelper::keyExists($name, $this->_socials);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function bootstrap ($app)
     {
-        $app->urlManager->addRules([
-            "{$this->route}/<social>" => "{$this->route}/handler",
-        ]);
+        $app->get('urlManager')
+            ?->addRules([
+                "{$this->route}/<social>" => "{$this->route}/handler",
+            ]);
+
 
         $app->controllerMap[$this->route] = [
             'class' => HandlerController::class,
@@ -191,8 +183,8 @@ class Configuration extends Component implements BootstrapInterface
 
     public function __get ($name)
     {
-        if($this->hasSocial($name)) {
-            return $this->getSocial($name);
+        if($this->has($name)) {
+            return $this->get($name);
         }
         return parent::__get($name);
     }
@@ -208,25 +200,17 @@ class Configuration extends Component implements BootstrapInterface
         return parent::__call($name, $params);
     }
 
-    public static function __callStatic ($methodName, $arguments)
+    public static function getStatic(string|array|null $name = null, bool $interface=false, string $componentName = 'social'): Social|array|null
     {
-        ///URLS
-        $suffix = 'Url';
-        if(StringHelper::endsWith($methodName, $suffix)) {
-            $name = strtolower(substr($methodName,0, -strlen($suffix)));
-            return static::$configure->url($name, $arguments[0], $arguments[1] ?? null);
-        }
+        /** @var self $component */
+        $component = \Yii::$app->get($componentName);
+        return $component->get($name, $interface);
+    }
 
-        ///SOCIALS
-        $suffix = 'Static';
-        if(StringHelper::endsWith($methodName, $suffix)) {
-            $name = strtolower(substr($methodName,0, -strlen($suffix)));
-            if($name === 'socials') {
-                return static::$configure->getSocials(...$arguments);
-            }
-            return static::$configure->getSocial($name);
-        }
-
-        throw new UnknownMethodException('Calling unknown method: ' . static::class . "::$methodName()");
+    public static function urlStatic (string $social, string $action, ?state $state = null, $componentName = 'social'): string
+    {
+        /** @var self $component */
+        $component = \Yii::$app->get($componentName);
+        return $component->url($social, $action, $state);
     }
 }

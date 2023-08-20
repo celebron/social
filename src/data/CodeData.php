@@ -25,9 +25,12 @@ class CodeData extends AbstractData
     public function __construct (OAuth2 $social, public State $state, array $config = [])
     {
         parent::__construct($social, $config);
-        $this->uri = ($this->social instanceof  UrlsInterface) ? $this->social->getUriCode() : '';
+        $this->setUri(($this->social instanceof  UrlsInterface) ? $this->social->getUriCode() : '');
     }
 
+    /**
+     * @throws BadRequestHttpException
+     */
     public function generateData(array $data) : array
     {
         $event = new EventData($data);
@@ -35,7 +38,7 @@ class CodeData extends AbstractData
         $data = $event->newData;
 
         $default = [
-            0 => $this->uri,
+            0 => $this->getUri(),
             'response_type' => $this->response_type,
             'client_id' => $this->client_id,
             'redirect_uri' => $this->redirect_uri,

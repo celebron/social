@@ -21,7 +21,7 @@ use yii\web\View;
         <div class="social-login" id="social-<?= $key ?>">
             <a href="<?= $social->url(ViewerInterface::VIEW_LOGIN) ?>">
             <?=
-                $this->context->useIcon ? Html::img($social->getIcon(), ['alt' => $social->getName()]) : $social->getName()
+                $this->context->useIcon ? Html::img($social->getIcon(), ['alt' => $social->getViewName()]) : $social->getViewName()
             ?>
             </a>
         </div>

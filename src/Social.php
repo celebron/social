@@ -5,6 +5,7 @@
 
 namespace Celebron\source\social;
 
+use Celebron\source\social\interfaces\CustomRequestInterface;
 use Celebron\source\social\traits\ViewerBehavior;
 use Celebron\source\social\events\EventResult;
 use Celebron\source\social\interfaces\RequestInterface;
@@ -17,7 +18,6 @@ use yii\helpers\StringHelper;
 
 /**
  * @property-read mixed $socialId
- * @property-write array $attributes
  * @property bool $active
  */
 abstract class Social extends Component implements RequestInterface
@@ -28,16 +28,16 @@ abstract class Social extends Component implements RequestInterface
 
     protected readonly \ReflectionClass $refThis;
 
-    public function __construct (
-        public readonly string        $socialName,
-        public readonly Configuration $configure,
-                                      $config = [])
+    public string $name;
+    public function __construct (public readonly Configuration $configure, $config = [])
     {
         $this->refThis = new \ReflectionClass($this);
+
+        //Добавляем write-config-only свойство
         foreach ($config as $key=>$value) {
             $propertyName = '_' . $key;
             $methodName = 'get' . $key;
-            if($this->refThis->hasProperty($propertyName) && $this->refThis->hasMethod($methodName)
+            if($this->refThis->hasMethod($methodName) && $this->refThis->hasProperty($propertyName)
                 && ($refProperty = $this->refThis->getProperty($propertyName))->isProtected()
                 && $this->refThis->getMethod($methodName)->isPublic()
             ) {
@@ -46,6 +46,11 @@ abstract class Social extends Component implements RequestInterface
             }
         }
 
+        if($config['name'] === null && $this->refThis->implementsInterface(CustomRequestInterface::class)) {
+            throw new InvalidConfigException('Property $name is empty');
+        }
+
+        $config['name'] = strtolower( $config['name'] ?? $this->refThis->getShortName());
         parent::__construct($config);
     }
 
@@ -70,14 +75,14 @@ abstract class Social extends Component implements RequestInterface
 
     public function url (string $action, string $state = null): string
     {
-        return $this->configure->url($this->socialName, $action, $state);
+        return $this->configure->url($this->name, $action, $state);
     }
 
     public function getSocialId (): mixed
     {
         /** @var SocialUserInterface $user */
         $user = \Yii::$app->user->identity;
-        $field = $user->getSocialField($this->socialName);
+        $field = $user->getSocialField($this->name);
         return $user->$field;
     }
 
@@ -91,9 +96,7 @@ abstract class Social extends Component implements RequestInterface
         if($socialName === null) {
             $socialName = strtolower( (new \ReflectionClass(static::class))->getShortName() );
         }
-        /** @var Configuration $configure */
-        $configure = \Yii::$app->get($socialComponent);
-        return $configure->getSocial($socialName);
+        Configuration::urlStatic($socialName, $action, $state, $socialComponent);
     }
 
 
@@ -109,10 +112,11 @@ abstract class Social extends Component implements RequestInterface
 
     public function __toString ()
     {
-        return $this->socialName;
+        return $this->name;
     }
 
 
+    /** @var bool - write-config-only */
     protected bool $_active = false;
     public function getActive (): bool
     {
@@ -121,6 +125,6 @@ abstract class Social extends Component implements RequestInterface
 
     public function setActive(bool $value):void
     {
-        throw new InvalidConfigException('Write configuration only');
+        throw new InvalidConfigException('Write ' . get_class($this) . '::active configuration only');
     }
 }

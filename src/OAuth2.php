@@ -24,7 +24,7 @@ use yii\web\Session;
 /**
  * @property string $clientSecret
  * @property string $clientId
- * @property string $redirectUrl - устанавливать если используется консоль (в остальных случаях автогенерация)
+ * @property string $redirectUrl
  * @property bool $active
  */
 abstract class OAuth2 extends Social implements OAuth2Interface
@@ -91,7 +91,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
     {
         return Url::toRoute([
             0 => $this->configure->route . '/handler',
-            'social' => $this->socialName,
+            'social' => $this->name,
             'state' => (string)State::create($action, $state),
         ], true);
     }
@@ -126,10 +126,10 @@ abstract class OAuth2 extends Social implements OAuth2Interface
 
     public function setClientId(string $value):void
     {
-        throw new InvalidConfigException('Write configuration only');
+        throw new InvalidConfigException('Write ' . get_class($this) . '::clientId configuration only');
     }
     public function setClientSecret(string $value):void
     {
-        throw new InvalidConfigException('Write configuration only');
+        throw new InvalidConfigException('Write ' . get_class($this) . '::clientSecret configuration only');
     }
 }

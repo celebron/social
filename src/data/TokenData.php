@@ -31,18 +31,18 @@ class TokenData extends AbstractData
         array $config = []
     ) {
         parent::__construct($social, $config);
-        $this->uri = ($this->social instanceof UrlsInterface) ? $this->social->getUriToken():'';
+        $this->setUri(($this->social instanceof UrlsInterface) ? $this->social->getUriToken() : '' );
         $this->client_secret = $this->social->clientSecret;
     }
 
-    public function setAuthorization(string $value) : void
+    public function setHeaderAuthorization(string $value) : void
     {
         $this->header[Header::AUTHORIZATION] = $value;
     }
 
-    public function setAuthorizationBasic(string $value, bool $base64 = true) : void
+    public function setHeaderAuthorizationBasic(string $value, bool $base64 = true) : void
     {
-        $this->setAuthorization('Basic ' . ($base64 ? base64_encode($value):$value));
+        $this->setHeaderAuthorization('Basic ' . ($base64 ? base64_encode($value):$value));
     }
 
     public function generateData(array $data): array

@@ -14,12 +14,15 @@ use yii\httpclient\Request as ClientRequest;
 use yii\httpclient\Response as ClientResponse;
 use yii\web\BadRequestHttpException;
 
+/**
+ *
+ * @property string $uri
+ */
 abstract class AbstractData extends BaseObject
 {
     public readonly Client $client;
     public string $redirect_uri;
     public string $client_id;
-    public string $uri;
 
     public function __construct (protected readonly OAuth2 $social, array $config = [])
     {
@@ -28,8 +31,8 @@ abstract class AbstractData extends BaseObject
         if($this->social instanceof UrlsInterface) {
             $this->client->baseUrl = $this->social->getBaseUrl();
         }
-        $this->client_id = $this->social->clientId;
-        $this->redirect_uri = $this->social->redirectUrl;
+        $this->client_id = $this->social->getClientId();
+        $this->redirect_uri = $this->social->getRedirectUrl();
         parent::__construct($config);
     }
 
@@ -59,6 +62,22 @@ abstract class AbstractData extends BaseObject
         }
 
         return $handler($response, $request);
+    }
+
+    private ?string $_uri = null;
+    public function getUri():string
+    {
+        if(empty($this->_uri)) {
+            throw new BadRequestHttpException(\Yii::t('social','[{request}]Property $uri empty.',[
+                'request' => static::class
+            ]));
+        }
+        return $this->_uri;
+    }
+
+    public function setUri(string $value):void
+    {
+        $this->_uri = $value;
     }
 
 }

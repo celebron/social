@@ -15,6 +15,11 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
+/**
+ *
+ * @property-read null|string $code
+ * @property-read State $state
+ */
 class HandlerController extends Controller
 {
     public Configuration $configure;
@@ -37,7 +42,7 @@ class HandlerController extends Controller
     public function actionHandler(string $social)
     {
         \Yii::beginProfile("Social profiling", static::class);
-        $object = $this->configure->getSocial($social);
+        $object = $this->configure->get($social);
         try {
             if (is_null($object)) {
                 throw new NotFoundHttpException(\Yii::t('social',"Social '{socialName}' not found",[

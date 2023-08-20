@@ -47,7 +47,7 @@ class Login extends Widget
      */
     public function getSocials (): array
     {
-        $socials = $this->getConfigure()->getSocials(ViewerInterface::class);
+        $socials = $this->getConfigure()->get(ViewerInterface::class, true);
         if ($this->names === false) {
             return $socials;
         }

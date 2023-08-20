@@ -16,7 +16,7 @@ interface ViewerInterface
 
     public function getSupportLogin (): bool;
 
-    public function getName():string;
+    public function getViewName():string;
     public function getVisible():bool;
     public function getIcon():string;
 }

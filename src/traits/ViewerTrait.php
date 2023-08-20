@@ -11,16 +11,16 @@ use yii\base\InvalidConfigException;
 
 trait ViewerTrait
 {
-    private ?string $_name;
+    private ?string $_viewName;
 
-    public function getName (): string
+    public function getViewName (): string
     {
-        return $this->_name ?? $this->socialName;
+        return $this->_viewName ?? $this->name;
     }
 
-    public function setName (string $value): void
+    public function setViewName (string $value): void
     {
-        $this->_name = $value;
+        $this->_viewName = $value;
     }
 
 

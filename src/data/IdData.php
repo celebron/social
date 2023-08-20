@@ -18,18 +18,10 @@ use Yiisoft\Http\Header;
 
 /**
  *
- * @property-read null|int $expiresIn
- * @property-read string $tokenTypeToken
- * @property-read array $tokenData
- * @property-read null|string $tokenType
- * @property-read null|string $accessToken
- * @property string $uri
- * @property-read null|string $refreshToken
+ * @property-read string $typedToken
  */
 class IdData extends AbstractData
 {
-    private string $_uri = '';
-
     private ?ClientRequest $_request = null;
 
     public function __construct(
@@ -43,55 +35,10 @@ class IdData extends AbstractData
         }
     }
 
-    /**
-     * @throws BadRequestHttpException
-     */
-    public function getUri():string
+    public function getTypedToken():string
     {
-        if(empty($this->_uri)) {
-            throw new BadRequestHttpException(\Yii::t('social','[{request}]Property $uri empty.',[
-                'request' => 'requestId'
-            ]));
-        }
-        return $this->_uri;
+        return $this->token->getTokenType() . ' ' . $this->token->getAccessToken();
     }
-
-    public function setUri(string $uri):void
-    {
-        $this->_uri = $uri;
-    }
-
-
-    public function getAccessToken() : ?string
-    {
-        return $this->token->accessToken;
-    }
-
-    public function getExpiresIn(): ?int
-    {
-        return $this->token->expiresIn;
-    }
-
-    public function getRefreshToken():?string
-    {
-        return $this->token->expiresIn;
-    }
-
-    public function getTokenType():?string
-    {
-        return $this->token->tokenType;
-    }
-
-    public function getTokenTypeToken():string
-    {
-        return $this->getTokenType() . ' ' . $this->getAccessToken();
-    }
-
-    public function getTokenData(): array
-    {
-        return $this->token->data;
-    }
-
 
     public function get(array $header = [], array $data = []): ClientRequest
     {
@@ -101,7 +48,7 @@ class IdData extends AbstractData
     public function getHeaderOauth(array $data = [], array $header = []): ClientRequest
     {
         $header = ArrayHelper::merge([
-            Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()
+            Header::AUTHORIZATION => 'OAuth ' . $this->token->getAccessToken()
         ], $header);
         return $this->get($header, $data);
     }
@@ -112,10 +59,10 @@ class IdData extends AbstractData
         return $this->_request = $this->client->post($this->getUri(), $data, $header);
     }
 
-    public function postHeaderOauth(array $data = [], array $header = [])
+    public function postHeaderOauth(array $data = [], array $header = []): ClientRequest
     {
         $header = ArrayHelper::merge([
-            Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()
+            Header::AUTHORIZATION => 'OAuth ' . $this->token->getAccessToken()
         ], $header);
         return $this->post($header, $data);
     }

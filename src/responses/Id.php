@@ -8,12 +8,12 @@ namespace Celebron\source\social\responses;
 use Celebron\source\social\Social;
 use yii\helpers\ArrayHelper;
 
-class Id
+readonly class Id
 {
     public function __construct (
-        public readonly Social                      $social,
-        private readonly string|\Closure|array|null $field,
-        public readonly mixed                       $data,
+        public Social                 $social,
+        private string|\Closure|array $fieldFromSocial,
+        public array|object           $data,
     ){
     }
 
@@ -22,7 +22,7 @@ class Id
      */
     public function getId():mixed
     {
-        return ArrayHelper::getValue($this->data, $this->field);
+        return ArrayHelper::getValue($this->data, $this->fieldFromSocial);
     }
 
 }
