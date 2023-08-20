@@ -57,6 +57,10 @@ class Configuration extends Component implements BootstrapInterface
             $objectSetting = [ 'class' => $objectSetting ];
         }
 
+        if(is_numeric($name)) {
+
+        }
+
         $objectSetting['name'] = $name;
 
         $paramsConfig = [];
@@ -66,10 +70,9 @@ class Configuration extends Component implements BootstrapInterface
 
         $objectSetting = ArrayHelper::merge($objectSetting, $paramsConfig);
         $object = \Yii::createObject($objectSetting, [$this]);
-
         /** @var Social $object */
         $object = Instance::ensure($object, Social::class);
-        $this->addSocial($object);
+        $this->add($object);
     }
 
     /**

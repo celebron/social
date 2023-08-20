@@ -28,7 +28,6 @@ abstract class Social extends Component implements RequestInterface
 
     protected readonly \ReflectionClass $refThis;
 
-    public string $name;
     public function __construct (public readonly Configuration $configure, $config = [])
     {
         $this->refThis = new \ReflectionClass($this);
@@ -45,13 +44,16 @@ abstract class Social extends Component implements RequestInterface
                 unset($config[$key]);
             }
         }
-
-        if($config['name'] === null && $this->refThis->implementsInterface(CustomRequestInterface::class)) {
+        parent::__construct($config);
+        if(($this->_name === null) && $this->refThis->implementsInterface(CustomRequestInterface::class)) {
             throw new InvalidConfigException('Property $name is empty');
         }
+    }
 
-        $config['name'] = strtolower( $config['name'] ?? $this->refThis->getShortName());
-        parent::__construct($config);
+    protected ?string $_name = null;
+    public function getName (): string
+    {
+       return $this->_name ?? $this->refThis->getShortName();
     }
 
     public function success (HandlerController $controller, Response $response): mixed
