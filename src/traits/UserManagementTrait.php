@@ -8,7 +8,6 @@ namespace Celebron\source\social\traits;
 use Celebron\source\social\responses\Id;
 use Celebron\source\social\responses\Response;
 use Celebron\source\social\Social;
-use yii\web\UnauthorizedHttpException;
 
 /**
  * @method getSocialField(string $socialName)
@@ -16,6 +15,12 @@ use yii\web\UnauthorizedHttpException;
 trait UserManagementTrait
 {
     abstract public function getRememberTime():int;
+
+    /**
+     * @param Social $social
+     * @param string $method
+     * @return bool
+     */
     abstract public function secure(Social $social, string $method):bool;
 
     /**
@@ -28,6 +33,8 @@ trait UserManagementTrait
     }
 
     /**
+     * @param Id $response
+     * @return Response
      * @throws \Exception
      */
     #[Secure('secure')]
