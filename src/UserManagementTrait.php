@@ -15,7 +15,7 @@ use yii\web\UnauthorizedHttpException;
 trait UserManagementTrait
 {
     abstract public function getRememberTime():int;
-    abstract public function secure(Social $social, string $method);
+    abstract public function secure(Social $social, string $method):bool;
 
     /**
      * @throws UnauthorizedHttpException
