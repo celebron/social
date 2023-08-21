@@ -65,7 +65,7 @@ class HandlerController extends Controller
                 throw new NotSupportedException('Class "' . \Yii::$app->user->identityClass . '" not implement ' . SocialUserInterface::class);
             }
 
-            $refAttrs = $refMethod->getAttributes(Secure::class, ReflectionAttribute::IS_INSTANCEOF);
+            $refAttrs = $refMethod->getAttributes(Secure::class, \ReflectionAttribute::IS_INSTANCEOF);
             $secure = true;
             if(null !== ($refAttr = $refAttrs[0] ?? null)) {
                 /** @var Secure $attr */
