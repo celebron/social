@@ -13,8 +13,14 @@ use Celebron\socialSource\responses\Id;
 use yii\base\NotSupportedException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
 
+/**
+ *
+ * @property-read null|string $code
+ * @property-read \Celebron\socialSource\State $state
+ */
 class HandlerController extends Controller
 {
     public Configuration $configure;
@@ -50,39 +56,58 @@ class HandlerController extends Controller
                 ]));
             }
 
+            /** @var  Model&IdentityInterface&SocialUserInterface $userObject */
             $userObject = \Yii::$app->user->identity ?? \Yii::createObject(\Yii::$app->user->identityClass);
             $methodName = 'social' . $this->getState()->normalizeMethod();
-            $methodRef = new \ReflectionMethod($userObject, $methodName);
+            $refMethod = new \ReflectionMethod($userObject, $methodName);
 
-            if (!$methodRef->getDeclaringClass()->implementsInterface(SocialUserInterface::class)) {
+            if (!$refMethod->getDeclaringClass()->implementsInterface(SocialUserInterface::class)) {
                 throw new NotSupportedException('Class "' . \Yii::$app->user->identityClass . '" not implement ' . SocialUserInterface::class);
             }
 
-            $args = [];
-            foreach ($methodRef->getParameters() as $key => $parameter) {
-                $type = (string)$parameter->getType();
-                $typeClassRef = new \ReflectionClass($type);
-                if ($type === self::class) {
-                    $args[$key] = $this;
-                } elseif ($type === Id::class) {
-                    $args[$key] = $object->request($this->getCode(), $this->getState());
-                } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
-                    $args[$key] = $object;
-                } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
-                    $args[$key] = $object->handleToken($this->getCode());
-                }
+            //Режим Secure
+            $secure = true;
+            $refAttrs = $refMethod->getAttributes(Secure::class, \ReflectionAttribute::IS_INSTANCEOF);
+            if(null !== ($refAttr = $refAttrs[0] ?? null)) {
+                /** @var Secure $attr */
+                $attr = $refAttr->newInstance();
+                $secure = $attr->secure($userObject, $object, $refMethod->getShortName());
             }
 
-            $response = $methodRef->invokeArgs($userObject, $args);
+            if($secure) {
+                $args = [];
+                foreach ($refMethod->getParameters() as $key => $parameter) {
+                    $type = (string)$parameter->getType();
+                    $typeClassRef = new \ReflectionClass($type);
+                    if ($type === self::class) {
+                        $args[$key] = $this;
+                    } elseif ($type === Id::class) {
+                        $args[$key] = $object->request($this->getCode(), $this->getState(), $this->request->getBodyParams());
+                    } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
+                        $args[$key] = $object;
+                    } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
+                        $args[$key] = $object->handleToken($this->getCode());
+                    }
+                }
+
+                //Выполняем метод, если $secure = true;
+                $response = $refMethod->invokeArgs($userObject, $args);
+            } else {
+                $response = false;
+            }
+
             if (is_bool($response)) {
-                $response = new Response($response);
+                $response = new Response($response, "Use method {method} - {successText} (Secure: {secure})", [
+                    'method' => $refMethod->getShortName(),
+                    'secure' => $secure ? 'used': "not use",
+                ]);
             }
 
             if($response->success) {
-                \Yii::info("User from social '$social' authorized success", static::class);
+                \Yii::info($response->comment, static::class);
                 return $object->success($this, $response);
             }
-            \Yii::warning("User from social '$social' authorized failed", static::class);
+            \Yii::warning($response->comment, static::class);
             return $object->failed($this, $response);
         } catch (\Exception $ex) {
             \Yii::error((string)$ex, static::class);

@@ -54,7 +54,6 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
     }
 
     /**
-     * @throws BadRequestHttpException
      */
     public function requestId (IdData $request): Id
     {

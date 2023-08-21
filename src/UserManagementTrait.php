@@ -5,37 +5,44 @@
 
 namespace Celebron\socialSource;
 
+use Celebron\socialSource\interfaces\SocialUserInterface;
 use Celebron\socialSource\responses\Id;
+use Closure;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
 
 trait UserManagementTrait
 {
-    abstract public static function fieldSearch (string $field, mixed $id): ?self;
     abstract public function getRememberTime():int;
+    abstract public function secure(Social $social, string $method):bool;
 
-    public function socialLogin(Id $response):bool
+    /**
+     * @throws UnauthorizedHttpException
+     */
+    public function socialLogin(Id $response):Response
     {
-        $field = $this->getSocialField($response->social->socialName);
-        $login = static::fieldSearch($field, $response->getId());
-        if ($login === null) {
-            throw new UnauthorizedHttpException(\Yii::t('social', 'Not authorized'));
-        }
-        return \Yii::$app->user->login($login, $this->getRememberTime());
+        /** @var IdentityInterface&SocialUserInterface $this */
+        return $response->login($this, $this->getRememberTime());
     }
 
     /**
      * @throws \Exception
      */
+    #[Secure('secure')]
     public function socialRegister (Id $response): Response
     {
-        return Response::saveModel($response, $this);
+        /** @var ActiveRecord&SocialUserInterface $this */
+        return $response->saveModel($this);
     }
 
     /**
      * @throws \Exception
      */
+    #[Secure('secure')]
     public function socialDelete (Social $social): Response
     {
+        /** @var ActiveRecord&SocialUserInterface $this */
         return Response::saveModel($social, $this);
     }
 

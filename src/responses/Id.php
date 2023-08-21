@@ -5,17 +5,20 @@
 
 namespace Celebron\socialSource\responses;
 
+use Celebron\socialSource\interfaces\SocialUserInterface;
+use Celebron\socialSource\Response;
 use Celebron\socialSource\Social;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\web\IdentityInterface;
+use yii\web\UnauthorizedHttpException;
 
 class Id
 {
-   private mixed $_fieldIdFromSocial = null;
-
-
     public function __construct (
-        public readonly Social $social,
-        public array|object $data
+        public readonly Social                      $social,
+        private readonly string|\Closure|array|null $fieldFromSocial,
+        public readonly mixed                       $data,
     ){
     }
 
@@ -24,13 +27,28 @@ class Id
      */
     public function getId():mixed
     {
-        return ArrayHelper::getValue($this->data, $this->_fieldIdFromSocial);
+        return ArrayHelper::getValue($this->data, $this->fieldFromSocial);
     }
 
-    public function fieldToId(string|\Closure|array $value):self
+    public function login(IdentityInterface&SocialUserInterface $thisObject, $rememberTime):Response
     {
-        $this->_fieldIdFromSocial = $value;
-        return $this;
+        $field = $thisObject->getSocialField($this->social->socialName);
+        /** @var IdentityInterface&SocialUserInterface $identity */
+        $identity = $thisObject::fieldSearch($field, $this->getId());
+        if ($identity === null) {
+            throw new UnauthorizedHttpException(\Yii::t('social', 'Not authorized'));
+        }
+        $login = \Yii::$app->user->login($identity, $rememberTime);
+        $result = new Response($login, "User from social '$this->social' authorized {successText}");
+        $result->response = $identity;
+        return $result;
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function saveModel(ActiveRecord&SocialUserInterface $model): Response
+    {
+        return Response::saveModel($this, $model);
+    }
 }

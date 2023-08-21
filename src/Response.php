@@ -8,15 +8,27 @@ namespace Celebron\socialSource;
 use Celebron\socialSource\interfaces\SocialUserInterface;
 use Celebron\socialSource\responses\Id;
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 class Response
 {
     public mixed $response; //Передача в success или failed
 
+    public readonly string $comment;
     public function __construct (
-        public bool $success
+        public bool $success,
+        string $comment,
+        array $commentParams = [],
     )
     {
+        $placeholders = [];
+        $commentParams['success'] = $this->success;
+        $commentParams['successText'] = $this->success ? 'successful': 'failed';
+        foreach ($commentParams as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        $this->comment = ($placeholders === []) ? $comment : strtr($comment, $placeholders);
     }
 
     /**
@@ -31,7 +43,10 @@ class Response
 
         $field = $model->getSocialField($response->socialName);
         $model->$field = $value;
-        $result = new self($model->save());
+        $result = new self($model->save(), 'Save field "{field}" to model "{model}" - {successText}',[
+            'field' => $field,
+            'model' => $model::class,
+        ]);
         $result->response = $model;
         return $result;
     }

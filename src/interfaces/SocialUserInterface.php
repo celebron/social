@@ -8,4 +8,5 @@ namespace Celebron\socialSource\interfaces;
 interface SocialUserInterface
 {
     public function getSocialField (string $social): string;
+    public static function fieldSearch (string $field, mixed $id): ?self;
 }
