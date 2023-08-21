@@ -57,9 +57,7 @@ class Configuration extends Component implements BootstrapInterface
             $objectSetting = [ 'class' => $objectSetting ];
         }
 
-        $objectSetting['name'] ??= $name;
-
-        $object = \Yii::createObject($objectSetting, [$this]);
+        $object = \Yii::createObject($objectSetting, [$this, $name]);
         /** @var Social $object */
         $object = Instance::ensure($object, Social::class);
 
@@ -74,7 +72,7 @@ class Configuration extends Component implements BootstrapInterface
 
         if ($eventRegister->support) {
             \Yii::info("Social '{$object->getName()}' registered", static::class);
-            $this->_socials[$object->getName()] = $object;
+            $this->_socials[$object->name] = $object;
         } else {
             \Yii::warning("Social '{$object->getName()}' not supported", static::class);
         }
