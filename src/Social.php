@@ -139,7 +139,7 @@ abstract class Social extends Component implements RequestInterface
 
     public function __toString ()
     {
-        return $this->getName();
+        return $this->name;
     }
 
 
