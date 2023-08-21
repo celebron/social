@@ -16,14 +16,13 @@ class Secure
 
     }
 
-    public function secure(Social $social, IdentityInterface&SocialUserInterface $user):bool
+    public function secure(IdentityInterface&SocialUserInterface $user, Social $social, string $method):bool
     {
         if(!is_callable($this->secureMethod)) {
             $closure = \Closure::fromCallable([$user, $this->secureMethod]);
         } else {
             $closure = $this->secureMethod;
         }
-
-        return $closure->call($user, $social);
+        return $closure->call($user, $social, $method);
     }
 }

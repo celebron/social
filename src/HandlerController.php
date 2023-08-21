@@ -56,7 +56,7 @@ class HandlerController extends Controller
                 ]));
             }
 
-            /** @var  Model&IdentityInterface $userObject */
+            /** @var  Model&IdentityInterface&SocialUserInterface $userObject */
             $userObject = \Yii::$app->user->identity ?? \Yii::createObject(\Yii::$app->user->identityClass);
             $methodName = 'social' . $this->getState()->normalizeMethod();
             $refMethod = new \ReflectionMethod($userObject, $methodName);
@@ -65,12 +65,13 @@ class HandlerController extends Controller
                 throw new NotSupportedException('Class "' . \Yii::$app->user->identityClass . '" not implement ' . SocialUserInterface::class);
             }
 
-            $refAttrs = $refMethod->getAttributes(Secure::class, \ReflectionAttribute::IS_INSTANCEOF);
+            //Режим Secure
             $secure = true;
+            $refAttrs = $refMethod->getAttributes(Secure::class, \ReflectionAttribute::IS_INSTANCEOF);
             if(null !== ($refAttr = $refAttrs[0] ?? null)) {
                 /** @var Secure $attr */
                 $attr = $refAttr->newInstance();
-                $secure = $attr->secure($object, $userObject);
+                $secure = $attr->secure($userObject, $object, $refMethod->getName());
             }
 
             $args = [];
