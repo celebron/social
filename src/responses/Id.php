@@ -10,12 +10,10 @@ use yii\helpers\ArrayHelper;
 
 class Id
 {
-   private mixed $_fieldIdFromSocial = null;
-
-
     public function __construct (
-        public readonly Social $social,
-        public array|object $data
+        public readonly Social                      $social,
+        private readonly string|\Closure|array|null $field,
+        public readonly mixed                       $data,
     ){
     }
 
@@ -24,13 +22,7 @@ class Id
      */
     public function getId():mixed
     {
-        return ArrayHelper::getValue($this->data, $this->_fieldIdFromSocial);
-    }
-
-    public function fieldToId(string|\Closure|array $value):self
-    {
-        $this->_fieldIdFromSocial = $value;
-        return $this;
+        return ArrayHelper::getValue($this->data, $this->field);
     }
 
 }

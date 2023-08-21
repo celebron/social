@@ -64,22 +64,22 @@ class IdData extends AbstractData
 
     public function getAccessToken() : ?string
     {
-        return $this->token->getAccessToken();
+        return $this->token->accessToken;
     }
 
     public function getExpiresIn(): ?int
     {
-        return $this->token->getExpireIn();
+        return $this->token->expiresIn;
     }
 
     public function getRefreshToken():?string
     {
-        return $this->token->getRefreshToken();
+        return $this->token->expiresIn;
     }
 
     public function getTokenType():?string
     {
-        return $this->token->getTokenType();
+        return $this->token->tokenType;
     }
 
     public function getTokenTypeToken():string
@@ -106,12 +106,13 @@ class IdData extends AbstractData
         return $this->get($header, $data);
     }
 
+
     public function post(array $data = [], array $header = []): ClientRequest
     {
         return $this->_request = $this->client->post($this->getUri(), $data, $header);
     }
 
-    public function postHeaderOauth(array $data = [], array $header = []): ClientRequest
+    public function postHeaderOauth(array $data = [], array $header = [])
     {
         $header = ArrayHelper::merge([
             Header::AUTHORIZATION => 'OAuth ' . $this->getAccessToken()
@@ -129,15 +130,13 @@ class IdData extends AbstractData
         return $this->_request = $this->client->delete($this->getUri(), $data, $header);
     }
 
-    public function responseId(
-        string|\Closure|array $fieldFromSocial,
-        ?ClientRequest        $clientRequestToSend = null,
-        ?\Closure             $handlerToSend = null
-    ): Id {
-        $clientRequestToSend = $this->_request
-            ?? $clientRequestToSend
+    public function responseId(string|\Closure|array $field, ?ClientRequest $request = null, ?\Closure $handler = null): Id
+    {
+
+        $request = $this->_request
+            ?? $request
                 ?? throw new BadRequestHttpException(\Yii::t('social','Сlient request is incorrect'));
-        $response = $this->send($clientRequestToSend, $handlerToSend);
-        return $this->social->responseId($fieldFromSocial, $response->getData());
+        $response = $this->send($request, $handler);
+        return $this->social->responseId($field, $response->getData());
     }
 }

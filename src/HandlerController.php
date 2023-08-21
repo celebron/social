@@ -15,6 +15,11 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
+/**
+ *
+ * @property-read null|string $code
+ * @property-read \Celebron\socialSource\State $state
+ */
 class HandlerController extends Controller
 {
     public Configuration $configure;
@@ -65,7 +70,7 @@ class HandlerController extends Controller
                 if ($type === self::class) {
                     $args[$key] = $this;
                 } elseif ($type === Id::class) {
-                    $args[$key] = $object->request($this->getCode(), $this->getState());
+                    $args[$key] = $object->request($this->getCode(), $this->getState(), $this->request->getBodyParams());
                 } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
                     $args[$key] = $object;
                 } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
