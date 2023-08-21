@@ -51,34 +51,18 @@ class Configuration extends Component implements BootstrapInterface
     /**
      * @throws InvalidConfigException
      */
-    public function addSocialConfig(string $name, array|string $objectSetting):void
+    public function addSocialConfig(string|int $name, array|string $objectSetting):void
     {
         if(is_string($objectSetting)) {
             $objectSetting = [ 'class' => $objectSetting ];
         }
 
-        if(is_numeric($name)) {
+        $objectSetting['name'] ??= $name;
 
-        }
-
-        $objectSetting['name'] = $name;
-
-        $paramsConfig = [];
-        if($this->paramsHandler !== null) {
-            $paramsConfig = $this->paramsHandler->call($this, $name);
-        }
-
-        $objectSetting = ArrayHelper::merge($objectSetting, $paramsConfig);
         $object = \Yii::createObject($objectSetting, [$this]);
         /** @var Social $object */
         $object = Instance::ensure($object, Social::class);
-        $this->add($object);
-    }
 
-    /**
-     */
-    public function add(Social $object): void
-    {
         $eventRegister = new EventRegister($object);
 
         //Добавляем обработчики событий social (на глобальном уровне)
@@ -89,12 +73,13 @@ class Configuration extends Component implements BootstrapInterface
         $this->trigger(self::EVENT_REGISTER, $eventRegister);
 
         if ($eventRegister->support) {
-            \Yii::info("Social '$object->name' registered", static::class);
-            $this->_socials[$object->name] = $object;
+            \Yii::info("Social '{$object->getName()}' registered", static::class);
+            $this->_socials[$object->getName()] = $object;
         } else {
-            \Yii::warning("Social '$object->name' not supported", static::class);
+            \Yii::warning("Social '{$object->getName()}' not supported", static::class);
         }
     }
+
 
     /**
      * @throws InvalidConfigException

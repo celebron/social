@@ -13,6 +13,7 @@ use Celebron\source\social\interfaces\SocialUserInterface;
 use Celebron\source\social\responses\Id;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
 
@@ -28,9 +29,27 @@ abstract class Social extends Component implements RequestInterface
 
     protected readonly \ReflectionClass $refThis;
 
-    public function __construct (public readonly Configuration $configure, $config = [])
+    public readonly string $name;
+    public function __construct (
+        public readonly Configuration $configure,
+        $config = [])
     {
-        $this->refThis = new \ReflectionClass($this);
+        $this->refThis = new \ReflectionObject($this);
+
+        if(is_numeric($config['name']) ) {
+            $this->name = $this->refThis->getShortName();
+            if($this->refThis->implementsInterface(CustomRequestInterface::class)) {
+                throw new InvalidConfigException('Property $name is numeric. ');
+            }
+            unset($config['name']);
+        }
+
+        if($this->configure->paramsHandler !== null) {
+            $config = ArrayHelper::merge(
+                $config,
+                $this->configure->paramsHandler->call($this->configure, $this->name, $config)
+            );
+        }
 
         //Добавляем write-config-only свойство
         foreach ($config as $key=>$value) {
@@ -45,15 +64,6 @@ abstract class Social extends Component implements RequestInterface
             }
         }
         parent::__construct($config);
-        if(($this->_name === null) && $this->refThis->implementsInterface(CustomRequestInterface::class)) {
-            throw new InvalidConfigException('Property $name is empty');
-        }
-    }
-
-    protected ?string $_name = null;
-    public function getName (): string
-    {
-       return $this->_name ?? $this->refThis->getShortName();
     }
 
     public function success (HandlerController $controller, Response $response): mixed
@@ -114,7 +124,7 @@ abstract class Social extends Component implements RequestInterface
 
     public function __toString ()
     {
-        return $this->name;
+        return $this->getName();
     }
 
 
@@ -127,6 +137,6 @@ abstract class Social extends Component implements RequestInterface
 
     public function setActive(bool $value):void
     {
-        throw new InvalidConfigException('Write ' . get_class($this) . '::active configuration only');
+        throw new InvalidConfigException('Write ' . get_class($this) . '::$active configuration only');
     }
 }
