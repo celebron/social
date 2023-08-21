@@ -55,7 +55,7 @@ abstract class AbstractData extends BaseObject
 
                 if (isset($data['error'], $data['error_description'])) {
                     throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Error {error} E{statusCode}. {description}', [
-                        'socialName' => $this->social->socialName,
+                        'socialName' => $this->social->name,
                         'statusCode' => $response->getStatusCode(),
                         'description' => $data['error_description'],
                         'error' => $data['error'],

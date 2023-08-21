@@ -5,6 +5,7 @@
 
 namespace Celebron\source\social\responses;
 
+use Celebron\source\social\interfaces\SocialUserInterface;
 use Celebron\source\social\Social;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
@@ -27,9 +28,9 @@ readonly class Id
         return ArrayHelper::getValue($this->data, $this->fieldFromSocial);
     }
 
-    public function login(IdentityInterface&SocialUserInterface $thisObject, $rememberTime):Response
+    public function login(IdentityInterface&SocialUserInterface $thisObject,int $rememberTime):Response
     {
-        $field = $thisObject->getSocialField($this->social->socialName);
+        $field = $thisObject->getSocialField($this->social->name);
         /** @var IdentityInterface&SocialUserInterface $identity */
         $identity = $thisObject::fieldSearch($field, $this->getId());
         if ($identity === null) {
