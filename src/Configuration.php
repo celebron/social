@@ -71,10 +71,10 @@ class Configuration extends Component implements BootstrapInterface
         $this->trigger(self::EVENT_REGISTER, $eventRegister);
 
         if ($eventRegister->support) {
-            \Yii::info("Social '{$object->getName()}' registered", static::class);
+            \Yii::info("Social '{$object->name}' registered", static::class);
             $this->_socials[$object->name] = $object;
         } else {
-            \Yii::warning("Social '{$object->getName()}' not supported", static::class);
+            \Yii::warning("Social '{$object->name}' not supported", static::class);
         }
     }
 
