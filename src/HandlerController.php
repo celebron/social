@@ -71,7 +71,7 @@ class HandlerController extends Controller
             if(null !== ($refAttr = $refAttrs[0] ?? null)) {
                 /** @var Secure $attr */
                 $attr = $refAttr->newInstance();
-                $secure = $attr->secure($userObject, $object, $refMethod->getName());
+                $secure = $attr->secure($userObject, $object, $refMethod->getShortName());
             }
 
             $args = [];
