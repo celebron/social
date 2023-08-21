@@ -97,14 +97,17 @@ class HandlerController extends Controller
             }
 
             if (is_bool($response)) {
-                $response = new Response($response, "Use method {$refMethod->getName()}");
+                $response = new Response($response, "Use method {method} - {successText} (Secure: {secure})", [
+                    'method' => $refMethod->getShortName(),
+                    'secure' => $secure ? 'used': "not use",
+                ]);
             }
 
             if($response->success) {
-                \Yii::info("User from social '$social' authorized success", static::class);
+                \Yii::info($response->comment, static::class);
                 return $object->success($this, $response);
             }
-            \Yii::warning("User from social '$social' authorized failed", static::class);
+            \Yii::warning($response->comment, static::class);
             return $object->failed($this, $response);
         } catch (\Exception $ex) {
             \Yii::error((string)$ex, static::class);
