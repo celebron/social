@@ -8,8 +8,10 @@ namespace Celebron\source\social\data;
 use Celebron\source\social\interfaces\UrlsInterface;
 use Celebron\source\social\OAuth2;
 use yii\base\BaseObject;
+use yii\base\InvalidConfigException;
 use yii\httpclient\Client;
 use yii\httpclient\CurlTransport;
+use yii\httpclient\Exception;
 use yii\httpclient\Request as ClientRequest;
 use yii\httpclient\Response as ClientResponse;
 use yii\web\BadRequestHttpException;
@@ -36,32 +38,39 @@ abstract class AbstractData extends BaseObject
         parent::__construct($config);
     }
 
+    /**
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws BadRequestHttpException
+     */
     final public function send(ClientRequest $request, ?\Closure $handler = null) : ClientResponse
     {
         $response = $this->client->send($request);
+        if($response->getIsOk()) {
+            $handler ??= function ($response) {
+                $data = $response->getData();
+                if (!isset($data['error'])) {
+                    return $response;
+                }
 
-        if ($handler === null) {
-            $data = $response->getData();
-            if ($response->isOk && !isset($data['error'])) {
+                if (isset($data['error'], $data['error_description'])) {
+                    throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Error {error} E{statusCode}. {description}', [
+                        'socialName' => (string)$this->social,
+                        'statusCode' => $response->getStatusCode(),
+                        'description' => $data['error_description'],
+                        'error' => $data['error'],
+                    ]));
+                }
                 return $response;
-            }
+            };
 
-            if (isset($data['error'], $data['error_description'])) {
-                throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Error {error} E{statusCode}. {description}', [
-                    'socialName' => $this->social->socialName,
-                    'statusCode' => $response->getStatusCode(),
-                    'description' => $data['error_description'],
-                    'error' => $data['error'],
-                ]));
-            }
-
-            throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Response not correct. Code E{statusCode}', [
-                'socialName' => $this->social->socialName,
-                'statusCode' => $response->getStatusCode(),
-            ]));
+            return $handler->call($this, $response, $request);
         }
 
-        return $handler($response, $request);
+        throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Response not correct. Code E{statusCode}', [
+            'socialName' => (string)$this->social,
+            'statusCode' => $response->getStatusCode(),
+        ]));
     }
 
     private ?string $_uri = null;
