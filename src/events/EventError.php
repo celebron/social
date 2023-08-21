@@ -6,7 +6,6 @@
 namespace Celebron\source\social\events;
 
 use Celebron\source\social\HandlerController;
-use Celebron\source\social\Response;
 
 class EventError extends EventResult
 {

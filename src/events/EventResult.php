@@ -6,7 +6,7 @@
 namespace Celebron\source\social\events;
 
 use Celebron\source\social\HandlerController;
-use Celebron\source\social\Response;
+use Celebron\source\social\responses\Response;
 use yii\base\Event;
 
 class EventResult extends Event

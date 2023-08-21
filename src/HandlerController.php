@@ -10,6 +10,7 @@ use Celebron\source\social\events\EventError;
 use Celebron\source\social\interfaces\SocialInterface;
 use Celebron\source\social\interfaces\SocialUserInterface;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\responses\Response;
 use yii\base\NotSupportedException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;

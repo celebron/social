@@ -5,8 +5,8 @@
 
 namespace Celebron\source\social\traits;
 
-use Celebron\source\social\Response;
 use Celebron\source\social\responses\Id;
+use Celebron\source\social\responses\Response;
 use Celebron\source\social\Social;
 use yii\web\UnauthorizedHttpException;
 
