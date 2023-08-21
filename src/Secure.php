@@ -15,7 +15,7 @@ class Secure
     {
     }
 
-    public function secure(Social $social, IdentityInterface&SocialUserInterface $user)
+    public function secure(Social $social, IdentityInterface&SocialUserInterface $user):bool
     {
 
     }

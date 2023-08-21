@@ -66,10 +66,11 @@ class HandlerController extends Controller
             }
 
             $refAttrs = $refMethod->getAttributes(Secure::class, ReflectionAttribute::IS_INSTANCEOF);
+            $secure = true;
             if(null !== ($refAttr = $refAttrs[0] ?? null)) {
                 /** @var Secure $attr */
                 $attr = $refAttr->newInstance();
-                $attr->secure($object, $userObject);
+                $secure = $attr->secure($object, $userObject);
             }
 
             $args = [];
@@ -87,9 +88,10 @@ class HandlerController extends Controller
                 }
             }
 
-            $response = $refMethod->invokeArgs($userObject, $args);
+            //Выполняем метод, если $secure = true;
+            $response = $secure ? $refMethod->invokeArgs($userObject, $args) : false;
             if (is_bool($response)) {
-                $response = new Response($response);
+                $response = new Response($response, "Use method {$refMethod->getName()}");
             }
 
             if($response->success) {
