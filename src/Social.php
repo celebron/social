@@ -56,7 +56,7 @@ abstract class Social extends Component implements RequestInterface
 
         //Добавляем внешние настройки
         if($this->configure->paramsHandler !== null) {
-            $config = ArrayHelper::merge($config, $this->configure->paramsHandler->call($this->configure, $name, $config));
+            $config = ArrayHelper::merge($config, $this->configure->paramsHandler->call($this->configure, $this->name, $config));
         }
 
         //Обработка $config
