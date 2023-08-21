@@ -81,7 +81,7 @@ class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
         $params['access_token'] = $token;
 
         $request->post($params);
-        return $request->responseId('uid', handler: function (Response $res) {
+        return $request->responseId('uid', handler: function (Response $res):Response {
             if(isset($res->data['error_code'], $res->data['error_msg'])) {
                 throw new BadRequestHttpException(\Yii::t('social', '[{socialName}]Error {error} E{statusCode}. {description}', [
                     'socialName' => $this->socialName,
@@ -90,6 +90,7 @@ class Ok extends OAuth2 implements UrlsInterface, ViewerInterface
                     'error' => '',
                 ]));
             }
+            return $res;
         });
     }
 

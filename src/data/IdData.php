@@ -79,9 +79,10 @@ class IdData extends AbstractData
 
     public function responseId(string|\Closure|array $field, ?ClientRequest $request = null, ?\Closure $handler = null): Id
     {
+
         $request = $this->_request
             ?? $request
-            ?? throw new BadRequestHttpException(\Yii::t('social','Сlient request is incorrect'));
+                ?? throw new BadRequestHttpException(\Yii::t('social','Сlient request is incorrect'));
         $response = $this->send($request, $handler);
         return $this->social->responseId($field, $response->getData());
     }

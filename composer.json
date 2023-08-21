@@ -34,7 +34,7 @@
     "require": {
         "php": "^8.2",
         "yiisoft/yii2-httpclient": "^2.0",
-        "yiisoft/yii2": "^2.0",
+        "yiisoft/yii2": "^2.0|^2.2",
         "yiisoft/http": "^1.2",
         "celebron/yii2-celebron-common": "^1.2",
         "yiisoft/yii2-bootstrap5": "^2.0"

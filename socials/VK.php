@@ -55,11 +55,10 @@ class VK extends OAuth2 implements UrlsInterface, ViewerInterface
     }
 
     /**
-     * @throws BadRequestHttpException
      */
     public function requestId (IdData $request): Id
     {
-        return $request->responseId('user_id');
+        return $this->responseId('user_id', $request->token->data);
     }
 
     public function getBaseUrl (): string
