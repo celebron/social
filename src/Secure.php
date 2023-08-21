@@ -11,7 +11,7 @@ use yii\web\IdentityInterface;
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Secure
 {
-    public function __construct (protected \Closure|string $secureMethod)
+    public function __construct (private readonly \Closure|string $secureMethod = 'secure')
     {
 
     }

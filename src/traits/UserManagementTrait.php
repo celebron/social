@@ -5,9 +5,7 @@
 
 namespace Celebron\source\social\traits;
 
-use Celebron\source\social\responses\Id;
-use Celebron\source\social\responses\Response;
-use Celebron\source\social\Social;
+use Celebron\source\social\{responses\Id, responses\Response, Social};
 
 /**
  * @method getSocialField(string $socialName)
@@ -23,12 +21,9 @@ trait UserManagementTrait
      */
     abstract public function secure(Social $social, string $method):bool;
 
-    /**
-     * @throws UnauthorizedHttpException
-     */
     public function socialLogin(Id $response):Response
     {
-        /** @var IdentityInterface&SocialUserInterface $this */
+        /** @var \yii\web\IdentityInterface&\Celebron\source\social\interfaces\SocialUserInterface $this */
         return $response->login($this, $this->getRememberTime());
     }
 
@@ -40,7 +35,7 @@ trait UserManagementTrait
     #[Secure('secure')]
     public function socialRegister (Id $response): Response
     {
-        /** @var ActiveRecord&SocialUserInterface $this */
+        /** @var \yii\db\ActiveRecord&\Celebron\source\social\interfaces\SocialUserInterfac $this */
         return $response->saveModel($this);
     }
 
@@ -50,7 +45,7 @@ trait UserManagementTrait
     #[Secure('secure')]
     public function socialDelete (Social $social): Response
     {
-        /** @var ActiveRecord&SocialUserInterface $this */
+        /** @var \yii\db\ActiveRecord&\Celebron\source\social\interfaces\SocialUserInterfac $this */
         return Response::saveModel($social, $this);
     }
 

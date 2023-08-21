@@ -6,6 +6,7 @@
 namespace Celebron\source\social;
 
 use Celebron\common\TokenInterface;
+use Celebron\source\social\attrs\Action;
 use Celebron\source\social\events\EventError;
 use Celebron\source\social\interfaces\SocialInterface;
 use Celebron\source\social\interfaces\SocialUserInterface;
@@ -59,23 +60,25 @@ class HandlerController extends Controller
 
             /** @var  Model&IdentityInterface&SocialUserInterface $userObject */
             $userObject = \Yii::$app->user->identity ?? \Yii::createObject(\Yii::$app->user->identityClass);
-            $methodName = 'social' . $this->getState()->normalizeMethod();
-            $refMethod = new \ReflectionMethod($userObject, $methodName);
 
-            if (!$refMethod->getDeclaringClass()->implementsInterface(SocialUserInterface::class)) {
+            $refUserObject = new \ReflectionObject($userObject);
+            if (!$refUserObject->implementsInterface(SocialUserInterface::class)) {
                 throw new NotSupportedException('Class "' . \Yii::$app->user->identityClass . '" not implement ' . SocialUserInterface::class);
             }
 
+            $actionName = $this->getState()->normalizeMethod('social');
+            $refMethod = $refUserObject->getMethod($actionName);
+
             //Режим Secure
-            $secure = true;
-            $refAttrs = $refMethod->getAttributes(Secure::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $response = true;
+            $refAttrs = $refMethod->getAttributes(Secure::class);
             if(null !== ($refAttr = $refAttrs[0] ?? null)) {
                 /** @var Secure $attr */
                 $attr = $refAttr->newInstance();
-                $secure = $attr->secure($userObject, $object, $refMethod->getShortName());
+                $response = $attr->secure($userObject, $object, $refMethod->getShortName());
             }
 
-            if($secure) {
+            if($response) {
                 $args = [];
                 foreach ($refMethod->getParameters() as $key => $parameter) {
                     $type = (string)$parameter->getType();
@@ -87,20 +90,16 @@ class HandlerController extends Controller
                     } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
                         $args[$key] = $object;
                     } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
-                        $args[$key] = $object->handleToken($this->getCode());
+                        $args[$key] = $object->handleToken($this->getCode() ?? '');
                     }
                 }
 
-                //Выполняем метод, если $secure = true;
                 $response = $refMethod->invokeArgs($userObject, $args);
-            } else {
-                $response = false;
             }
 
             if (is_bool($response)) {
-                $response = new Response($response, "Use method {method} - {successText} (Secure: {secure})", [
+                $response = new Response($response, "Use method {method} - {successText}", [
                     'method' => $refMethod->getShortName(),
-                    'secure' => $secure ? 'used': "not use",
                 ]);
             }
 
@@ -108,6 +107,7 @@ class HandlerController extends Controller
                 \Yii::info($response->comment, static::class);
                 return $object->success($this, $response);
             }
+
             \Yii::warning($response->comment, static::class);
             return $object->failed($this, $response);
         } catch (\Exception $ex) {

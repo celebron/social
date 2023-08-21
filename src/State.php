@@ -62,7 +62,7 @@ class State implements \Stringable
         return $this->random === $random;
     }
 
-    public function normalizeMethod():string
+    public function normalizeMethod(string $prefix = ''):string
     {
         if(str_contains($this->action, '-')) {
             $split = [];
@@ -71,9 +71,9 @@ class State implements \Stringable
             }
             $method = implode($split);
         } else {
-            $method = ucfirst($this->action);
+            $method = $this->action;
         }
-        return  $method;
+        return  $prefix.$method;
     }
 
     public function equalAction(string $action):bool
