@@ -74,23 +74,28 @@ class HandlerController extends Controller
                 $secure = $attr->secure($userObject, $object, $refMethod->getShortName());
             }
 
-            $args = [];
-            foreach ($refMethod->getParameters() as $key => $parameter) {
-                $type = (string)$parameter->getType();
-                $typeClassRef = new \ReflectionClass($type);
-                if ($type === self::class) {
-                    $args[$key] = $this;
-                } elseif ($type === Id::class) {
-                    $args[$key] = $object->request($this->getCode(), $this->getState(), $this->request->getBodyParams());
-                } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
-                    $args[$key] = $object;
-                } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
-                    $args[$key] = $object->handleToken($this->getCode());
+            if($secure) {
+                $args = [];
+                foreach ($refMethod->getParameters() as $key => $parameter) {
+                    $type = (string)$parameter->getType();
+                    $typeClassRef = new \ReflectionClass($type);
+                    if ($type === self::class) {
+                        $args[$key] = $this;
+                    } elseif ($type === Id::class) {
+                        $args[$key] = $object->request($this->getCode(), $this->getState(), $this->request->getBodyParams());
+                    } elseif ($typeClassRef->implementsInterface(SocialInterface::class)) {
+                        $args[$key] = $object;
+                    } elseif ($typeClassRef->implementsInterface(TokenInterface::class)) {
+                        $args[$key] = $object->handleToken($this->getCode());
+                    }
                 }
+
+                //Выполняем метод, если $secure = true;
+                $response = $refMethod->invokeArgs($userObject, $args);
+            } else {
+                $response = false;
             }
 
-            //Выполняем метод, если $secure = true;
-            $response = $secure ? $refMethod->invokeArgs($userObject, $args) : false;
             if (is_bool($response)) {
                 $response = new Response($response, "Use method {$refMethod->getName()}");
             }
