@@ -102,7 +102,7 @@ abstract class OAuth2 extends Social implements OAuth2Interface
         if(\Yii::$app instanceof \yii\web\Application) {
             return Url::toRoute([
                 "{$this->configure->route}/handler",
-                'social' => $this->socialName,
+                'social' => $this->name,
             ], true);
         }
 

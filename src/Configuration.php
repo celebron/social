@@ -110,7 +110,7 @@ class Configuration extends Component implements BootstrapInterface
             //Проверяем интерфейсы
             if ($interface) {
                 $ref = new \ReflectionClass($object);
-                return !empty(array_diff($name, $ref->getInterfaceNames()));
+                return empty(array_diff($name, $ref->getInterfaceNames()));
             }
 
             //Проверяем ключи
