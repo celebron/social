@@ -29,40 +29,54 @@ abstract class Social extends Component implements RequestInterface
 
     protected readonly \ReflectionClass $refThis;
 
+
     public readonly string $name;
     public function __construct (
         public readonly Configuration $configure,
+        string|int|null $name = null,
         $config = [])
     {
         $this->refThis = new \ReflectionObject($this);
 
-        if(is_numeric($config['name']) ) {
-            $this->name = $this->refThis->getShortName();
-            if($this->refThis->implementsInterface(CustomRequestInterface::class)) {
-                throw new InvalidConfigException('Property $name is numeric. ');
-            }
+        //name взять из конфига если есть
+        if($name === null && !empty($config['name'])) {
+            $name = $config['name'];
             unset($config['name']);
         }
 
-        if($this->configure->paramsHandler !== null) {
-            $config = ArrayHelper::merge(
-                $config,
-                $this->configure->paramsHandler->call($this->configure, $this->name, $config)
-            );
+        //Окончательно устанавливаем name
+        if($name === null || is_numeric($name)) {
+            if($this->refThis->implementsInterface(CustomRequestInterface::class)) {
+                throw new InvalidConfigException('Property $name is null or is numeric. Need alphabetic.');
+            }
+            $name = $this->refThis->getShortName();
         }
 
-        //Добавляем write-config-only свойство
+        $this->name = strtolower($name);
+
+        //Добавляем внешние настройки
+        if($this->configure->paramsHandler !== null) {
+            $config = ArrayHelper::merge($config, $this->configure->paramsHandler->call($this->configure, $name, $config));
+        }
+
+        //Обработка $config
         foreach ($config as $key=>$value) {
             $propertyName = '_' . $key;
             $methodName = 'get' . $key;
-            if($this->refThis->hasMethod($methodName) && $this->refThis->hasProperty($propertyName)
-                && ($refProperty = $this->refThis->getProperty($propertyName))->isProtected()
-                && $this->refThis->getMethod($methodName)->isPublic()
+            //readonly и write-config-only
+            if( //readonly
+                ($this->refThis->hasProperty($key) && ($refProperty = $this->refThis->getProperty($key))->isReadOnly())
+                || //write-config-only
+                ($this->refThis->hasMethod($methodName) && $this->refThis->hasProperty($propertyName)
+                    && ($refProperty = $this->refThis->getProperty($propertyName))->isProtected()
+                    && $this->refThis->getMethod($methodName)->isPublic()
+                )
             ) {
                 $refProperty->setValue($this, $value);
                 unset($config[$key]);
             }
         }
+
         parent::__construct($config);
     }
 
@@ -108,7 +122,7 @@ abstract class Social extends Component implements RequestInterface
         if($socialName === null) {
             $socialName = strtolower( (new \ReflectionClass(static::class))->getShortName() );
         }
-        Configuration::urlStatic($socialName, $action, $state, $socialComponent);
+        return Configuration::urlStatic($socialName, $action, $state, $socialComponent);
     }
 
 
