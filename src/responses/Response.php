@@ -40,7 +40,7 @@ class Response
             $response = $response->social;
         }
 
-        $field = $model->getSocialField($response->socialName);
+        $field = $model->getSocialField($response->name);
         $model->$field = $value;
         $result = new self($model->save(), 'Save field "{field}" to model "{model}" - {successText}',[
             'field' => $field,
