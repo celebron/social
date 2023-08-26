@@ -7,6 +7,7 @@ namespace Celebron\source\social\responses;
 
 use Celebron\source\social\interfaces\SocialUserInterface;
 use Celebron\source\social\Social;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
