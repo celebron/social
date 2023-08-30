@@ -18,6 +18,11 @@ use Celebron\source\social\traits\ViewerTrait;
 use yii\base\UnknownClassException;
 use yii\base\UnknownPropertyException;
 
+/**
+ *
+ * @property-read bool $supportManagement
+ * @property-read bool $supportLogin
+ */
 class CustomOAuth2 extends OAuth2 implements interfaces\CustomRequestInterface, interfaces\ViewerInterface
 {
     use ViewerTrait;

@@ -32,6 +32,7 @@ use yii\web\BadRequestHttpException;
  * @property-read string $uriInfo
  * @property-read bool $supportRegister
  * @property-read bool $supportLogin
+ * @property-read bool $supportManagement
  * @property-read string $uriToken
  */
 class Ok extends OAuth2 implements UrlsInterface, ViewerInterface

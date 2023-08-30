@@ -6,9 +6,9 @@
 namespace Celebron\source\social\data;
 
 use Celebron\common\Token;
-use Celebron\source\social\events\EventData;
 use Celebron\source\social\interfaces\UrlsInterface;
 use Celebron\source\social\OAuth2;
+use yii\base\Event;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 use Yiisoft\Http\Header;
@@ -16,6 +16,7 @@ use Yiisoft\Http\Header;
 /**
  *
  * @property-write string $authorization
+ * @property-write string $headerAuthorization
  * @property-write string $authorizationBasic
  */
 class TokenData extends AbstractData
@@ -47,9 +48,8 @@ class TokenData extends AbstractData
 
     public function generateData(array $data): array
     {
-        $event = new EventData($data);
+        $event = new Event(['data'=>$data]);
         $this->social->trigger(OAuth2::EVENT_DATA_TOKEN, $event);
-        $data = $event->newData;
 
         return ArrayHelper::merge([
             'redirect_uri' => $this->redirect_uri,
@@ -57,7 +57,7 @@ class TokenData extends AbstractData
             'code' => $this->code,
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
-        ], $data);
+        ], $event->data);
     }
 
     public function responseToken(array $data = []):Token
