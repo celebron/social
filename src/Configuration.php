@@ -186,17 +186,34 @@ class Configuration extends Component implements BootstrapInterface
         return parent::__call($name, $params);
     }
 
-    public static function getStatic(string|array|null $name = null, bool $interface=false, string $componentName = 'social'): Social|array|null
+    /**
+     * @throws \ReflectionException
+     * @throws InvalidConfigException
+     */
+    public static function getStatic(
+        string|array|null $name = null,
+        bool $interface=false,
+        string|Configuration $componentName = 'social'
+    ): Social|array|null
     {
-        /** @var self $component */
-        $component = \Yii::$app->get($componentName);
+        if(is_string($componentName)) {
+            $component = Instance::ensure($componentName,self::class);
+        }
+        /** @var Configuration $component */
         return $component->get($name, $interface);
     }
 
-    public static function urlStatic (string $social, string $action, ?state $state = null, $componentName = 'social'): string
+    public static function urlStatic (
+        string $social,
+        string $action,
+        ?state $state = null,
+        string|Configuration $componentName = 'social'
+    ): string
     {
+        if(is_string($componentName)) {
+            $component = Instance::ensure($componentName,self::class);
+        }
         /** @var self $component */
-        $component = \Yii::$app->get($componentName);
         return $component->url($social, $action, $state);
     }
 }

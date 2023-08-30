@@ -39,7 +39,7 @@ abstract class Social extends Component implements RequestInterface
     {
         $this->refThis = new \ReflectionObject($this);
 
-        //name взять из конфига если есть
+        //name взять из конфига, если есть
         if($name === null && !empty($config['name'])) {
             $name = $config['name'];
             unset($config['name']);
