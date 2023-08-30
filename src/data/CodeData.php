@@ -41,7 +41,7 @@ class CodeData extends AbstractData
             'redirect_uri' => $this->redirect_uri,
             'state' => (string)$this->state,
         ];
-        return ArrayHelper::merge($default, $event->data);
+        return ArrayHelper::merge($default, (array)$event->data);
     }
 
     public function request(array $data = [], array $headers = []):Code

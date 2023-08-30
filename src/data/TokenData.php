@@ -57,7 +57,7 @@ class TokenData extends AbstractData
             'code' => $this->code,
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
-        ], $event->data);
+        ], (array)$event->data);
     }
 
     public function responseToken(array $data = []):Token
