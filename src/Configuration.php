@@ -145,7 +145,6 @@ class Configuration extends Component implements BootstrapInterface
                 "{$this->route}/<social>" => "{$this->route}/handler",
             ]);
 
-
         $app->controllerMap[$this->route] = [
             'class' => HandlerController::class,
             'configure' => $this,
