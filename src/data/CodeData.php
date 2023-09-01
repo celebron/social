@@ -11,9 +11,8 @@ use Celebron\socialSource\interfaces\UrlsInterface;
 use Celebron\socialSource\OAuth2;
 use Celebron\socialSource\responses\Code;
 use Celebron\socialSource\State;
+use yii\base\Event;
 use yii\helpers\ArrayHelper;
-use yii\httpclient\Request as ClientRequest;
-use yii\httpclient\Response as ClientResponse;
 use yii\web\BadRequestHttpException;
 
 class CodeData extends AbstractData
@@ -30,9 +29,8 @@ class CodeData extends AbstractData
 
     public function generateData(array $data) : array
     {
-        $event = new EventData($data);
+        $event = new Event(['data' => $data]);
         $this->social->trigger(OAuth2::EVENT_DATA_CODE, $event);
-        $data = $event->newData;
 
         $default = [
             0 => $this->uri,
@@ -41,7 +39,7 @@ class CodeData extends AbstractData
             'redirect_uri' => $this->redirect_uri,
             'state' => (string)$this->state,
         ];
-        return ArrayHelper::merge($default, $data);
+        return ArrayHelper::merge($default, (array)$event->data);
     }
 
     public function request(array $data = [], array $headers = []):Code
